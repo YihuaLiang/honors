@@ -1,0 +1,25 @@
+Put the state, conjunction and some other things in a vector
+then can check by the order number
+
+option indicates the input option how the search working
+
+what is dual tasks -- should be a option at the report
+
+Fluent is defined as a set of fact
+uc found -- consider how to change
+hc found -- consider how to change 
+PCR found -- figured out 90%
+NR -- being figured 
+
+m_cache -- what is this option
+
+In hc_heuristic
+action -- see the definition of strips_action
+counter -- see the definition of ActionEffectCounter
+potential modification:
+
+class conjunction maybe need to update the way 
+
+since all function is based on g value and the cost of action 
+--- find out how to get them
+--- is it true it is always the same way to get the functions
