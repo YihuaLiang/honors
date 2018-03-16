@@ -18,10 +18,11 @@ public:
     typedef std::vector<const Operator *> Plan;
     enum SearchStatus {FAILED = 0, SOLVED = 1, IN_PROGRESS = 2};
 protected:
-    bool solved;
+    bool solved;//equal to solution found
     Plan plan;
     OperatorCost cost_type;
-
+    // add a bound -- now only add the bound
+    int bound;
     virtual void initialize() {}
     virtual SearchStatus step() = 0;
 
@@ -29,6 +30,10 @@ protected:
     int get_adjusted_cost(const Operator &op) const;
     OperatorCost get_operator_cost() const { return cost_type; }
 public:
+    //related to the cost bound
+    void set_bound(int b) {bound = b; }
+    int get_bound() {return bound; }
+
     SearchEngine(const Options &opts);
     virtual ~SearchEngine();
     void save_plan_if_necessary() const;

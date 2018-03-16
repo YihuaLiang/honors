@@ -23,6 +23,7 @@ class PruningMethod;
 
 class Search : public SearchEngine
 { // bound could be used here
+  //now it has a bound
 protected:
     SearchSpace search_space;
     SearchProgress search_progress;
@@ -67,8 +68,8 @@ protected:
 
     virtual Heuristic *check_dead_end(const State &state, bool full);
     bool trigger_refiner(const State &state, bool &success);
-    bool evaluate(const State &state, bool &u);
-    bool evaluate(SearchNode &node);
+    bool evaluate(const State &state, bool &u,int cost_bound);
+    bool evaluate(SearchNode &node,int cost_bound);
 
     void get_preferred_operators(const State &state, std::set<const Operator *> &result);
 

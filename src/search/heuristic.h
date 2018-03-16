@@ -13,7 +13,7 @@ class Operator;
 class State; 
 class OptionParser;
 class Options;
-
+//just pass the int cost bound as a parameter
 class Heuristic : public ScalarEvaluator {
 protected:
     enum {NOT_INITIALIZED = -2};
@@ -26,7 +26,8 @@ protected:
     bool is_unit_cost;
     OperatorCost cost_type;
     virtual void initialize() {}
-    virtual int compute_heuristic(const State &state) = 0;
+    //add a costbound
+    virtual int compute_heuristic(const State &state,int cost_bound) = 0;
     // Usage note: It's OK to set the same operator as preferred
     // multiple times -- it will still only appear in the list of
     // preferred operators for this heuristic once.
@@ -40,9 +41,9 @@ public:
     Heuristic(const Options &options);
     Heuristic(const Heuristic &heuristic);
     virtual ~Heuristic();
-
-    void evaluate(const State &state);
-    virtual void reevaluate(const State &) { heuristic = 0; evaluator_value = 0; }
+    //add the int bound to function declaretion
+    void evaluate(const State &state, int cost_bound);
+    virtual void reevaluate(const State &, int cost_bound) { heuristic = 0; evaluator_value = 0; }
     bool is_dead_end() const;
     void clear_cache() { heuristic = 0; evaluator_value = 0; }
     int get_heuristic();
@@ -58,7 +59,7 @@ public:
 
     // for abstract parent ScalarEvaluator
     int get_value() const;
-    void evaluate(int g, bool preferred);
+    void evaluate(int g, bool preferred,int cost_bound);
     bool dead_end_is_reliable() const;
     void set_evaluator_value(int val);
     void get_involved_heuristics(std::set<Heuristic *> &hset) {hset.insert(this); }

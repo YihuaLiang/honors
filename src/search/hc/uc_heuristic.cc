@@ -46,11 +46,11 @@ UCHeuristic::UCHeuristic(const UCHeuristic &uc)
     m_clause_extraction(NULL)
 {}
 
-void UCHeuristic::hc_evaluate(const State &state) {
+void UCHeuristic::hc_evaluate(const State &state,int cost_bound) {
     if (heuristic == NOT_INITIALIZED) { // inherited from the hc_heuristic class
         initialize(); // from hc_heuristic - from heuristic
     }
-    heuristic = HCHeuristic::compute_heuristic(state); // calculate 
+    heuristic = HCHeuristic::compute_heuristic(state,cost_bound); // calculate 
     evaluator_value = heuristic;
 }
 // ignore the two functions below
@@ -65,7 +65,7 @@ bool UCHeuristic::clause_matches(const State &state) {
     return find_clause(state) != ClauseStore::NO_MATCH;
 }
 // judge whether it will be infty from state 
-int UCHeuristic::compute_heuristic(const State &state) {
+int UCHeuristic::compute_heuristic(const State &state,int cost_bound) {
     m_stats.num_total_evaluations++;
     if (clause_matches(state)) {
         return DEAD_END;
@@ -74,7 +74,7 @@ int UCHeuristic::compute_heuristic(const State &state) {
     if (c_eval_hc) {
         m_stats.start();
         m_stats.num_hc_evaluations++;
-        hc_evaluate(state); // calculate the hc
+        hc_evaluate(state,cost_bound); // calculate the hc
         res = heuristic; // take the result -- res stands for results
         m_stats.end(m_stats.t_hc_evaluation);
         if (res == DEAD_END) {
@@ -85,13 +85,13 @@ int UCHeuristic::compute_heuristic(const State &state) {
     return res;
 }
 
-void UCHeuristic::reevaluate(const State &state) {
+void UCHeuristic::reevaluate(const State &state,int cost_bound) {
     if (heuristic == NOT_INITIALIZED) {
         initialize();
     }
     heuristic = 0;
     if (c_reeval_hc) {
-        evaluate(state);
+        evaluate(state,cost_bound);
     } else if (clause_matches(state)) {
         heuristic = DEAD_END;
         evaluator_value = DEAD_END;

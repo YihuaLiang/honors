@@ -65,9 +65,9 @@ protected:
     ClauseStore *m_clause_store;
     UCClauseExtraction *m_clause_extraction;
 
-    virtual int compute_heuristic(const State &state);
+    virtual int compute_heuristic(const State &state,int cost_bound);
 
-    void hc_evaluate(const State &state); //calculated
+    void hc_evaluate(const State &state,int cost_bound); //calculated
 
     void set_dead_end() {
         heuristic = DEAD_END;
@@ -76,7 +76,7 @@ protected:
 public:
     UCHeuristic(const Options &opts); // construct
     UCHeuristic(const UCHeuristic &h); // construct
-    virtual void reevaluate(const State &state);
+    virtual void reevaluate(const State &state,int cost_bound);
     // do not need to work on th clause learning.
     unsigned find_clause(const State &state);
     bool clause_matches(const State &state);

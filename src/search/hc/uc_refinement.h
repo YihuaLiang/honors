@@ -44,10 +44,11 @@ class UCRefinement : public HeuristicRefiner {
   UCRefinementStatistics m_statistics;// for the result
   UCHeuristic *uc;
   // refine will be inherited by the pcr and nr algorithms
-  virtual RefinementResult refine(const State &/*state*/) { return FAILED; }
+  virtual RefinementResult refine(const State &/*state*/, int cost_bound) { return FAILED; }
   virtual RefinementResult refine(
                                   const std::vector<State> &/*root_component*/,
-                                  const std::unordered_set<StateID> &/*recognized_neighbors*/) { return FAILED; }
+                                  const std::unordered_set<StateID> &/*recognized_neighbors*/,
+                                  int cost_bound) { return FAILED; }
  public:
  UCRefinement(const Options &opts) : HeuristicRefiner(opts)//Initialized
   {
@@ -59,11 +60,12 @@ class UCRefinement : public HeuristicRefiner {
   
   //a high level function, run and call the refine
   //This one is for PCR to inherit
-  virtual RefinementResult learn_unrecognized_dead_end(const State &state) {
+  //this is the first place to call the 
+  virtual RefinementResult learn_unrecognized_dead_end(const State &state, int cost_bound) {
     m_statistics.num_all_refinements++;
     m_statistics.size_all_component += 1;
     m_statistics.start();// control working result
-    RefinementResult res = refine(state);
+    RefinementResult res = refine(state,cost_bound);
     if (res != FAILED) {
       if (res != UNCHANGED) {
         m_statistics.num_real_refinements++;
@@ -75,7 +77,7 @@ class UCRefinement : public HeuristicRefiner {
         uc->set_dead_end();
 #ifndef NDEBUG
         uc->dump_compilation_information();
-        uc->evaluate(state);
+        uc->evaluate(state,int cost_bound);
         assert(uc->is_dead_end());
 #endif
       }
@@ -85,7 +87,8 @@ class UCRefinement : public HeuristicRefiner {
   //This one is for NR to inherit
   virtual RefinementResult learn_unrecognized_dead_ends(
                                                         const std::vector<State> &root_component,
-                                                        const std::unordered_set<StateID> &recognized_neighbors) {
+                                                        const std::unordered_set<StateID> &recognized_neighbors,
+                                                        int cost_bound) {
     m_statistics.num_all_refinements++;
     m_statistics.size_all_component += root_component.size();
     m_statistics.start();
@@ -111,7 +114,7 @@ class UCRefinement : public HeuristicRefiner {
     }
     return res;
   }
- // This is used for learning from the dead end 
+ // This is used for constructing clause
   virtual void learn_recognized_dead_ends(const std::vector<State> &dead_ends) {
     uc->refine_clauses(dead_ends);
   }
@@ -124,7 +127,7 @@ class UCRefinement : public HeuristicRefiner {
 
   virtual bool dead_end_learning_requires_recognized_neighbors() { return false; }
 
-  virtual Heuristic *get_heuristic() { return uc; } // provide a plugin to modify
+  virtual Heuristic *get_heuristic() { return uc; } // take the heuristic out
 
   virtual void statistics() {
     uc->statistics();

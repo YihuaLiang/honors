@@ -21,13 +21,14 @@ public:
         SOLVED = 3,
     };
     HeuristicRefiner(const Options &/*opts*/) {}
-    virtual RefinementResult learn_unrecognized_dead_end(const State &/*state*/) { return FAILED; }
+    virtual RefinementResult learn_unrecognized_dead_end(const State &/*state*/, int cost_bound) { return FAILED; }
     virtual RefinementResult learn_unrecognized_dead_ends(
             const std::vector<State> &/*root_component*/,
-            const std::unordered_set<StateID> &/*recognized_neighbors*/) { return FAILED; }
+            const std::unordered_set<StateID> &/*recognized_neighbors*/, 
+            int cost_bound) { return FAILED; }
     virtual void learn_recognized_dead_ends(const std::vector<State> &/*dead_ends*/) {};
     virtual void learn_recognized_dead_end(const State &/*dead_end*/) {};
-
+    //just used for check in refiner
     virtual bool dead_end_learning_requires_full_component() { return false; }
     virtual bool dead_end_learning_requires_recognized_neighbors() { return false; }
 

@@ -31,7 +31,7 @@
 #include <numeric>
 //see the search_progress.h
 Search::Search(const Options &opts)
-  : SearchEngine(opts),
+  : SearchEngine(opts),//Initial the state
     search_space(cost_type), // see the father class
     c_reopen_nodes(opts.get<bool>("reopen")),
     c_unsath_new_full(opts.get<int>("u_new") == 2),
@@ -71,6 +71,8 @@ Search::Search(const Options &opts)
     }
   }
   m_solved = false;
+  //out put successfully
+  //cout<<"bound is "<<bound<<endl;
 }
 // quote the q-engine to access the cost bound 
 // quote search to know the g value 
@@ -104,7 +106,7 @@ void Search::initialize()
   // (have to initialize the heuristics)
   // c++ 11 new feature, go through this vector, use every heuristic on I
   for (Heuristic *h : m_underlying_heuristics) {
-    h->evaluate(g_initial_state());
+    h->evaluate(g_initial_state(), get_bound());
   }
   // refine in same mode
   for (HeuristicRefiner *r : m_heuristic_refiner) {
@@ -113,7 +115,7 @@ void Search::initialize()
 // access the initial state
   State init = g_initial_state();
   bool urec = false;//??? 
-  if (evaluate(init, urec)) { // evaluate returns true
+  if (evaluate(init, urec,get_bound())) { // evaluate returns true
     std::cout << "Solved in initial state!" << std::endl;
     m_solved = true;// restore true
   } else if (!m_cached_h || !m_cached_h->is_dead_end()) {
@@ -185,9 +187,9 @@ Heuristic *Search::check_dead_end(const State &state, bool full)
     Heuristic *h = *it; // set the pointer to sub-class heuristic
     assert(h != NULL); // h should be NULL???
     if (full) {
-      h->evaluate(state);
+      h->evaluate(state,get_bound());
     } else {
-      h->reevaluate(state);
+      h->reevaluate(state,get_bound());
     }
     //Here it will evaluate the state
     if (h->is_dead_end()) {
@@ -205,10 +207,11 @@ Heuristic *Search::check_dead_end(const State &state, bool full)
   return res;
 }
 //Put in a node 
-bool Search::evaluate(SearchNode &node)
+bool Search::evaluate(SearchNode &node,int cost_bound)
 {
   bool u;
-  bool res = evaluate(node.get_state(), u);
+  cout<<"pass cost_bound into search_evaluate1 "<<cost_bound<<endl;
+  bool res = evaluate(node.get_state(), u, cost_bound);
   //see the function below
   if (u) { // if true, 
     node.set_u_flag();
@@ -219,8 +222,9 @@ bool Search::evaluate(SearchNode &node)
 
 // see the search_progress.h
 // if the dead state 
-bool Search::evaluate(const State &state, bool &u)
+bool Search::evaluate(const State &state, bool &u, int cost_bound)
 {
+  cout<<"pass cost_bound into search_evaluate2 "<<cost_bound<<endl;
   search_progress.inc_evaluated_states(1);
   u = false;
   m_cached_h = NULL;// it should be heuristic
@@ -243,7 +247,8 @@ bool Search::evaluate(const State &state, bool &u)
   if (maxh != -1) { // 
     for (uint i = 0; i < m_heuristics.size(); i++) {
       search_progress.inc_evaluations(1);// see this procedure --> it makes some difference then it should recalculat
-      m_heuristics[i]->evaluate(state);// calculate the heuristic without refinement
+      //in the search evaluation  -- passin the cost bound ? make it a const??
+      m_heuristics[i]->evaluate(state,cost_bound);// calculate the heuristic without refinement
       if (m_heuristics[i]->is_dead_end()) {
         maxh = -1; // if dead end put it with a infinite mark --- using -1 as infinite value
         m_cached_h = m_heuristics[i];// take the value and store it
@@ -278,7 +283,8 @@ void Search::get_preferred_operators(const State &state,
     search_progress.inc_evaluations(m_preferred.size());
     std::vector<const Operator *> ops;
     for (uint i = 0; i < m_preferred.size(); i++) {
-      m_preferred[i]->evaluate(state);
+      //preferred is heuristic -- pass in the bound as parameter
+      m_preferred[i]->evaluate(state,get_bound());
       m_preferred[i]->get_preferred_operators(ops);
     }
     if (ops.size() > 0) {
@@ -386,7 +392,8 @@ Search::SearchStatus Search::step()
     successors[i] = succ_node.get_state_id();
     succ_node.add_parent(state);
     if (succ_node.is_new()) {
-      if (evaluate(succ_node)) {
+      //pass in the parameter
+      if (evaluate(succ_node,get_bound())) {
         return SOLVED;
       }
       if (m_cached_h && m_cached_h->is_dead_end()) {

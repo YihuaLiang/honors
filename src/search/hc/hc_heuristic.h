@@ -390,7 +390,7 @@ class HCHeuristic : public Heuristic
   bool fluent_in_state(const Fluent &pi, const State &state) const;
 
   virtual void initialize();
-  virtual int compute_heuristic(const State &state);
+  virtual int compute_heuristic(const State &state,int cost_bound);
 
   
   template<typename V1, typename V2>

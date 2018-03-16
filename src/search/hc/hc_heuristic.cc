@@ -1328,10 +1328,10 @@ int HCHeuristic::simple_traversal(const State &state)
 }
 
 
-int HCHeuristic::compute_heuristic(const State &state)
+int HCHeuristic::compute_heuristic(const State &state,int cost_bound)
 {
   std::vector<unsigned> prec;
-  if (c_dual_task) { // multiple tasks
+  if (c_dual_task) { // multiple tasks??
     std::cout << "initial state: " << std::endl;
     m_goal_counter = counters.size();
     counters.push_back(ActionEffectCounter(-1, m_goal_counter, &conjunctions[m_goal_id], 1));
@@ -1353,6 +1353,9 @@ int HCHeuristic::compute_heuristic(const State &state)
       prec.push_back(m_true_id);
     }
   }
+  cout<<"not dual task"<<endl;
+  cout<<"cost bound passed in compute_heuristic successfully "<<cost_bound<<endl;
+  //put the cost bound into this heuristic
   int res = simple_traversal(state);
   if (c_dual_task) {
     for (unsigned x : prec) {

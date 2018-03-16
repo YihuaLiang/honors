@@ -41,11 +41,12 @@ void Heuristic::set_preferred(const Operator *op) {
     }
 }
 // evaluate provide a whole process on evaluate a state
-void Heuristic::evaluate(const State &state) {
+void Heuristic::evaluate(const State &state,int cost_bound) {
+    cout<<"pass cost_bound into heuristic_evaluate1 "<<cost_bound<<endl;
     if (heuristic == NOT_INITIALIZED)
         initialize();
     preferred_operators.clear();
-    heuristic = compute_heuristic(state);
+    heuristic = compute_heuristic(state,cost_bound);
     for (int i = 0; i < preferred_operators.size(); i++)
         preferred_operators[i]->unmark();
     assert(heuristic == DEAD_END || heuristic >= 0);
@@ -70,7 +71,7 @@ void Heuristic::evaluate(const State &state) {
 bool Heuristic::is_dead_end() const {
     return evaluator_value == DEAD_END;
 }
-
+//take the heuristic out 
 int Heuristic::get_heuristic() {
     // The -1 value for dead ends is an implementation detail which is
     // not supposed to leak. Thus, calling this for dead ends is an
@@ -111,7 +112,8 @@ int Heuristic::get_value() const {
     return evaluator_value;
 }
 
-void Heuristic::evaluate(int, bool) {
+void Heuristic::evaluate(int, bool,int cost_bound) {
+    cout<<"pass cost_bound into heuristic_evaluate2 "<<cost_bound<<endl;
     return;
     // if this is called, evaluate(const State &state) or set_evaluator_value(int val)
     // should already have been called

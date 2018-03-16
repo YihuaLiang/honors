@@ -6,12 +6,19 @@ using namespace std;
 #include "globals.h"
 #include "operator_cost.h"
 #include "option_parser.h"
+#include "utilities.h"
 #include "search_engine.h"
 #include "timer.h"
 
+//this search engine only take the cost_type
 SearchEngine::SearchEngine(const Options &opts)
     : cost_type(OperatorCost(opts.get_enum("cost_type"))) {
     solved = false;
+    if (opts.get<int>("bound") < 0) {
+        cerr << "error: negative cost bound " << opts.get<int>("bound") << endl;
+        //delete the negative cost bound exit
+    }
+    bound = opts.get<int>("bound");
 }
 
 SearchEngine::~SearchEngine() {
