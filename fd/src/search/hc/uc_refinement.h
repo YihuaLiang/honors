@@ -42,7 +42,7 @@ UCRefinementStatistics() :
 class UCRefinement : public HeuristicRefiner {
  protected:
   UCRefinementStatistics m_statistics;
-  UCHeuristic *uc;
+  UCHeuristic *uc;// it has uc, so it could attach the cost from uc??
 
   virtual RefinementResult refine(const State &/*state*/) { return FAILED; }
   virtual RefinementResult refine(
@@ -130,6 +130,7 @@ class UCRefinement : public HeuristicRefiner {
   }
 
   static void add_options_to_parser(OptionParser &parser);
+  int get_bound(){return uc->bound;}
 };
 
 #endif

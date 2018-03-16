@@ -24,7 +24,8 @@ HeuristicRefiner::RefinementResult UCRefinementOnRN::refine(const std::vector<St
 {
     std::unordered_set<StateID> mapped_rn;
     (*m_rn_map)(uc, rn, mapped_rn);
-
+    //catch it successfully
+    //cout<<"Refine catch the bound "<<get_bound()<<endl;
     if (prepare_refinement(states, mapped_rn)) {
         return UNCHANGED;
     }
