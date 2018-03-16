@@ -14,12 +14,18 @@ Heuristic::Heuristic(const Options &opts)
     heuristic = NOT_INITIALIZED;
 
     is_unit_cost = true;
+    //check unit cost
     for (size_t i = 0; i < g_operators.size(); ++i) {
         if (get_adjusted_cost(g_operators[i]) != 1) {
             is_unit_cost = false;
             break;
         }
     }
+    if(opts.get<int>("bound")<0){
+        cerr << "error: negative cost bound " << opts.get<int>("bound") << endl;
+        //exit with error is deleted -- not need to be used here
+    }
+    bound = opts.get<int>("bound");
 }
 
 Heuristic::Heuristic(const Heuristic &h) :
@@ -29,6 +35,7 @@ Heuristic::Heuristic(const Heuristic &h) :
     is_unit_cost(h.is_unit_cost),
     cost_type(h.cost_type)
 {
+    bound = h.bound;
 }
 
 Heuristic::~Heuristic() {
@@ -139,9 +146,13 @@ int Heuristic::get_adjusted_cost(const Operator &op) const {
 
 void Heuristic::add_options_to_parser(OptionParser &parser) {
     ::add_cost_type_option_to_parser(parser);
+    parser.add_option<int>(
+        "bound",
+        "exclusive depth bound on g-values. Cutoffs are always performed according to "
+        "the real cost, regardless of the cost_type parameter", "infinity");
 }
-
 //this solution to get default values seems not optimal:
+//default option on the cost type is zero -- normal cost bound
 Options Heuristic::default_options() {
     Options opts = Options();
     opts.set<int>("cost_type", 0);

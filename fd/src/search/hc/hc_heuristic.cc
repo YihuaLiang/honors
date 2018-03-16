@@ -1320,6 +1320,8 @@ int HCHeuristic::simple_traversal(const State &state)
 int HCHeuristic::compute_heuristic(const State &state)
 {
   std::vector<unsigned> prec;
+  //catch it successfully
+  //cout<<"Heuristic catch the bound "<<bound<<endl;
   if (c_dual_task) {
     std::cout << "initial state: " << std::endl;
     m_goal_counter = counters.size();

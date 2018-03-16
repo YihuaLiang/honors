@@ -24,7 +24,7 @@ void ClauseLearningStatistics::dump() const {
 }
 
 UCHeuristic::UCHeuristic(const Options &opts)
-    : HCHeuristic(opts),
+    : HCHeuristic(opts),// use the opts to initialize the hcheuristic
       c_eval_hc(opts.get<bool>("eval_hc")),
       c_reeval_hc(opts.get<bool>("reeval_hc")),
       m_clause_store(NULL),
@@ -36,6 +36,8 @@ UCHeuristic::UCHeuristic(const Options &opts)
         m_clause_extraction = opts.get<UCClauseExtraction *>("clauses");
         m_clause_store = m_clause_extraction->get_store();
     }
+    //catch the bound successfully
+    //cout<<"UC catch the bound "<<bound<<endl;
 }
 
 UCHeuristic::UCHeuristic(const UCHeuristic &uc)

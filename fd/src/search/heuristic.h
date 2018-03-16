@@ -40,7 +40,9 @@ public:
     Heuristic(const Options &options);
     Heuristic(const Heuristic &heuristic);
     virtual ~Heuristic();
-
+    /***set the cost bound as public variable***********/
+    int bound;
+    /***************************************************/
     void evaluate(const State &state);
     virtual void reevaluate(const State &) { heuristic = 0; evaluator_value = 0; }
     bool is_dead_end() const;
