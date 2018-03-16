@@ -1,7 +1,0 @@
-Backup
-_BACKUP
-.obj
-*.o
-pic/_backup/
-Makefile.depend
-downward-*

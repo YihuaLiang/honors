@@ -1,0 +1,17 @@
+syntax: glob
+
+debugging
+builds
+
+*.o
+*.pyc
+
+lex.yy.cc
+Makefile.depend
+preprocess
+preprocess-debug
+Makefile.depend
+downward-debug
+downward-release
+validate
+__pycache__

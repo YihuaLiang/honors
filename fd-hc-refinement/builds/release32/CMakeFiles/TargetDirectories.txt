@@ -1,0 +1,9 @@
+/home/admin-u6487831/honors/fd-hc-refinement/builds/release32/CMakeFiles/edit_cache.dir
+/home/admin-u6487831/honors/fd-hc-refinement/builds/release32/CMakeFiles/rebuild_cache.dir
+/home/admin-u6487831/honors/fd-hc-refinement/builds/release32/CMakeFiles/translate.dir
+/home/admin-u6487831/honors/fd-hc-refinement/builds/release32/preprocess/CMakeFiles/edit_cache.dir
+/home/admin-u6487831/honors/fd-hc-refinement/builds/release32/preprocess/CMakeFiles/rebuild_cache.dir
+/home/admin-u6487831/honors/fd-hc-refinement/builds/release32/preprocess/CMakeFiles/preprocess.dir
+/home/admin-u6487831/honors/fd-hc-refinement/builds/release32/search/CMakeFiles/edit_cache.dir
+/home/admin-u6487831/honors/fd-hc-refinement/builds/release32/search/CMakeFiles/rebuild_cache.dir
+/home/admin-u6487831/honors/fd-hc-refinement/builds/release32/search/CMakeFiles/downward.dir
