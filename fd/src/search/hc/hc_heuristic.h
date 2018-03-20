@@ -68,7 +68,7 @@ struct ActionEffectCounter {
   /*
    * static data -- set during initialization
    */
-  unsigned action_id;
+  unsigned action_id; // to the action -- operator no to the cost??
   unsigned id;
   //int action; // id of corresponding strips action
   Conjunction *effect; // id of conjunction
@@ -469,6 +469,7 @@ class HCHeuristic : public Heuristic
   int simple_traversal_setup(const std::vector<std::pair<int, int> > &state,
                              std::vector<unsigned> &exploration);
   int simple_traversal(const State &state);
+  //
   int simple_traversal_wrapper(std::vector<unsigned> &exploration, int lvl0);
 
   int priority_traversal(const State &state);

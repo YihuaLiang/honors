@@ -772,19 +772,19 @@ void HCHeuristic::compile_strips()
   // Build a conjunction for every fact (pair<variable, value>)
   unsigned conj_id = 0;
   //conjunctions.reserve(conjunction_offset);
-  _fluents.reserve(conjunction_offset);
+  _fluents.reserve(conjunction_offset);//set size
   for (uint var = 0; var < g_variable_domain.size(); var++) {
     for (int value = 0; value < g_variable_domain[var]; value++) {
       Fluent fluent;
-      create_unit_conjunction(var, value, fluent);
+      create_unit_conjunction(var, value, fluent);// will be insert to fluent
       //conjunctions.push_back(Conjunction(conj_id, fluent));
-      conjunctions.push_back(Conjunction(conj_id, 1));
+      conjunctions.push_back(Conjunction(conj_id, 1));//add this conjunction
       conjunction_achievers.push_back(std::vector<unsigned>());
       facts_conjunctions_relation[conj_id].push_back(conj_id);
       //_unique_conjunctions.insert(conj_id);
-      _fluents.push_back(fluent);
+      _fluents.push_back(fluent);//fluent will be put into _fluents then _fluents are C
       _unique_conjunctions.insert(conj_id);
-      conj_id++;
+      conj_id++;//set the id for new conjunction
     }
   }
 
@@ -914,7 +914,7 @@ void HCHeuristic::compile_strips()
             cond_del->insert(get_fact(f.first, isinpre[f.first]));
           }
         }
-        create_counter(action_id, get_fact_id(fact), base_cost, condaction.precondition);
+        create_counter(action_id, get_fact_id(fact), base_cost, condaction.precondition);//for every effect create a effectcounter
         condaction.aid = action_id;
         actions.push_back(condaction);
         action_id++;
@@ -1258,34 +1258,38 @@ int HCHeuristic::simple_traversal_setup(const State &state,
   } else {
     for (uint i = 0; i < conjunctions.size(); i++) {
       Conjunction &conj = conjunctions[i];
-      conj.clear();
+      conj.clear();//set cost to -1
       if (fluent_in_state(_fluents[i], state)) {
-        conj.check_and_update(0, NULL);//set cost 0
-        exploration.push_back(i);//it means from this state to the goal so clear it
+        conj.check_and_update(0, NULL);//its in the state
+        exploration.push_back(i);//add back to queue
+        //exploration only contains id
       }
     }
   }
-
-  conjunctions[m_true_id].check_and_update(0, NULL);
+  
+  conjunctions[m_true_id].check_and_update(0, NULL);//set up and put in the last conjunction?
   exploration.push_back(m_true_id);
 
-  for (uint i = 0; i < counters.size(); i++) {
+  for (uint i = 0; i < counters.size(); i++) { //for every effect
     ActionEffectCounter &counter = counters[i];
-    counter.unsatisfied_preconditions = counter.preconditions;
-    counter.cost = 0;
+    counter.unsatisfied_preconditions = counter.preconditions;//all preconditons unsatisfied
+    counter.cost = 0;//Initial to be zero
   }
 
   return exploration.size();
 }
 
-//jisuan
+/******modified******/
 int HCHeuristic::simple_traversal_wrapper(
                                           std::vector<unsigned> &exploration, int lvl0)
 {
   if (early_termination && conjunctions[m_goal_id].is_achieved()) {
     return 0;
   }
-
+  //could simply store the values in the vector as exploration
+  
+  //int g = 0;//replace this with G_value
+ 
   unsigned i = 0;
   unsigned border = lvl0;
   int level = 0;
@@ -1296,24 +1300,37 @@ int HCHeuristic::simple_traversal_wrapper(
       //based on unit cost
       level += 1; //add one level -- the distance 
       //cout << "level enlarge"<<endl;
-      //border means the largest length -- interm of cost there is no bounder
     }
-    unsigned conj_id = exploration[i++]; //out put the trigger counters base cost
+    unsigned conj_id = exploration[i++]; 
     // think of how to store the cost properly
     const vector<ActionEffectCounter *> &triggered_counters =
-      conjunctions[conj_id].triggered_counters;
+      conjunctions[conj_id].triggered_counters;//The actions could be executed
     for (uint j = 0; j < triggered_counters.size(); j++) {
-      ActionEffectCounter *counter = triggered_counters[j];
-      if (--counter->unsatisfied_preconditions > 0) {
-        continue;
+      ActionEffectCounter *counter = triggered_counters[j];//take the first one out 
+      if (--counter->unsatisfied_preconditions > 0) { //there must be one satisfied so 1 should be minused
+        continue; //can't be used -- jump
       }
-      //cout<<"basecost "<<g_operators[actions[counter->action_id].operator_no].get_cost()<<endl;
+      //counter is action --- the cost should inherit from the conj_id
       counter->cost = level;
-      if (!counter->effect->is_achieved()) {
-        counter->effect->check_and_update(level + 1, NULL);
+
+      //if(level == 0) counter->cost = level;(init to be g)  //otherwise use the accummulated cost 
+      //else counter->cost = conjunctions[conj_id].cost
+
+      if (!counter->effect->is_achieved()) {//cost <0 ---> has not been explored 
+        //directly add the base cost here
+        
+        //line 2:  if( counter->cost + actions[counter->action_id].base_cost+g > b) return DEAD_END;
+        //if not early termination then continue -> jump the dead end???
+        //counter->effect->check_and_update(counter->cost + actions[counter->action_id].base_cost, NULL);//add the cost , this will store the result
+        
+        counter->effect->check_and_update(level+1,NULL);
+        //update the conjunction, the cost are stored in the conjunction
         exploration.push_back(counter->effect->id);//push in new counter
         if (m_goal_id == counter->effect->id) {
-          goal_level = level + 1;
+          goal_level = level + 1; // goal is achieved so it could be returned
+
+          //stop here; goal_level = counter->cost + actions[counter->action_id].base_cost;
+          
           if (early_termination) {
             return goal_level;
           }
@@ -1325,7 +1342,7 @@ int HCHeuristic::simple_traversal_wrapper(
   return conjunctions[m_goal_id].is_achieved() ? goal_level : DEAD_END; // goal level means the depth of goal 
   // here need to modified
 }
-
+/******modified******/
 int HCHeuristic::simple_traversal(const State &state)
 {
   vector<unsigned> exploration;

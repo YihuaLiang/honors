@@ -159,7 +159,7 @@ HeuristicRefiner::RefinementResult UCRefinementCritPaths::refine(
                 }
             }
             else if (!uc->update_c(m_conflicts)) {
-                successful = FAILED;
+                successful = FAILED;//update the conflicts
             }
         }
 #ifndef NDEBUG
@@ -173,7 +173,7 @@ HeuristicRefiner::RefinementResult UCRefinementCritPaths::refine(
     //std::cout << ">>>>>>>>>>>REFINEMENT_END" << std::endl;
     return successful;
 }
-
+//it will return true and id when success
 std::pair<bool, unsigned> UCRefinementCritPaths::compute_conflict(
     const Fluent &subgoal, int threshold, const State &state)
 {
@@ -203,7 +203,7 @@ std::pair<bool, unsigned> UCRefinementCritPaths::compute_conflict(
     m_required_by.resize(m_required_by.size() + 1);
     m_conflicts.resize(m_conflicts.size() + 1);
     m_pruned.push_back(false);
-    if (!uc->extract_mutex(subgoal, m_conflicts[conflict_id])) {
+    if (!uc->extract_mutex(subgoal, m_conflicts[conflict_id])) {//no mutex
         unsigned cid = (*m_selector)(this, subgoal, threshold);
         if (cid == ConflictSelector::INVALID) {
             return make_pair(false, -1);
@@ -211,7 +211,7 @@ std::pair<bool, unsigned> UCRefinementCritPaths::compute_conflict(
         if (!uc->get_conjunction(cid).is_achieved() ||
             uc->get_conjunction(cid).cost > threshold) {
             return make_pair(true, cid);
-        }
+        }//hc > n or can not be acheved
 
         m_conflicts[conflict_id].merge(uc->get_fluent(cid));
 
@@ -221,29 +221,33 @@ std::pair<bool, unsigned> UCRefinementCritPaths::compute_conflict(
             Fact f_del;
             if (fluent_op::intersection_not_empty(subgoal, action.del_effect, f_del)) {
                 m_conflicts[conflict_id].merge(f_del);
-                continue;
+                continue;//check every action --> make sure del(A) intersect subgoal is empty
             }
 
             //std::cout <<
             //    std::string(START - threshold + 1, ' ') << g_operators[action.operator_no].get_name() << std::endl;
             Fluent regr;
             regr.insert(action.precondition.begin(), action.precondition.end());
-            fluent_op::set_minus(subgoal, action.add_effect, regr);
-            assert(action.base_cost > 0);
-            pair<bool, unsigned> child_confl =
+            fluent_op::set_minus(subgoal, action.add_effect, regr);//get the regr
+            //
+            assert(action.base_cost > 0);//if base cost = 0 then don't do it?????
+            //when the cost really means cost -- it should do it 
+
+            pair<bool, unsigned> child_confl =//recurssive call
+                //it should be base_cost, no modification needed
                 compute_conflict(regr, threshold - action.base_cost, state);
             regr.clear();
             if (child_confl.second == (unsigned) -1) {
                 //_plan.push_back(action.operator_no);
                 m_plan.push_back(&g_operators[action.operator_no]);
-                return child_confl;
+                return child_confl;//subset or invalid
             }
-            if (child_confl.first) {
+            if (child_confl.first) {//true --- then should be valid
                 fluent_op::set_minus(uc->get_fluent(child_confl.second),
                                      action.precondition, regr);
-            } else {
-                assert(child_confl.second < m_conflicts.size());
-                m_requires[conflict_id].insert(child_confl.second);
+            } else {//the last return case
+                assert(child_confl.second < m_conflicts.size());//???
+                m_requires[conflict_id].insert(child_confl.second);//
                 m_required_by[child_confl.second].insert(conflict_id);
                 fluent_op::set_minus(m_conflicts[child_confl.second].get_fluent(),
                                      action.precondition, regr);
