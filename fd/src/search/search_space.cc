@@ -66,12 +66,12 @@ void SearchNode::open(int h, const SearchNode &parent_node,
 
 void SearchNode::reopen(const SearchNode &parent_node,
                         const Operator *parent_op) {
-    assert(info.status == SearchNodeInfo::OPEN ||
+    assert(info.status == SearchNodeInfo::OPEN || // not new
            info.status == SearchNodeInfo::CLOSED);
 
     // The latter possibility is for inconsistent heuristics, which
     // may require reopening closed nodes.
-    info.status = SearchNodeInfo::OPEN;
+    info.status = SearchNodeInfo::OPEN;//set status
     info.g = parent_node.info.g + get_adjusted_action_cost(*parent_op, cost_type);
     info.parent_state_id = parent_node.get_state_id();
     info.creating_operator = parent_op;
@@ -176,7 +176,7 @@ SearchNodeInfo &SearchSpace::lookup(const State &state) {
 }
 
 SearchNode SearchSpace::get_node(const State &state) {
-    return SearchNode(state.get_id(), lookup(state), cost_type);
+    return SearchNode(state.get_id(), lookup(state), cost_type);//not actually found the stored node 
 }
 
 void SearchSpace::trace_path(const State &goal_state,

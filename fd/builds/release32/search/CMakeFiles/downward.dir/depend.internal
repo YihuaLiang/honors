@@ -115,13 +115,20 @@ search/CMakeFiles/downward.dir/additive_heuristic.cc.o
  /home/admin-u6487831/honors/fd/src/search/operator_cost.h
  /home/admin-u6487831/honors/fd/src/search/option_parser.h
  /home/admin-u6487831/honors/fd/src/search/option_parser_util.h
+ /home/admin-u6487831/honors/fd/src/search/per_state_information.h
  /home/admin-u6487831/honors/fd/src/search/plugin.h
  /home/admin-u6487831/honors/fd/src/search/priority_queue.h
  /home/admin-u6487831/honors/fd/src/search/relaxation_heuristic.h
  /home/admin-u6487831/honors/fd/src/search/scalar_evaluator.h
  /home/admin-u6487831/honors/fd/src/search/scc.h
+ /home/admin-u6487831/honors/fd/src/search/search_node_info.h
+ /home/admin-u6487831/honors/fd/src/search/search_progress.h
+ /home/admin-u6487831/honors/fd/src/search/search_space.h
+ /home/admin-u6487831/honors/fd/src/search/segmented_vector.h
  /home/admin-u6487831/honors/fd/src/search/state.h
  /home/admin-u6487831/honors/fd/src/search/state_id.h
+ /home/admin-u6487831/honors/fd/src/search/state_registry.h
+ /home/admin-u6487831/honors/fd/src/search/timer.h
  /home/admin-u6487831/honors/fd/src/search/utilities.h
 search/CMakeFiles/downward.dir/axioms.cc.o
  /home/admin-u6487831/honors/fd/src/search/axioms.cc
@@ -271,14 +278,21 @@ search/CMakeFiles/downward.dir/ff_heuristic.cc.o
  /home/admin-u6487831/honors/fd/src/search/operator_cost.h
  /home/admin-u6487831/honors/fd/src/search/option_parser.h
  /home/admin-u6487831/honors/fd/src/search/option_parser_util.h
+ /home/admin-u6487831/honors/fd/src/search/per_state_information.h
  /home/admin-u6487831/honors/fd/src/search/plugin.h
  /home/admin-u6487831/honors/fd/src/search/priority_queue.h
  /home/admin-u6487831/honors/fd/src/search/relaxation_heuristic.h
  /home/admin-u6487831/honors/fd/src/search/rng.h
  /home/admin-u6487831/honors/fd/src/search/scalar_evaluator.h
  /home/admin-u6487831/honors/fd/src/search/scc.h
+ /home/admin-u6487831/honors/fd/src/search/search_node_info.h
+ /home/admin-u6487831/honors/fd/src/search/search_progress.h
+ /home/admin-u6487831/honors/fd/src/search/search_space.h
+ /home/admin-u6487831/honors/fd/src/search/segmented_vector.h
  /home/admin-u6487831/honors/fd/src/search/state.h
  /home/admin-u6487831/honors/fd/src/search/state_id.h
+ /home/admin-u6487831/honors/fd/src/search/state_registry.h
+ /home/admin-u6487831/honors/fd/src/search/timer.h
  /home/admin-u6487831/honors/fd/src/search/utilities.h
 search/CMakeFiles/downward.dir/globals.cc.o
  /home/admin-u6487831/honors/fd/src/search/axioms.h
@@ -292,8 +306,12 @@ search/CMakeFiles/downward.dir/globals.cc.o
  /home/admin-u6487831/honors/fd/src/search/legacy_causal_graph.h
  /home/admin-u6487831/honors/fd/src/search/operator.h
  /home/admin-u6487831/honors/fd/src/search/operator_cost.h
+ /home/admin-u6487831/honors/fd/src/search/per_state_information.h
  /home/admin-u6487831/honors/fd/src/search/rng.h
  /home/admin-u6487831/honors/fd/src/search/scalar_evaluator.h
+ /home/admin-u6487831/honors/fd/src/search/search_node_info.h
+ /home/admin-u6487831/honors/fd/src/search/search_progress.h
+ /home/admin-u6487831/honors/fd/src/search/search_space.h
  /home/admin-u6487831/honors/fd/src/search/segmented_vector.h
  /home/admin-u6487831/honors/fd/src/search/state.h
  /home/admin-u6487831/honors/fd/src/search/state_id.h
@@ -422,13 +440,19 @@ search/CMakeFiles/downward.dir/hc/hc_heuristic.cc.o
  /home/admin-u6487831/honors/fd/src/search/operator_cost.h
  /home/admin-u6487831/honors/fd/src/search/option_parser.h
  /home/admin-u6487831/honors/fd/src/search/option_parser_util.h
+ /home/admin-u6487831/honors/fd/src/search/per_state_information.h
  /home/admin-u6487831/honors/fd/src/search/plugin.h
  /home/admin-u6487831/honors/fd/src/search/priority_queue.h
  /home/admin-u6487831/honors/fd/src/search/scalar_evaluator.h
  /home/admin-u6487831/honors/fd/src/search/scc.h
+ /home/admin-u6487831/honors/fd/src/search/search_node_info.h
+ /home/admin-u6487831/honors/fd/src/search/search_progress.h
+ /home/admin-u6487831/honors/fd/src/search/search_space.h
  /home/admin-u6487831/honors/fd/src/search/segmented_vector.h
  /home/admin-u6487831/honors/fd/src/search/state.h
  /home/admin-u6487831/honors/fd/src/search/state_id.h
+ /home/admin-u6487831/honors/fd/src/search/state_registry.h
+ /home/admin-u6487831/honors/fd/src/search/timer.h
  /home/admin-u6487831/honors/fd/src/search/utilities.h
 search/CMakeFiles/downward.dir/hc/rn_map.cc.o
  /home/admin-u6487831/honors/fd/src/search/evaluator.h
@@ -543,17 +567,23 @@ search/CMakeFiles/downward.dir/hc/rn_map.cc.o
  /home/admin-u6487831/honors/fd/src/search/merge_and_shrink/linear_merge_strategy.h
  /home/admin-u6487831/honors/fd/src/search/merge_and_shrink/shrink_strategy.h
  /home/admin-u6487831/honors/fd/src/search/merge_and_shrink/variable_order_finder.h
+ /home/admin-u6487831/honors/fd/src/search/operator.h
  /home/admin-u6487831/honors/fd/src/search/operator_cost.h
  /home/admin-u6487831/honors/fd/src/search/option_parser.h
  /home/admin-u6487831/honors/fd/src/search/option_parser_util.h
+ /home/admin-u6487831/honors/fd/src/search/per_state_information.h
  /home/admin-u6487831/honors/fd/src/search/plugin.h
  /home/admin-u6487831/honors/fd/src/search/priority_queue.h
  /home/admin-u6487831/honors/fd/src/search/scalar_evaluator.h
  /home/admin-u6487831/honors/fd/src/search/scc.h
+ /home/admin-u6487831/honors/fd/src/search/search_node_info.h
+ /home/admin-u6487831/honors/fd/src/search/search_progress.h
+ /home/admin-u6487831/honors/fd/src/search/search_space.h
  /home/admin-u6487831/honors/fd/src/search/segmented_vector.h
  /home/admin-u6487831/honors/fd/src/search/state.h
  /home/admin-u6487831/honors/fd/src/search/state_id.h
  /home/admin-u6487831/honors/fd/src/search/state_registry.h
+ /home/admin-u6487831/honors/fd/src/search/timer.h
  /home/admin-u6487831/honors/fd/src/search/utilities.h
 search/CMakeFiles/downward.dir/hc/uc_clause_extraction.cc.o
  /home/admin-u6487831/honors/fd/src/search/evaluator.h
@@ -666,16 +696,23 @@ search/CMakeFiles/downward.dir/hc/uc_clause_extraction.cc.o
  /home/admin-u6487831/honors/fd/src/search/merge_and_shrink/linear_merge_strategy.h
  /home/admin-u6487831/honors/fd/src/search/merge_and_shrink/shrink_strategy.h
  /home/admin-u6487831/honors/fd/src/search/merge_and_shrink/variable_order_finder.h
+ /home/admin-u6487831/honors/fd/src/search/operator.h
  /home/admin-u6487831/honors/fd/src/search/operator_cost.h
  /home/admin-u6487831/honors/fd/src/search/option_parser.h
  /home/admin-u6487831/honors/fd/src/search/option_parser_util.h
+ /home/admin-u6487831/honors/fd/src/search/per_state_information.h
  /home/admin-u6487831/honors/fd/src/search/plugin.h
  /home/admin-u6487831/honors/fd/src/search/priority_queue.h
  /home/admin-u6487831/honors/fd/src/search/scalar_evaluator.h
  /home/admin-u6487831/honors/fd/src/search/scc.h
+ /home/admin-u6487831/honors/fd/src/search/search_node_info.h
+ /home/admin-u6487831/honors/fd/src/search/search_progress.h
+ /home/admin-u6487831/honors/fd/src/search/search_space.h
  /home/admin-u6487831/honors/fd/src/search/segmented_vector.h
  /home/admin-u6487831/honors/fd/src/search/state.h
  /home/admin-u6487831/honors/fd/src/search/state_id.h
+ /home/admin-u6487831/honors/fd/src/search/state_registry.h
+ /home/admin-u6487831/honors/fd/src/search/timer.h
  /home/admin-u6487831/honors/fd/src/search/utilities.h
 search/CMakeFiles/downward.dir/hc/uc_heuristic.cc.o
  /home/admin-u6487831/honors/fd/src/search/evaluator.h
@@ -789,17 +826,23 @@ search/CMakeFiles/downward.dir/hc/uc_heuristic.cc.o
  /home/admin-u6487831/honors/fd/src/search/merge_and_shrink/linear_merge_strategy.h
  /home/admin-u6487831/honors/fd/src/search/merge_and_shrink/shrink_strategy.h
  /home/admin-u6487831/honors/fd/src/search/merge_and_shrink/variable_order_finder.h
+ /home/admin-u6487831/honors/fd/src/search/operator.h
  /home/admin-u6487831/honors/fd/src/search/operator_cost.h
  /home/admin-u6487831/honors/fd/src/search/option_parser.h
  /home/admin-u6487831/honors/fd/src/search/option_parser_util.h
+ /home/admin-u6487831/honors/fd/src/search/per_state_information.h
  /home/admin-u6487831/honors/fd/src/search/plugin.h
  /home/admin-u6487831/honors/fd/src/search/priority_queue.h
  /home/admin-u6487831/honors/fd/src/search/scalar_evaluator.h
  /home/admin-u6487831/honors/fd/src/search/scc.h
+ /home/admin-u6487831/honors/fd/src/search/search_node_info.h
+ /home/admin-u6487831/honors/fd/src/search/search_progress.h
+ /home/admin-u6487831/honors/fd/src/search/search_space.h
  /home/admin-u6487831/honors/fd/src/search/segmented_vector.h
  /home/admin-u6487831/honors/fd/src/search/state.h
  /home/admin-u6487831/honors/fd/src/search/state_id.h
  /home/admin-u6487831/honors/fd/src/search/state_registry.h
+ /home/admin-u6487831/honors/fd/src/search/timer.h
  /home/admin-u6487831/honors/fd/src/search/utilities.h
 search/CMakeFiles/downward.dir/hc/uc_refinement.cc.o
  /home/admin-u6487831/honors/fd/src/search/evaluator.h
@@ -903,6 +946,7 @@ search/CMakeFiles/downward.dir/hc/uc_refinement.cc.o
  /home/admin-u6487831/honors/fd/src/search/ext/boost/type_traits/remove_reference.hpp
  /home/admin-u6487831/honors/fd/src/search/ext/tree.hh
  /home/admin-u6487831/honors/fd/src/search/ext/tree_util.hh
+ /home/admin-u6487831/honors/fd/src/search/globals.h
  /home/admin-u6487831/honors/fd/src/search/hc/hc_heuristic.h
  /home/admin-u6487831/honors/fd/src/search/hc/uc_clause_extraction.h
  /home/admin-u6487831/honors/fd/src/search/hc/uc_heuristic.h
@@ -914,15 +958,22 @@ search/CMakeFiles/downward.dir/hc/uc_refinement.cc.o
  /home/admin-u6487831/honors/fd/src/search/merge_and_shrink/linear_merge_strategy.h
  /home/admin-u6487831/honors/fd/src/search/merge_and_shrink/shrink_strategy.h
  /home/admin-u6487831/honors/fd/src/search/merge_and_shrink/variable_order_finder.h
+ /home/admin-u6487831/honors/fd/src/search/operator.h
  /home/admin-u6487831/honors/fd/src/search/operator_cost.h
  /home/admin-u6487831/honors/fd/src/search/option_parser.h
  /home/admin-u6487831/honors/fd/src/search/option_parser_util.h
+ /home/admin-u6487831/honors/fd/src/search/per_state_information.h
  /home/admin-u6487831/honors/fd/src/search/priority_queue.h
  /home/admin-u6487831/honors/fd/src/search/scalar_evaluator.h
  /home/admin-u6487831/honors/fd/src/search/scc.h
+ /home/admin-u6487831/honors/fd/src/search/search_node_info.h
+ /home/admin-u6487831/honors/fd/src/search/search_progress.h
+ /home/admin-u6487831/honors/fd/src/search/search_space.h
  /home/admin-u6487831/honors/fd/src/search/segmented_vector.h
  /home/admin-u6487831/honors/fd/src/search/state.h
  /home/admin-u6487831/honors/fd/src/search/state_id.h
+ /home/admin-u6487831/honors/fd/src/search/state_registry.h
+ /home/admin-u6487831/honors/fd/src/search/timer.h
  /home/admin-u6487831/honors/fd/src/search/utilities.h
 search/CMakeFiles/downward.dir/hc/uc_refinement_critical_paths.cc.o
  /home/admin-u6487831/honors/fd/src/search/evaluator.h
@@ -1044,13 +1095,19 @@ search/CMakeFiles/downward.dir/hc/uc_refinement_critical_paths.cc.o
  /home/admin-u6487831/honors/fd/src/search/operator_cost.h
  /home/admin-u6487831/honors/fd/src/search/option_parser.h
  /home/admin-u6487831/honors/fd/src/search/option_parser_util.h
+ /home/admin-u6487831/honors/fd/src/search/per_state_information.h
  /home/admin-u6487831/honors/fd/src/search/plugin.h
  /home/admin-u6487831/honors/fd/src/search/priority_queue.h
  /home/admin-u6487831/honors/fd/src/search/scalar_evaluator.h
  /home/admin-u6487831/honors/fd/src/search/scc.h
+ /home/admin-u6487831/honors/fd/src/search/search_node_info.h
+ /home/admin-u6487831/honors/fd/src/search/search_progress.h
+ /home/admin-u6487831/honors/fd/src/search/search_space.h
  /home/admin-u6487831/honors/fd/src/search/segmented_vector.h
  /home/admin-u6487831/honors/fd/src/search/state.h
  /home/admin-u6487831/honors/fd/src/search/state_id.h
+ /home/admin-u6487831/honors/fd/src/search/state_registry.h
+ /home/admin-u6487831/honors/fd/src/search/timer.h
  /home/admin-u6487831/honors/fd/src/search/utilities.h
 search/CMakeFiles/downward.dir/hc/uc_refinement_on_rn.cc.o
  /home/admin-u6487831/honors/fd/src/search/evaluator.h
@@ -1169,17 +1226,23 @@ search/CMakeFiles/downward.dir/hc/uc_refinement_on_rn.cc.o
  /home/admin-u6487831/honors/fd/src/search/merge_and_shrink/linear_merge_strategy.h
  /home/admin-u6487831/honors/fd/src/search/merge_and_shrink/shrink_strategy.h
  /home/admin-u6487831/honors/fd/src/search/merge_and_shrink/variable_order_finder.h
+ /home/admin-u6487831/honors/fd/src/search/operator.h
  /home/admin-u6487831/honors/fd/src/search/operator_cost.h
  /home/admin-u6487831/honors/fd/src/search/option_parser.h
  /home/admin-u6487831/honors/fd/src/search/option_parser_util.h
+ /home/admin-u6487831/honors/fd/src/search/per_state_information.h
  /home/admin-u6487831/honors/fd/src/search/plugin.h
  /home/admin-u6487831/honors/fd/src/search/priority_queue.h
  /home/admin-u6487831/honors/fd/src/search/scalar_evaluator.h
  /home/admin-u6487831/honors/fd/src/search/scc.h
+ /home/admin-u6487831/honors/fd/src/search/search_node_info.h
+ /home/admin-u6487831/honors/fd/src/search/search_progress.h
+ /home/admin-u6487831/honors/fd/src/search/search_space.h
  /home/admin-u6487831/honors/fd/src/search/segmented_vector.h
  /home/admin-u6487831/honors/fd/src/search/state.h
  /home/admin-u6487831/honors/fd/src/search/state_id.h
  /home/admin-u6487831/honors/fd/src/search/state_registry.h
+ /home/admin-u6487831/honors/fd/src/search/timer.h
  /home/admin-u6487831/honors/fd/src/search/utilities.h
 search/CMakeFiles/downward.dir/hcff/adr_heuristic_refiner.cc.o
  /home/admin-u6487831/honors/fd/src/search/evaluator.h
@@ -1302,13 +1365,19 @@ search/CMakeFiles/downward.dir/hcff/adr_heuristic_refiner.cc.o
  /home/admin-u6487831/honors/fd/src/search/operator_cost.h
  /home/admin-u6487831/honors/fd/src/search/option_parser.h
  /home/admin-u6487831/honors/fd/src/search/option_parser_util.h
+ /home/admin-u6487831/honors/fd/src/search/per_state_information.h
  /home/admin-u6487831/honors/fd/src/search/plugin.h
  /home/admin-u6487831/honors/fd/src/search/priority_queue.h
  /home/admin-u6487831/honors/fd/src/search/rng.h
  /home/admin-u6487831/honors/fd/src/search/scalar_evaluator.h
  /home/admin-u6487831/honors/fd/src/search/scc.h
+ /home/admin-u6487831/honors/fd/src/search/search_node_info.h
+ /home/admin-u6487831/honors/fd/src/search/search_progress.h
+ /home/admin-u6487831/honors/fd/src/search/search_space.h
+ /home/admin-u6487831/honors/fd/src/search/segmented_vector.h
  /home/admin-u6487831/honors/fd/src/search/state.h
  /home/admin-u6487831/honors/fd/src/search/state_id.h
+ /home/admin-u6487831/honors/fd/src/search/state_registry.h
  /home/admin-u6487831/honors/fd/src/search/successor_generator.h
  /home/admin-u6487831/honors/fd/src/search/timer.h
  /home/admin-u6487831/honors/fd/src/search/utilities.h
@@ -1430,13 +1499,19 @@ search/CMakeFiles/downward.dir/hcff/augmented_delete_relaxation.cc.o
  /home/admin-u6487831/honors/fd/src/search/operator_cost.h
  /home/admin-u6487831/honors/fd/src/search/option_parser.h
  /home/admin-u6487831/honors/fd/src/search/option_parser_util.h
+ /home/admin-u6487831/honors/fd/src/search/per_state_information.h
  /home/admin-u6487831/honors/fd/src/search/plugin.h
  /home/admin-u6487831/honors/fd/src/search/priority_queue.h
  /home/admin-u6487831/honors/fd/src/search/rng.h
  /home/admin-u6487831/honors/fd/src/search/scalar_evaluator.h
  /home/admin-u6487831/honors/fd/src/search/scc.h
+ /home/admin-u6487831/honors/fd/src/search/search_node_info.h
+ /home/admin-u6487831/honors/fd/src/search/search_progress.h
+ /home/admin-u6487831/honors/fd/src/search/search_space.h
+ /home/admin-u6487831/honors/fd/src/search/segmented_vector.h
  /home/admin-u6487831/honors/fd/src/search/state.h
  /home/admin-u6487831/honors/fd/src/search/state_id.h
+ /home/admin-u6487831/honors/fd/src/search/state_registry.h
  /home/admin-u6487831/honors/fd/src/search/timer.h
  /home/admin-u6487831/honors/fd/src/search/utilities.h
 search/CMakeFiles/downward.dir/hcff/fluent_set_utilities.cc.o
@@ -1572,10 +1647,17 @@ search/CMakeFiles/downward.dir/heuristic.cc.o
  /home/admin-u6487831/honors/fd/src/search/operator_cost.h
  /home/admin-u6487831/honors/fd/src/search/option_parser.h
  /home/admin-u6487831/honors/fd/src/search/option_parser_util.h
+ /home/admin-u6487831/honors/fd/src/search/per_state_information.h
  /home/admin-u6487831/honors/fd/src/search/scalar_evaluator.h
  /home/admin-u6487831/honors/fd/src/search/scc.h
+ /home/admin-u6487831/honors/fd/src/search/search_node_info.h
+ /home/admin-u6487831/honors/fd/src/search/search_progress.h
+ /home/admin-u6487831/honors/fd/src/search/search_space.h
+ /home/admin-u6487831/honors/fd/src/search/segmented_vector.h
  /home/admin-u6487831/honors/fd/src/search/state.h
  /home/admin-u6487831/honors/fd/src/search/state_id.h
+ /home/admin-u6487831/honors/fd/src/search/state_registry.h
+ /home/admin-u6487831/honors/fd/src/search/timer.h
  /home/admin-u6487831/honors/fd/src/search/utilities.h
 search/CMakeFiles/downward.dir/heuristic_refiner.cc.o
  /home/admin-u6487831/honors/fd/src/search/evaluator.h
@@ -1679,6 +1761,7 @@ search/CMakeFiles/downward.dir/heuristic_refiner.cc.o
  /home/admin-u6487831/honors/fd/src/search/ext/boost/type_traits/remove_reference.hpp
  /home/admin-u6487831/honors/fd/src/search/ext/tree.hh
  /home/admin-u6487831/honors/fd/src/search/ext/tree_util.hh
+ /home/admin-u6487831/honors/fd/src/search/globals.h
  /home/admin-u6487831/honors/fd/src/search/heuristic.h
  /home/admin-u6487831/honors/fd/src/search/heuristic_refiner.cc
  /home/admin-u6487831/honors/fd/src/search/heuristic_refiner.h
@@ -1686,14 +1769,22 @@ search/CMakeFiles/downward.dir/heuristic_refiner.cc.o
  /home/admin-u6487831/honors/fd/src/search/merge_and_shrink/linear_merge_strategy.h
  /home/admin-u6487831/honors/fd/src/search/merge_and_shrink/shrink_strategy.h
  /home/admin-u6487831/honors/fd/src/search/merge_and_shrink/variable_order_finder.h
+ /home/admin-u6487831/honors/fd/src/search/operator.h
  /home/admin-u6487831/honors/fd/src/search/operator_cost.h
  /home/admin-u6487831/honors/fd/src/search/option_parser.h
  /home/admin-u6487831/honors/fd/src/search/option_parser_util.h
+ /home/admin-u6487831/honors/fd/src/search/per_state_information.h
  /home/admin-u6487831/honors/fd/src/search/plugin.h
  /home/admin-u6487831/honors/fd/src/search/scalar_evaluator.h
  /home/admin-u6487831/honors/fd/src/search/scc.h
+ /home/admin-u6487831/honors/fd/src/search/search_node_info.h
+ /home/admin-u6487831/honors/fd/src/search/search_progress.h
+ /home/admin-u6487831/honors/fd/src/search/search_space.h
+ /home/admin-u6487831/honors/fd/src/search/segmented_vector.h
  /home/admin-u6487831/honors/fd/src/search/state.h
  /home/admin-u6487831/honors/fd/src/search/state_id.h
+ /home/admin-u6487831/honors/fd/src/search/state_registry.h
+ /home/admin-u6487831/honors/fd/src/search/timer.h
  /home/admin-u6487831/honors/fd/src/search/utilities.h
 search/CMakeFiles/downward.dir/hm_heuristic.cc.o
  /home/admin-u6487831/honors/fd/src/search/evaluator.h
@@ -1809,11 +1900,18 @@ search/CMakeFiles/downward.dir/hm_heuristic.cc.o
  /home/admin-u6487831/honors/fd/src/search/operator_cost.h
  /home/admin-u6487831/honors/fd/src/search/option_parser.h
  /home/admin-u6487831/honors/fd/src/search/option_parser_util.h
+ /home/admin-u6487831/honors/fd/src/search/per_state_information.h
  /home/admin-u6487831/honors/fd/src/search/plugin.h
  /home/admin-u6487831/honors/fd/src/search/scalar_evaluator.h
  /home/admin-u6487831/honors/fd/src/search/scc.h
+ /home/admin-u6487831/honors/fd/src/search/search_node_info.h
+ /home/admin-u6487831/honors/fd/src/search/search_progress.h
+ /home/admin-u6487831/honors/fd/src/search/search_space.h
+ /home/admin-u6487831/honors/fd/src/search/segmented_vector.h
  /home/admin-u6487831/honors/fd/src/search/state.h
  /home/admin-u6487831/honors/fd/src/search/state_id.h
+ /home/admin-u6487831/honors/fd/src/search/state_registry.h
+ /home/admin-u6487831/honors/fd/src/search/timer.h
  /home/admin-u6487831/honors/fd/src/search/utilities.h
 search/CMakeFiles/downward.dir/int_packer.cc.o
  /home/admin-u6487831/honors/fd/src/search/int_packer.cc
@@ -1936,12 +2034,19 @@ search/CMakeFiles/downward.dir/lm_cut_heuristic.cc.o
  /home/admin-u6487831/honors/fd/src/search/operator_cost.h
  /home/admin-u6487831/honors/fd/src/search/option_parser.h
  /home/admin-u6487831/honors/fd/src/search/option_parser_util.h
+ /home/admin-u6487831/honors/fd/src/search/per_state_information.h
  /home/admin-u6487831/honors/fd/src/search/plugin.h
  /home/admin-u6487831/honors/fd/src/search/priority_queue.h
  /home/admin-u6487831/honors/fd/src/search/scalar_evaluator.h
  /home/admin-u6487831/honors/fd/src/search/scc.h
+ /home/admin-u6487831/honors/fd/src/search/search_node_info.h
+ /home/admin-u6487831/honors/fd/src/search/search_progress.h
+ /home/admin-u6487831/honors/fd/src/search/search_space.h
+ /home/admin-u6487831/honors/fd/src/search/segmented_vector.h
  /home/admin-u6487831/honors/fd/src/search/state.h
  /home/admin-u6487831/honors/fd/src/search/state_id.h
+ /home/admin-u6487831/honors/fd/src/search/state_registry.h
+ /home/admin-u6487831/honors/fd/src/search/timer.h
  /home/admin-u6487831/honors/fd/src/search/utilities.h
 search/CMakeFiles/downward.dir/max_heuristic.cc.o
  /home/admin-u6487831/honors/fd/src/search/evaluator.h
@@ -2057,13 +2162,20 @@ search/CMakeFiles/downward.dir/max_heuristic.cc.o
  /home/admin-u6487831/honors/fd/src/search/operator_cost.h
  /home/admin-u6487831/honors/fd/src/search/option_parser.h
  /home/admin-u6487831/honors/fd/src/search/option_parser_util.h
+ /home/admin-u6487831/honors/fd/src/search/per_state_information.h
  /home/admin-u6487831/honors/fd/src/search/plugin.h
  /home/admin-u6487831/honors/fd/src/search/priority_queue.h
  /home/admin-u6487831/honors/fd/src/search/relaxation_heuristic.h
  /home/admin-u6487831/honors/fd/src/search/scalar_evaluator.h
  /home/admin-u6487831/honors/fd/src/search/scc.h
+ /home/admin-u6487831/honors/fd/src/search/search_node_info.h
+ /home/admin-u6487831/honors/fd/src/search/search_progress.h
+ /home/admin-u6487831/honors/fd/src/search/search_space.h
+ /home/admin-u6487831/honors/fd/src/search/segmented_vector.h
  /home/admin-u6487831/honors/fd/src/search/state.h
  /home/admin-u6487831/honors/fd/src/search/state_id.h
+ /home/admin-u6487831/honors/fd/src/search/state_registry.h
+ /home/admin-u6487831/honors/fd/src/search/timer.h
  /home/admin-u6487831/honors/fd/src/search/utilities.h
 search/CMakeFiles/downward.dir/null_pruning_method.cc.o
  /home/admin-u6487831/honors/fd/src/search/evaluator.h
@@ -2167,19 +2279,31 @@ search/CMakeFiles/downward.dir/null_pruning_method.cc.o
  /home/admin-u6487831/honors/fd/src/search/ext/boost/type_traits/remove_reference.hpp
  /home/admin-u6487831/honors/fd/src/search/ext/tree.hh
  /home/admin-u6487831/honors/fd/src/search/ext/tree_util.hh
+ /home/admin-u6487831/honors/fd/src/search/globals.h
  /home/admin-u6487831/honors/fd/src/search/heuristic.h
+ /home/admin-u6487831/honors/fd/src/search/int_packer.h
  /home/admin-u6487831/honors/fd/src/search/merge_and_shrink/linear_merge_strategy.h
  /home/admin-u6487831/honors/fd/src/search/merge_and_shrink/shrink_strategy.h
  /home/admin-u6487831/honors/fd/src/search/merge_and_shrink/variable_order_finder.h
  /home/admin-u6487831/honors/fd/src/search/null_pruning_method.cc
  /home/admin-u6487831/honors/fd/src/search/null_pruning_method.h
+ /home/admin-u6487831/honors/fd/src/search/operator.h
  /home/admin-u6487831/honors/fd/src/search/operator_cost.h
  /home/admin-u6487831/honors/fd/src/search/option_parser.h
  /home/admin-u6487831/honors/fd/src/search/option_parser_util.h
+ /home/admin-u6487831/honors/fd/src/search/per_state_information.h
  /home/admin-u6487831/honors/fd/src/search/plugin.h
  /home/admin-u6487831/honors/fd/src/search/pruning_method.h
  /home/admin-u6487831/honors/fd/src/search/scalar_evaluator.h
  /home/admin-u6487831/honors/fd/src/search/scc.h
+ /home/admin-u6487831/honors/fd/src/search/search_node_info.h
+ /home/admin-u6487831/honors/fd/src/search/search_progress.h
+ /home/admin-u6487831/honors/fd/src/search/search_space.h
+ /home/admin-u6487831/honors/fd/src/search/segmented_vector.h
+ /home/admin-u6487831/honors/fd/src/search/state.h
+ /home/admin-u6487831/honors/fd/src/search/state_id.h
+ /home/admin-u6487831/honors/fd/src/search/state_registry.h
+ /home/admin-u6487831/honors/fd/src/search/timer.h
  /home/admin-u6487831/honors/fd/src/search/utilities.h
 search/CMakeFiles/downward.dir/open_sets/dfs_open_set.cc.o
  /home/admin-u6487831/honors/fd/src/search/evaluator.h
@@ -2302,11 +2426,13 @@ search/CMakeFiles/downward.dir/open_sets/dfs_open_set.cc.o
  /home/admin-u6487831/honors/fd/src/search/scalar_evaluator.h
  /home/admin-u6487831/honors/fd/src/search/scc.h
  /home/admin-u6487831/honors/fd/src/search/search_node_info.h
+ /home/admin-u6487831/honors/fd/src/search/search_progress.h
  /home/admin-u6487831/honors/fd/src/search/search_space.h
  /home/admin-u6487831/honors/fd/src/search/segmented_vector.h
  /home/admin-u6487831/honors/fd/src/search/state.h
  /home/admin-u6487831/honors/fd/src/search/state_id.h
  /home/admin-u6487831/honors/fd/src/search/state_registry.h
+ /home/admin-u6487831/honors/fd/src/search/timer.h
  /home/admin-u6487831/honors/fd/src/search/utilities.h
 search/CMakeFiles/downward.dir/open_sets/open_set.cc.o
  /home/admin-u6487831/honors/fd/src/search/open_sets/open_set.cc
@@ -2432,11 +2558,13 @@ search/CMakeFiles/downward.dir/open_sets/v_open_set.cc.o
  /home/admin-u6487831/honors/fd/src/search/scalar_evaluator.h
  /home/admin-u6487831/honors/fd/src/search/scc.h
  /home/admin-u6487831/honors/fd/src/search/search_node_info.h
+ /home/admin-u6487831/honors/fd/src/search/search_progress.h
  /home/admin-u6487831/honors/fd/src/search/search_space.h
  /home/admin-u6487831/honors/fd/src/search/segmented_vector.h
  /home/admin-u6487831/honors/fd/src/search/state.h
  /home/admin-u6487831/honors/fd/src/search/state_id.h
  /home/admin-u6487831/honors/fd/src/search/state_registry.h
+ /home/admin-u6487831/honors/fd/src/search/timer.h
  /home/admin-u6487831/honors/fd/src/search/utilities.h
 search/CMakeFiles/downward.dir/operator.cc.o
  /home/admin-u6487831/honors/fd/src/search/globals.h
@@ -2558,10 +2686,17 @@ search/CMakeFiles/downward.dir/operator_cost.cc.o
  /home/admin-u6487831/honors/fd/src/search/operator_cost.h
  /home/admin-u6487831/honors/fd/src/search/option_parser.h
  /home/admin-u6487831/honors/fd/src/search/option_parser_util.h
+ /home/admin-u6487831/honors/fd/src/search/per_state_information.h
  /home/admin-u6487831/honors/fd/src/search/scalar_evaluator.h
  /home/admin-u6487831/honors/fd/src/search/scc.h
+ /home/admin-u6487831/honors/fd/src/search/search_node_info.h
+ /home/admin-u6487831/honors/fd/src/search/search_progress.h
+ /home/admin-u6487831/honors/fd/src/search/search_space.h
+ /home/admin-u6487831/honors/fd/src/search/segmented_vector.h
  /home/admin-u6487831/honors/fd/src/search/state.h
  /home/admin-u6487831/honors/fd/src/search/state_id.h
+ /home/admin-u6487831/honors/fd/src/search/state_registry.h
+ /home/admin-u6487831/honors/fd/src/search/timer.h
  /home/admin-u6487831/honors/fd/src/search/utilities.h
  /home/admin-u6487831/honors/fd/src/search/utils/language.h
  /home/admin-u6487831/honors/fd/src/search/utils/system.h
@@ -2671,17 +2806,28 @@ search/CMakeFiles/downward.dir/option_parser.cc.o
  /home/admin-u6487831/honors/fd/src/search/ext/tree_util.hh
  /home/admin-u6487831/honors/fd/src/search/globals.h
  /home/admin-u6487831/honors/fd/src/search/heuristic.h
+ /home/admin-u6487831/honors/fd/src/search/int_packer.h
  /home/admin-u6487831/honors/fd/src/search/merge_and_shrink/linear_merge_strategy.h
  /home/admin-u6487831/honors/fd/src/search/merge_and_shrink/shrink_strategy.h
  /home/admin-u6487831/honors/fd/src/search/merge_and_shrink/variable_order_finder.h
+ /home/admin-u6487831/honors/fd/src/search/operator.h
  /home/admin-u6487831/honors/fd/src/search/operator_cost.h
  /home/admin-u6487831/honors/fd/src/search/option_parser.cc
  /home/admin-u6487831/honors/fd/src/search/option_parser.h
  /home/admin-u6487831/honors/fd/src/search/option_parser_util.h
+ /home/admin-u6487831/honors/fd/src/search/per_state_information.h
  /home/admin-u6487831/honors/fd/src/search/plugin.h
  /home/admin-u6487831/honors/fd/src/search/rng.h
  /home/admin-u6487831/honors/fd/src/search/scalar_evaluator.h
  /home/admin-u6487831/honors/fd/src/search/scc.h
+ /home/admin-u6487831/honors/fd/src/search/search_node_info.h
+ /home/admin-u6487831/honors/fd/src/search/search_progress.h
+ /home/admin-u6487831/honors/fd/src/search/search_space.h
+ /home/admin-u6487831/honors/fd/src/search/segmented_vector.h
+ /home/admin-u6487831/honors/fd/src/search/state.h
+ /home/admin-u6487831/honors/fd/src/search/state_id.h
+ /home/admin-u6487831/honors/fd/src/search/state_registry.h
+ /home/admin-u6487831/honors/fd/src/search/timer.h
  /home/admin-u6487831/honors/fd/src/search/utilities.h
 search/CMakeFiles/downward.dir/option_parser_util.cc.o
  /home/admin-u6487831/honors/fd/src/search/ext/boost/any.hpp
@@ -2913,10 +3059,14 @@ search/CMakeFiles/downward.dir/planner.cc.o
  /home/admin-u6487831/honors/fd/src/search/operator_cost.h
  /home/admin-u6487831/honors/fd/src/search/option_parser.h
  /home/admin-u6487831/honors/fd/src/search/option_parser_util.h
+ /home/admin-u6487831/honors/fd/src/search/per_state_information.h
  /home/admin-u6487831/honors/fd/src/search/planner.cc
  /home/admin-u6487831/honors/fd/src/search/scalar_evaluator.h
  /home/admin-u6487831/honors/fd/src/search/scc.h
  /home/admin-u6487831/honors/fd/src/search/search_engine.h
+ /home/admin-u6487831/honors/fd/src/search/search_node_info.h
+ /home/admin-u6487831/honors/fd/src/search/search_progress.h
+ /home/admin-u6487831/honors/fd/src/search/search_space.h
  /home/admin-u6487831/honors/fd/src/search/segmented_vector.h
  /home/admin-u6487831/honors/fd/src/search/state.h
  /home/admin-u6487831/honors/fd/src/search/state_id.h
@@ -2933,11 +3083,19 @@ search/CMakeFiles/downward.dir/relaxation_heuristic.cc.o
  /home/admin-u6487831/honors/fd/src/search/int_packer.h
  /home/admin-u6487831/honors/fd/src/search/operator.h
  /home/admin-u6487831/honors/fd/src/search/operator_cost.h
+ /home/admin-u6487831/honors/fd/src/search/per_state_information.h
  /home/admin-u6487831/honors/fd/src/search/relaxation_heuristic.cc
  /home/admin-u6487831/honors/fd/src/search/relaxation_heuristic.h
  /home/admin-u6487831/honors/fd/src/search/scalar_evaluator.h
+ /home/admin-u6487831/honors/fd/src/search/search_node_info.h
+ /home/admin-u6487831/honors/fd/src/search/search_progress.h
+ /home/admin-u6487831/honors/fd/src/search/search_space.h
+ /home/admin-u6487831/honors/fd/src/search/segmented_vector.h
  /home/admin-u6487831/honors/fd/src/search/state.h
  /home/admin-u6487831/honors/fd/src/search/state_id.h
+ /home/admin-u6487831/honors/fd/src/search/state_registry.h
+ /home/admin-u6487831/honors/fd/src/search/timer.h
+ /home/admin-u6487831/honors/fd/src/search/utilities.h
 search/CMakeFiles/downward.dir/rng.cc.o
  /home/admin-u6487831/honors/fd/src/search/rng.cc
  /home/admin-u6487831/honors/fd/src/search/rng.h
@@ -3192,12 +3350,18 @@ search/CMakeFiles/downward.dir/search_engine.cc.o
  /home/admin-u6487831/honors/fd/src/search/operator_cost.h
  /home/admin-u6487831/honors/fd/src/search/option_parser.h
  /home/admin-u6487831/honors/fd/src/search/option_parser_util.h
+ /home/admin-u6487831/honors/fd/src/search/per_state_information.h
  /home/admin-u6487831/honors/fd/src/search/scalar_evaluator.h
  /home/admin-u6487831/honors/fd/src/search/scc.h
  /home/admin-u6487831/honors/fd/src/search/search_engine.cc
  /home/admin-u6487831/honors/fd/src/search/search_engine.h
+ /home/admin-u6487831/honors/fd/src/search/search_node_info.h
+ /home/admin-u6487831/honors/fd/src/search/search_progress.h
+ /home/admin-u6487831/honors/fd/src/search/search_space.h
+ /home/admin-u6487831/honors/fd/src/search/segmented_vector.h
  /home/admin-u6487831/honors/fd/src/search/state.h
  /home/admin-u6487831/honors/fd/src/search/state_id.h
+ /home/admin-u6487831/honors/fd/src/search/state_registry.h
  /home/admin-u6487831/honors/fd/src/search/timer.h
  /home/admin-u6487831/honors/fd/src/search/utilities.h
 search/CMakeFiles/downward.dir/search_node_info.cc.o
@@ -3212,10 +3376,19 @@ search/CMakeFiles/downward.dir/search_progress.cc.o
  /home/admin-u6487831/honors/fd/src/search/evaluator.h
  /home/admin-u6487831/honors/fd/src/search/globals.h
  /home/admin-u6487831/honors/fd/src/search/heuristic.h
+ /home/admin-u6487831/honors/fd/src/search/int_packer.h
+ /home/admin-u6487831/honors/fd/src/search/operator.h
  /home/admin-u6487831/honors/fd/src/search/operator_cost.h
+ /home/admin-u6487831/honors/fd/src/search/per_state_information.h
  /home/admin-u6487831/honors/fd/src/search/scalar_evaluator.h
+ /home/admin-u6487831/honors/fd/src/search/search_node_info.h
  /home/admin-u6487831/honors/fd/src/search/search_progress.cc
  /home/admin-u6487831/honors/fd/src/search/search_progress.h
+ /home/admin-u6487831/honors/fd/src/search/search_space.h
+ /home/admin-u6487831/honors/fd/src/search/segmented_vector.h
+ /home/admin-u6487831/honors/fd/src/search/state.h
+ /home/admin-u6487831/honors/fd/src/search/state_id.h
+ /home/admin-u6487831/honors/fd/src/search/state_registry.h
  /home/admin-u6487831/honors/fd/src/search/timer.h
  /home/admin-u6487831/honors/fd/src/search/utilities.h
 search/CMakeFiles/downward.dir/search_space.cc.o
@@ -3382,12 +3555,15 @@ search/CMakeFiles/downward.dir/tarjan/tarjan_dfs.cc.o
  /home/admin-u6487831/honors/fd/src/search/operator_cost.h
  /home/admin-u6487831/honors/fd/src/search/option_parser.h
  /home/admin-u6487831/honors/fd/src/search/option_parser_util.h
+ /home/admin-u6487831/honors/fd/src/search/per_state_information.h
  /home/admin-u6487831/honors/fd/src/search/plugin.h
  /home/admin-u6487831/honors/fd/src/search/pruning_method.h
  /home/admin-u6487831/honors/fd/src/search/scalar_evaluator.h
  /home/admin-u6487831/honors/fd/src/search/scc.h
  /home/admin-u6487831/honors/fd/src/search/search_engine.h
+ /home/admin-u6487831/honors/fd/src/search/search_node_info.h
  /home/admin-u6487831/honors/fd/src/search/search_progress.h
+ /home/admin-u6487831/honors/fd/src/search/search_space.h
  /home/admin-u6487831/honors/fd/src/search/segmented_vector.h
  /home/admin-u6487831/honors/fd/src/search/state.h
  /home/admin-u6487831/honors/fd/src/search/state_id.h
@@ -3512,16 +3688,22 @@ search/CMakeFiles/downward.dir/tarjan/tarjan_open_list.cc.o
  /home/admin-u6487831/honors/fd/src/search/operator_cost.h
  /home/admin-u6487831/honors/fd/src/search/option_parser.h
  /home/admin-u6487831/honors/fd/src/search/option_parser_util.h
+ /home/admin-u6487831/honors/fd/src/search/per_state_information.h
  /home/admin-u6487831/honors/fd/src/search/plugin.h
  /home/admin-u6487831/honors/fd/src/search/scalar_evaluator.h
  /home/admin-u6487831/honors/fd/src/search/scc.h
+ /home/admin-u6487831/honors/fd/src/search/search_node_info.h
+ /home/admin-u6487831/honors/fd/src/search/search_progress.h
+ /home/admin-u6487831/honors/fd/src/search/search_space.h
  /home/admin-u6487831/honors/fd/src/search/segmented_vector.h
  /home/admin-u6487831/honors/fd/src/search/state.h
  /home/admin-u6487831/honors/fd/src/search/state_id.h
+ /home/admin-u6487831/honors/fd/src/search/state_registry.h
  /home/admin-u6487831/honors/fd/src/search/tarjan/tarjan_open_list.cc
  /home/admin-u6487831/honors/fd/src/search/tarjan/tarjan_open_list.h
  /home/admin-u6487831/honors/fd/src/search/tarjan/tarjan_search_space.h
  /home/admin-u6487831/honors/fd/src/search/tarjan/tarjan_state_info.h
+ /home/admin-u6487831/honors/fd/src/search/timer.h
  /home/admin-u6487831/honors/fd/src/search/utilities.h
 search/CMakeFiles/downward.dir/tarjan/tarjan_search_space.cc.o
  /home/admin-u6487831/honors/fd/src/search/globals.h
@@ -3642,19 +3824,28 @@ search/CMakeFiles/downward.dir/unsatisfiability_heuristic.cc.o
  /home/admin-u6487831/honors/fd/src/search/ext/boost/type_traits/remove_reference.hpp
  /home/admin-u6487831/honors/fd/src/search/ext/tree.hh
  /home/admin-u6487831/honors/fd/src/search/ext/tree_util.hh
+ /home/admin-u6487831/honors/fd/src/search/globals.h
  /home/admin-u6487831/honors/fd/src/search/heuristic.h
  /home/admin-u6487831/honors/fd/src/search/int_packer.h
  /home/admin-u6487831/honors/fd/src/search/merge_and_shrink/linear_merge_strategy.h
  /home/admin-u6487831/honors/fd/src/search/merge_and_shrink/shrink_strategy.h
  /home/admin-u6487831/honors/fd/src/search/merge_and_shrink/variable_order_finder.h
+ /home/admin-u6487831/honors/fd/src/search/operator.h
  /home/admin-u6487831/honors/fd/src/search/operator_cost.h
  /home/admin-u6487831/honors/fd/src/search/option_parser.h
  /home/admin-u6487831/honors/fd/src/search/option_parser_util.h
+ /home/admin-u6487831/honors/fd/src/search/per_state_information.h
  /home/admin-u6487831/honors/fd/src/search/plugin.h
  /home/admin-u6487831/honors/fd/src/search/scalar_evaluator.h
  /home/admin-u6487831/honors/fd/src/search/scc.h
+ /home/admin-u6487831/honors/fd/src/search/search_node_info.h
+ /home/admin-u6487831/honors/fd/src/search/search_progress.h
+ /home/admin-u6487831/honors/fd/src/search/search_space.h
+ /home/admin-u6487831/honors/fd/src/search/segmented_vector.h
  /home/admin-u6487831/honors/fd/src/search/state.h
  /home/admin-u6487831/honors/fd/src/search/state_id.h
+ /home/admin-u6487831/honors/fd/src/search/state_registry.h
+ /home/admin-u6487831/honors/fd/src/search/timer.h
  /home/admin-u6487831/honors/fd/src/search/unsatisfiability_heuristic.cc
  /home/admin-u6487831/honors/fd/src/search/unsatisfiability_heuristic.h
  /home/admin-u6487831/honors/fd/src/search/utilities.h

@@ -1263,6 +1263,12 @@ scalar_evaluator.h
 /home/admin-u6487831/honors/fd/src/search/scalar_evaluator.h
 operator_cost.h
 /home/admin-u6487831/honors/fd/src/search/operator_cost.h
+search_space.h
+/home/admin-u6487831/honors/fd/src/search/search_space.h
+search_progress.h
+/home/admin-u6487831/honors/fd/src/search/search_progress.h
+state_id.h
+/home/admin-u6487831/honors/fd/src/search/state_id.h
 map
 -
 set

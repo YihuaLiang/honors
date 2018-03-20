@@ -29,6 +29,8 @@ protected:
     int get_adjusted_cost(const Operator &op) const;
     OperatorCost get_operator_cost() const { return cost_type; }
 public:
+    int get_bound(){return bound;}
+    void set_bound(int b){bound = b;    return ;}
     SearchEngine(const Options &opts);
     virtual ~SearchEngine();
     void save_plan_if_necessary() const;

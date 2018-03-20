@@ -69,6 +69,8 @@ protected:
     bool trigger_refiner(const State &state, bool &success);
     bool evaluate(const State &state, bool &u);
     bool evaluate(SearchNode &node);
+    //see which one is better to reload
+    //bool evaluate(const State &state, bool &u,int g);
 
     void get_preferred_operators(const State &state, std::set<const Operator *> &result);
 
@@ -76,6 +78,7 @@ protected:
 
     bool check_and_learn_dead_end(const SearchNode &node);
     bool check_and_learn_dead_end(const SearchNode &node, std::vector<State> &tbh);
+    //bool check_and_learn_dead_end(const SearchNode &node, std::vector<State> &tbh, int g);
     bool search_open_state(SearchNode node,
                            std::vector<State> &closed_states,
                            std::unordered_set<StateID> &rn,

@@ -51,8 +51,8 @@ public:
 
     bool is_flagged() const;
     void set_flag(bool flag = true);
-    bool is_u_flagged() const;
-    void set_u_flag(bool flag = true);
+    bool is_u_flagged() const; 
+    void set_u_flag(bool flag = true); //set flag true -- means u recognized??
     unsigned get_revision() const;
     void set_revision(unsigned x);
     bool add_parent(const State &state);

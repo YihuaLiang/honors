@@ -144,7 +144,7 @@ HCHeuristic::HCHeuristic(const HCHeuristic &h)
     //  m_mutex_size(h.m_mutex_size),
     //  m_mutex(h.m_mutex),
     //  m_mutex_subset(h.m_mutex_subset)
-{
+{ //Initialize h
   for (unsigned cid = 0; cid < h.conjunctions.size(); cid++) {
     conjunctions.push_back(h.conjunctions[cid]);
   }
@@ -375,7 +375,7 @@ void HCHeuristic::dump_counter(size_t counter_id,
 
 
 void HCHeuristic::initialize()
-{
+{//called
   cout << "Initializing h^max(Pi^C) heuristic ..." << endl;
 #if FILTER_NEGATED_ATOMS
   std::string negatedatom = "NegatedAtom";
@@ -397,7 +397,13 @@ void HCHeuristic::initialize()
   
   heuristic = 0;
   evaluator_value = 0;
-  compile_strips();
+  //int accumultor = 0;
+  //for (uint i = 0 ; i < g_operators.size() ; i ++)
+ // {
+  //  if(g_operators[i].get_cost() == 0) accumultor++;
+  //}
+  //cout<<"0 cost action"<<accumultor<<endl;
+  compile_strips();//learn the strips
 
   //dump_compiled_task_to_file();
   //exit(0);
@@ -796,9 +802,13 @@ void HCHeuristic::compile_strips()
   facts_to_counters.resize(conjunction_offset);
 
   unsigned action_id = 0;
+  //cout<<"Cost_type "<<cost_type<<endl;s
   for (uint i = 0; i < g_operators.size(); i++) {
+    
     const Operator &op = g_operators[i];
+    //cout<<"Op base cost: "<<op.get_cost()<<endl;
     int base_cost = get_adjusted_cost(op);
+    //cout<<"Adjusted base cost: "<<base_cost<<endl;
     const std::vector<Prevail> &pre = op.get_prevail();
     const std::vector<PrePost> &eff = op.get_pre_post();
 
@@ -969,7 +979,9 @@ void HCHeuristic::compile_strips()
        << conjunction_offset << " facts, "
        << actions.size() << " actions, and "
        << counters.size() << " counters." << endl;
-
+  //for (uint i=0; i < actions.size() ; i++){ 
+  //    cout<<"base_cost: "<<actions[i].base_cost<<endl;
+  //}
   if (_m > 1) {
     cout << "Adding <= " << _m <<
       " sized conjunctions to C until limit is reached..."
@@ -1220,12 +1232,13 @@ int HCHeuristic::simple_traversal_setup(const std::vector<std::pair<int, int> >
 //    return lvl0;
 //}
 
+// here we will need a the g value
 int HCHeuristic::simple_traversal_setup(const State &state,
                                         std::vector<unsigned> &exploration)
 {
   exploration.clear();
   exploration.reserve(conjunctions.size());
-
+  //control the size of vector
   if (c_dual_task) {
     std::cout << "goal:" << std::endl;
     Fluent goal;
@@ -1247,8 +1260,8 @@ int HCHeuristic::simple_traversal_setup(const State &state,
       Conjunction &conj = conjunctions[i];
       conj.clear();
       if (fluent_in_state(_fluents[i], state)) {
-        conj.check_and_update(0, NULL);
-        exploration.push_back(i);
+        conj.check_and_update(0, NULL);//set cost 0
+        exploration.push_back(i);//it means from this state to the goal so clear it
       }
     }
   }
@@ -1265,7 +1278,7 @@ int HCHeuristic::simple_traversal_setup(const State &state,
   return exploration.size();
 }
 
-
+//jisuan
 int HCHeuristic::simple_traversal_wrapper(
                                           std::vector<unsigned> &exploration, int lvl0)
 {
@@ -1278,11 +1291,15 @@ int HCHeuristic::simple_traversal_wrapper(
   int level = 0;
   int goal_level = 0;
   while (i < exploration.size()) {
-    if (i == border) {
+    if (i == border) {//enlarge the exploration, when it go through one level
       border = exploration.size();
-      level += 1;
+      //based on unit cost
+      level += 1; //add one level -- the distance 
+      //cout << "level enlarge"<<endl;
+      //border means the largest length -- interm of cost there is no bounder
     }
-    unsigned conj_id = exploration[i++];
+    unsigned conj_id = exploration[i++]; //out put the trigger counters base cost
+    // think of how to store the cost properly
     const vector<ActionEffectCounter *> &triggered_counters =
       conjunctions[conj_id].triggered_counters;
     for (uint j = 0; j < triggered_counters.size(); j++) {
@@ -1290,10 +1307,11 @@ int HCHeuristic::simple_traversal_wrapper(
       if (--counter->unsatisfied_preconditions > 0) {
         continue;
       }
+      //cout<<"basecost "<<g_operators[actions[counter->action_id].operator_no].get_cost()<<endl;
       counter->cost = level;
       if (!counter->effect->is_achieved()) {
         counter->effect->check_and_update(level + 1, NULL);
-        exploration.push_back(counter->effect->id);
+        exploration.push_back(counter->effect->id);//push in new counter
         if (m_goal_id == counter->effect->id) {
           goal_level = level + 1;
           if (early_termination) {
@@ -1304,13 +1322,15 @@ int HCHeuristic::simple_traversal_wrapper(
     }
   }
 
-  return conjunctions[m_goal_id].is_achieved() ? goal_level : DEAD_END;
+  return conjunctions[m_goal_id].is_achieved() ? goal_level : DEAD_END; // goal level means the depth of goal 
+  // here need to modified
 }
 
 int HCHeuristic::simple_traversal(const State &state)
 {
   vector<unsigned> exploration;
   int x = simple_traversal_setup(state, exploration);
+  //put in the size of exploration
   int res = simple_traversal_wrapper(exploration, x);
   exploration.clear();
   return res;
@@ -1353,7 +1373,44 @@ int HCHeuristic::compute_heuristic(const State &state)
   }
   return res == DEAD_END ? res : res - 1;
 }
+/***reload*****
+int HCHeuristic::compute_heuristic(const State &state,int g)
+{
+  std::vector<unsigned> prec;
+  //catch it successfully
+  //cout<<"Heuristic catch the bound "<<bound<<endl;
+  if (c_dual_task) {
+    std::cout << "initial state: " << std::endl;
+    m_goal_counter = counters.size();
+    counters.push_back(ActionEffectCounter(-1, m_goal_counter, &conjunctions[m_goal_id], 1));
 
+    Fluent goal;
+    for (uint var = 0; var < g_variable_domain.size(); var++) {
+      goal.insert(std::make_pair(var, state[var]));
+    }
+    for (uint i = 0; i < _fluents.size(); i++) {
+      if (i != m_true_id && i != m_goal_id && fluent_op::are_disjoint(_fluents[i], goal)) {
+        dump_fluent_pddl(_fluents[i]);
+        std::cout << std::endl;
+        prec.push_back(i);
+        conjunctions[i].triggered_counters.push_back(&counters[m_goal_counter]);
+        counters[m_goal_counter].preconditions++;
+      }
+    }
+    if (prec.empty()) {
+      prec.push_back(m_true_id);
+    }
+  }
+  int res = simple_traversal(state);
+  if (c_dual_task) {
+    for (unsigned x : prec) {
+      conjunctions[x].triggered_counters.pop_back();
+    }
+    counters.pop_back();
+  }
+  return res == DEAD_END ? res : res - 1;
+}
+***reload*****/
 #if 0
 bool HCHeuristic::contains_mutex(const Fluent &f1,
                                  const Fluent &f2)
@@ -2538,7 +2595,7 @@ void HCHeuristic::add_options_to_parser(OptionParser &parser)
 
 void HCHeuristic::add_default_options(Options &o)
 {
-  o.set<int>("cost_type", 1);
+  o.set<int>("cost_type", 0);
   o.set<bool>("dump_conjunctions", false);
   o.set<bool>("update_mutex", false);
   o.set<bool>("hard_size_limit", false);

@@ -3,6 +3,9 @@
 
 #include "scalar_evaluator.h"
 #include "operator_cost.h"
+#include "search_space.h"
+#include "search_progress.h"
+#include "state_id.h"
 
 #include <map>
 #include <set>
@@ -27,6 +30,7 @@ protected:
     OperatorCost cost_type;
     virtual void initialize() {}
     virtual int compute_heuristic(const State &state) = 0;
+    //reload
     // Usage note: It's OK to set the same operator as preferred
     // multiple times -- it will still only appear in the list of
     // preferred operators for this heuristic once.
@@ -44,7 +48,9 @@ public:
     int bound;
     /***************************************************/
     void evaluate(const State &state);
+    //void evaluate(const State &state, int g);
     virtual void reevaluate(const State &) { heuristic = 0; evaluator_value = 0; }
+    //virtual void reevaluate(const State &, int ){heuristic = 0; evaluator_value = 0; }
     bool is_dead_end() const;
     void clear_cache() { heuristic = 0; evaluator_value = 0; }
     int get_heuristic();

@@ -300,7 +300,7 @@ class HCHeuristic : public Heuristic
 
   //std::vector<Conjunction*> conjunctions;
   //std::vector<ActionEffectCounter*> counters;
-  SegmentedVector<Conjunction> conjunctions;
+  SegmentedVector<Conjunction> conjunctions;//It should be C
   SegmentedVector<ActionEffectCounter> counters;
   //std::vector<Conjunction*> goal_conjunctions;
   unsigned m_true_id;
@@ -388,7 +388,8 @@ class HCHeuristic : public Heuristic
 
   virtual void initialize();
   virtual int compute_heuristic(const State &state);
-
+  //reload
+  //virtual int compute_heuristic(const State &state, int g);
   
   template<typename V1, typename V2>
     bool update_c_v(const V1 &new_conjunctions, const V2 &add)

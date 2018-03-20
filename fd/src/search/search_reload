@@ -1,0 +1,4 @@
+reload evaluate(state,u) don't need to passin the cost bound --- the cost bound becomes a variable in heuristic and inherited by the refiner
+//don't need to reload function in search -- just reload what it used
+reload relevant function -- check dead end??? 
+reload check and learn dead end
