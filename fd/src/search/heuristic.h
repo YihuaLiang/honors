@@ -31,6 +31,8 @@ protected:
     virtual void initialize() {}
     virtual int compute_heuristic(const State &state) = 0;
     //reload
+    virtual int compute_heuristic(const State &, int ){return 0;}
+    //provide basic function line 1&2
     // Usage note: It's OK to set the same operator as preferred
     // multiple times -- it will still only appear in the list of
     // preferred operators for this heuristic once.
@@ -48,9 +50,12 @@ public:
     int bound;
     /***************************************************/
     void evaluate(const State &state);
-    //void evaluate(const State &state, int g);
+    
+    void evaluate(const State &state, int g_value);
+    
     virtual void reevaluate(const State &) { heuristic = 0; evaluator_value = 0; }
-    //virtual void reevaluate(const State &, int ){heuristic = 0; evaluator_value = 0; }
+    //reload
+    virtual void reevaluate(const State &, int& ){heuristic = 0; evaluator_value = 0; }
     bool is_dead_end() const;
     void clear_cache() { heuristic = 0; evaluator_value = 0; }
     int get_heuristic();

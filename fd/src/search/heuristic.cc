@@ -76,7 +76,7 @@ void Heuristic::evaluate(const State &state) {
 #endif
     evaluator_value = heuristic;
 }
-/*************reload
+//reload
 void Heuristic::evaluate(const State &state, int g_value) {
     if (heuristic == NOT_INITIALIZED)
         initialize();
@@ -104,7 +104,7 @@ void Heuristic::evaluate(const State &state, int g_value) {
 #endif
     evaluator_value = heuristic;
 }
-**********************/
+
 bool Heuristic::is_dead_end() const {
     return evaluator_value == DEAD_END;
 }

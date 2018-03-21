@@ -1342,6 +1342,66 @@ int HCHeuristic::simple_traversal_wrapper(
   return conjunctions[m_goal_id].is_achieved() ? goal_level : DEAD_END; // goal level means the depth of goal 
   // here need to modified
 }
+//reload
+int HCHeuristic::simple_traversal_wrapper(
+                                          std::vector<unsigned> &exploration, int lvl0,int g_value)
+{
+  if (early_termination && conjunctions[m_goal_id].is_achieved()) {
+    return 0;
+  }
+  //could simply store the values in the vector as exploration
+
+  unsigned i = 0;
+  unsigned border = lvl0;
+  int level = 0;
+  int goal_level = 0;
+  while (i < exploration.size()) {
+    if (i == border) {//enlarge the exploration, when it go through one level
+      border = exploration.size();
+      //based on unit cost
+      level += 1; //add one level -- the distance 
+      //cout << "level enlarge"<<endl;
+    }
+    unsigned conj_id = exploration[i++]; 
+    // think of how to store the cost properly
+    const vector<ActionEffectCounter *> &triggered_counters =
+      conjunctions[conj_id].triggered_counters;//The actions could be executed
+    for (uint j = 0; j < triggered_counters.size(); j++) {
+      ActionEffectCounter *counter = triggered_counters[j];//take the first one out 
+      if (--counter->unsatisfied_preconditions > 0) { //there must be one satisfied so 1 should be minused
+        continue; //can't be used -- jump
+      }
+      //counter is action --- the cost should inherit from the conj_id
+      //counter->cost = level;
+
+      if(level == 0) counter->cost = g_value;//init to be g, otherwise use the accummulated cost 
+      else counter->cost = conjunctions[conj_id].cost;
+
+      if (!counter->effect->is_achieved()) {//cost <0 ---> has not been explored 
+        //directly add the base cost here
+        
+        //line 2:  
+        if( counter->cost + actions[counter->action_id].base_cost > bound) return DEAD_END;
+        //if not early termination then continue -> jump the dead end???
+        counter->effect->check_and_update(counter->cost + actions[counter->action_id].base_cost, NULL);//add the cost , this will store the result
+        //counter->effect->check_and_update(level+1,NULL);
+
+        //update the conjunction, the cost are stored in the conjunction
+        exploration.push_back(counter->effect->id);//push in new counter
+        if (m_goal_id == counter->effect->id) {
+          //goal_level = level + 1; // goal is achieved so it could be returned
+          goal_level = counter->cost + actions[counter->action_id].base_cost;          
+          if (early_termination) {
+            return goal_level;
+          }
+        }
+      }
+    }
+  }
+  return conjunctions[m_goal_id].is_achieved() ? goal_level : DEAD_END; // goal level means the depth of goal 
+  // here need to modified
+}
+
 /******modified******/
 int HCHeuristic::simple_traversal(const State &state)
 {
@@ -1353,7 +1413,16 @@ int HCHeuristic::simple_traversal(const State &state)
   return res;
 }
 
-
+//reload
+int HCHeuristic::simple_traversal(const State &state, int g_value)
+{
+  vector<unsigned> exploration;
+  int x = simple_traversal_setup(state, exploration);
+  //put in the size of exploration
+  int res = simple_traversal_wrapper(exploration, x, g_value);
+  exploration.clear();
+  return res;
+}
 int HCHeuristic::compute_heuristic(const State &state)
 {
   std::vector<unsigned> prec;
@@ -1390,8 +1459,8 @@ int HCHeuristic::compute_heuristic(const State &state)
   }
   return res == DEAD_END ? res : res - 1;
 }
-/***reload*****
-int HCHeuristic::compute_heuristic(const State &state,int g)
+//**reload*****
+int HCHeuristic::compute_heuristic(const State &state,int g_value)
 {
   std::vector<unsigned> prec;
   //catch it successfully
@@ -1418,7 +1487,7 @@ int HCHeuristic::compute_heuristic(const State &state,int g)
       prec.push_back(m_true_id);
     }
   }
-  int res = simple_traversal(state);
+  int res = simple_traversal(state, g_value);
   if (c_dual_task) {
     for (unsigned x : prec) {
       conjunctions[x].triggered_counters.pop_back();
@@ -1427,7 +1496,7 @@ int HCHeuristic::compute_heuristic(const State &state,int g)
   }
   return res == DEAD_END ? res : res - 1;
 }
-***reload*****/
+
 #if 0
 bool HCHeuristic::contains_mutex(const Fluent &f1,
                                  const Fluent &f2)
@@ -1795,16 +1864,16 @@ void HCHeuristic::compute_can_add(std::vector<int> &can_add_fluent,
   //      1: adds part of conjunction, but does not remove any part of
   //          conjunction
   for (Fluent::iterator f = fluent.begin(); f != fluent.end(); f++) {
-    const vector<unsigned> &del_acts = facts_to_del[get_fact_id(*f)];
-    for (uint j = 0; j < del_acts.size(); j++) {
+    const vector<unsigned> &del_acts = facts_to_del[get_fact_id(*f)];//The act del the fact *f
+    for (uint j = 0; j < del_acts.size(); j++) {//set delet effect to -1
       int aid = del_acts[j];
       can_add_fluent[aid] = -1;
     }
-    if (mutex_check) {
+    if (mutex_check) {//require check mutex
       const vector<unsigned> &mutual_exclusive = m_results_in_mutex[get_fact_id(*f)];
       for (uint i = 0; i < mutual_exclusive.size(); i++) {
         int aid = mutual_exclusive[i];
-        can_add_fluent[aid] = -1;
+        can_add_fluent[aid] = -1;//set mutex to -1
       }
     }
     const vector<unsigned> &add_acts = facts_to_add[get_fact_id(*f)];

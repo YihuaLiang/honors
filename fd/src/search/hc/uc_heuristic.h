@@ -63,8 +63,11 @@ protected:
     UCClauseExtraction *m_clause_extraction;
 
     virtual int compute_heuristic(const State &state);
+    virtual int compute_heuristic(const State &state, int g_value);
 
     void hc_evaluate(const State &state);
+    void hc_evaluate(const State &state, int g_value);
+
 
     void set_dead_end() {
         heuristic = DEAD_END;
@@ -74,7 +77,8 @@ public:
     UCHeuristic(const Options &opts);
     UCHeuristic(const UCHeuristic &h);
     virtual void reevaluate(const State &state);
-
+    //reload
+    virtual void reevaluate(const State &state, int g_value);
     unsigned find_clause(const State &state);
     bool clause_matches(const State &state);
 

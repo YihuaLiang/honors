@@ -56,7 +56,14 @@ void UCHeuristic::hc_evaluate(const State &state) {
     heuristic = HCHeuristic::compute_heuristic(state);
     evaluator_value = heuristic;
 }
-
+//reload
+void UCHeuristic::hc_evaluate(const State &state, int g_value){
+    if (heuristic == NOT_INITIALIZED){
+        initialize();
+    }
+    heuristic = HCHeuristic::compute_heuristic(state, g_value);
+    evaluator_value = heuristic;
+}
 unsigned UCHeuristic::find_clause(const State &state) {
     m_stats.start();
     unsigned res = m_clause_store ? m_clause_store->find(this, state) : ClauseStore::NO_MATCH;
@@ -87,6 +94,26 @@ int UCHeuristic::compute_heuristic(const State &state) {
     }
     return res;
 }
+//reload
+int UCHeuristic::compute_heuristic(const State &state, int g_value) {
+    m_stats.num_total_evaluations++;
+    if (clause_matches(state)) {
+        return DEAD_END;
+    }
+    int res = 0;
+    if (c_eval_hc) {
+        m_stats.start();
+        m_stats.num_hc_evaluations++;
+        hc_evaluate(state,g_value);
+        res = heuristic;
+        m_stats.end(m_stats.t_hc_evaluation);
+        if (res == DEAD_END) {
+            m_stats.num_hc_dead_ends++;
+            refine_clauses(state, false);
+        }
+    }
+    return res;
+}
 
 void UCHeuristic::reevaluate(const State &state) {
     if (heuristic == NOT_INITIALIZED) {
@@ -95,6 +122,20 @@ void UCHeuristic::reevaluate(const State &state) {
     heuristic = 0;
     if (c_reeval_hc) {
         evaluate(state);
+    } else if (clause_matches(state)) {
+        heuristic = DEAD_END;
+        evaluator_value = DEAD_END;
+    }
+}
+
+void UCHeuristic::reevaluate(const State &state, int g_value)
+{
+    if (heuristic == NOT_INITIALIZED) {
+        initialize();
+    }
+    heuristic = 0;
+    if (c_reeval_hc) {
+        evaluate(state, g_value);
     } else if (clause_matches(state)) {
         heuristic = DEAD_END;
         evaluator_value = DEAD_END;

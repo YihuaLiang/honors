@@ -389,7 +389,7 @@ class HCHeuristic : public Heuristic
   virtual void initialize();
   virtual int compute_heuristic(const State &state);
   //reload
-  //virtual int compute_heuristic(const State &state, int g);
+  virtual int compute_heuristic(const State &state, int g_value);
   
   template<typename V1, typename V2>
     bool update_c_v(const V1 &new_conjunctions, const V2 &add)
@@ -469,9 +469,13 @@ class HCHeuristic : public Heuristic
   int simple_traversal_setup(const std::vector<std::pair<int, int> > &state,
                              std::vector<unsigned> &exploration);
   int simple_traversal(const State &state);
-  //
+  //reload
+  int simple_traversal(const State &state, int g_value);
+  
   int simple_traversal_wrapper(std::vector<unsigned> &exploration, int lvl0);
-
+  //reload
+  int simple_traversal_wrapper(std::vector<unsigned> &exploration, int lvl0,int g_value);
+  //test whether this is called
   int priority_traversal(const State &state);
 
   bool update_c(std::set<Conflict> &conjs);
