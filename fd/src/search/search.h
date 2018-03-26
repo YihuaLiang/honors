@@ -66,11 +66,16 @@ protected:
     StateID fetch_next_state();
 
     virtual Heuristic *check_dead_end(const State &state, bool full);
+    //reload
+    virtual Heuristic *check_dead_end(const State &state, bool full, int g_value);
+
     bool trigger_refiner(const State &state, bool &success);
+    
     bool evaluate(const State &state, bool &u);
-    bool evaluate(SearchNode &node);
-    //see which one is better to reload
-    //bool evaluate(const State &state, bool &u,int g);
+    //reload
+    bool evaluate(const State &state, bool &u, int g_value);
+    bool evaluate(SearchNode &node);//this don't need reload but need to input the g_value
+    
 
     void get_preferred_operators(const State &state, std::set<const Operator *> &result);
 
@@ -78,13 +83,14 @@ protected:
 
     bool check_and_learn_dead_end(const SearchNode &node);
     bool check_and_learn_dead_end(const SearchNode &node, std::vector<State> &tbh);
-    //bool check_and_learn_dead_end(const SearchNode &node, std::vector<State> &tbh, int g);
+    //modify in the function --- directly use the node
     bool search_open_state(SearchNode node,
                            std::vector<State> &closed_states,
                            std::unordered_set<StateID> &rn,
                            std::vector<State> &open_states);
     void backward_propagation(const State &state);
     void backward_propagation(std::vector<State> &states);
+    //reload this function
     void mark_dead_ends(SearchNode node, std::vector<State> &open);
     void mark_dead_ends(std::vector<State> &dead_ends, std::vector<State> &open);
 

@@ -8,7 +8,7 @@
 #include <vector>
 #include <set>
 #include <unordered_set>
-
+#include <string.h>
 typedef std::pair<int, int> Fact;
 typedef std::set<Fact> Fluent;
 
@@ -460,7 +460,7 @@ class HCHeuristic : public Heuristic
  public:
   HCHeuristic(const Options &options);
   HCHeuristic(const HCHeuristic &h);
-
+  
   void add_conflict(const Conflict &conflict);
   int simple_traversal_setup(const State &state,
                              std::vector<unsigned> &exploration);

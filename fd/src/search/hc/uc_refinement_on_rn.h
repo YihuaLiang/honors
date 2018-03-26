@@ -29,10 +29,16 @@ protected:
     virtual void select_conflict(const Fluent &subgoal, Conflict &conflict) = 0;
 
     bool prepare_refinement(const std::vector<State> &states, const std::unordered_set<StateID> &rn);
-
+    //reload
+    bool prepare_refinement(const std::vector<State> &states, const std::unordered_set<StateID> &rn, int g_value);
     virtual RefinementResult refine(
             const std::vector<State> &root_component,
             const std::unordered_set<StateID> &recognized_neighbors);
+    //reload
+    virtual RefinementResult refine(
+            const std::vector<State> &root_component,
+            const std::unordered_set<StateID> &recognized_neighbors,
+            int g_value);
 public:
     UCRefinementOnRN(const Options &opts);
     virtual bool dead_end_learning_requires_full_component() { return true; }

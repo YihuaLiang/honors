@@ -38,6 +38,7 @@ UCHeuristic::UCHeuristic(const Options &opts)
     }
     //catch the bound successfully
     //cout<<"UC catch the bound "<<bound<<endl;
+    h_name = "UC_heuristic";
 }
 
 UCHeuristic::UCHeuristic(const UCHeuristic &uc)
@@ -47,6 +48,7 @@ UCHeuristic::UCHeuristic(const UCHeuristic &uc)
     m_clause_store(NULL),
     m_clause_extraction(NULL)
 {
+    h_name = "UC_heuristic";
 }
 
 void UCHeuristic::hc_evaluate(const State &state) {
@@ -127,7 +129,7 @@ void UCHeuristic::reevaluate(const State &state) {
         evaluator_value = DEAD_END;
     }
 }
-
+//reload
 void UCHeuristic::reevaluate(const State &state, int g_value)
 {
     if (heuristic == NOT_INITIALIZED) {

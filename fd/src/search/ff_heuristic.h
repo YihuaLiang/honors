@@ -5,7 +5,7 @@
 #include "rng.h"
 
 #include <vector>
-
+#include <string.h>
 /*
   TODO: In a better world, this should not derive from
         AdditiveHeuristic. Rather, the common parts should be
@@ -35,6 +35,7 @@ protected:
     virtual int compute_heuristic(const State &state);
     void compute_relaxed_plan(const State &state, RelaxedPlan &returned_relaxed_plan); // Peter: Needed for M&S for finding label set
 public:
+   std::string h_name = "FF_heuristic";
     FFHeuristic(const Options &options);
     ~FFHeuristic();
 };

@@ -24,6 +24,7 @@ FFHeuristic::~FFHeuristic() {
 // initialization
 void FFHeuristic::initialize() {
     cout << "Initializing FF heuristic..." << endl;
+    h_name = "FF_heuristic";
     AdditiveHeuristic::initialize();
     relaxed_plan.resize(g_operators.size(), false);
 }
@@ -60,7 +61,6 @@ int FFHeuristic::compute_heuristic(const State &state) {
     int h_add = compute_add_and_ff(state);
     if (h_add == DEAD_END)
         return h_add;
-
     std::vector<std::vector<UnaryOperator *> > m_achievers;
     m_achievers.resize(m_propositions);
     for (unsigned i = 0; i < unary_operators.size(); i++) {

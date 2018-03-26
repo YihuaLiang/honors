@@ -9,7 +9,7 @@
 #include <unordered_set>
 #include <vector>
 #include <ctime>
-
+#include <string.h>
 class UCRefinement;
 
 struct ClauseLearningStatistics {
@@ -78,6 +78,7 @@ public:
     UCHeuristic(const UCHeuristic &h);
     virtual void reevaluate(const State &state);
     //reload
+     std::string h_name = "UC_heuristic";
     virtual void reevaluate(const State &state, int g_value);
     unsigned find_clause(const State &state);
     bool clause_matches(const State &state);

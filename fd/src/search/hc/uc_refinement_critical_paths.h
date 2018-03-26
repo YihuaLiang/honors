@@ -41,11 +41,21 @@ protected:
     std::pair<bool, unsigned> compute_conflict(const Fluent &subgoal, int threshold, const State &state);
 
     void prepare_refinement();
+    //reload
+    //void prepare_refinement(int g_value);
 
     virtual RefinementResult refine(const State &state);
     virtual RefinementResult refine(
             const std::vector<State> &root_component,
             const std::unordered_set<StateID> &) {
+        return refine(root_component.front());
+    }
+    //reload
+    virtual RefinementResult refine(const State &state, int g_value);
+    virtual RefinementResult refine(
+            const std::vector<State> &root_component,
+            const std::unordered_set<StateID> &,
+            int ) {
         return refine(root_component.front());
     }
 public:

@@ -377,6 +377,7 @@ void HCHeuristic::dump_counter(size_t counter_id,
 void HCHeuristic::initialize()
 {//called
   cout << "Initializing h^max(Pi^C) heuristic ..." << endl;
+  h_name = "HC_heuristic";
 #if FILTER_NEGATED_ATOMS
   std::string negatedatom = "NegatedAtom";
   g_is_negated_atom.resize(g_variable_domain.size());
@@ -1280,6 +1281,8 @@ int HCHeuristic::simple_traversal_setup(const State &state,
 }
 
 /******modified******/
+//for every existing conjunction it will provide a h value ---> thats why it doesn't have a early termination
+//
 int HCHeuristic::simple_traversal_wrapper(
                                           std::vector<unsigned> &exploration, int lvl0)
 {
@@ -1371,17 +1374,17 @@ int HCHeuristic::simple_traversal_wrapper(
       if (--counter->unsatisfied_preconditions > 0) { //there must be one satisfied so 1 should be minused
         continue; //can't be used -- jump
       }
-      //counter is action --- the cost should inherit from the conj_id
-      //counter->cost = level;
-
+      //Initialize the pre-cost
       if(level == 0) counter->cost = g_value;//init to be g, otherwise use the accummulated cost 
       else counter->cost = conjunctions[conj_id].cost;
-
+      //line 2:  
+      if( counter->cost + actions[counter->action_id].base_cost > bound) {
+        continue;//follow the can't achieve part
+      }
+      //counter is action --- the cost should inherit from the conj_id
+      //counter->cost = level;
       if (!counter->effect->is_achieved()) {//cost <0 ---> has not been explored 
         //directly add the base cost here
-        
-        //line 2:  
-        if( counter->cost + actions[counter->action_id].base_cost > bound) return DEAD_END;
         //if not early termination then continue -> jump the dead end???
         counter->effect->check_and_update(counter->cost + actions[counter->action_id].base_cost, NULL);//add the cost , this will store the result
         //counter->effect->check_and_update(level+1,NULL);
