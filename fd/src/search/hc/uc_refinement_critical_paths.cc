@@ -67,7 +67,6 @@ void UCRefinementCritPaths::release_memory() {
     m_requires.clear();
     m_required_by.clear();
 }
-//prepare the action
 void UCRefinementCritPaths::prepare_refinement() {
     m_achievers.resize(uc->num_conjunctions());
     for (unsigned i = 0; i < uc->num_counters(); i++) {
@@ -75,7 +74,8 @@ void UCRefinementCritPaths::prepare_refinement() {
         if (counter.unsatisfied_preconditions == 0
                 && counter.cost + counter.base_cost == counter.effect->cost) {
             m_achievers[counter.effect->id].push_back(counter.action_id);//find the true achiever
-        }
+        }//should consider the value, if sum of cost larger than g, it should not be achieved? 
+         //or this point could be makes sure in 
     }
     if (c_use_caching) {
         m_conflict_data.resize(uc->num_facts());
@@ -88,6 +88,7 @@ void UCRefinementCritPaths::prepare_refinement() {
 #endif
 }
 //called by learn-ur-dd -> refine
+//evaluate before actions are prepared
 HeuristicRefiner::RefinementResult UCRefinementCritPaths::refine(
     const State &state)
 {
@@ -107,7 +108,7 @@ HeuristicRefiner::RefinementResult UCRefinementCritPaths::refine(
     }
     while (successful != FAILED) {//loop == the recursive call
         bool x = uc->set_early_termination(false);
-        uc->evaluate(state);
+        uc->evaluate(state);//
         uc->set_early_termination(x);
 #ifndef NDEBUG
         std::cout << "{val = " << uc->get_value() << "}" << std::endl;

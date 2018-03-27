@@ -108,6 +108,8 @@ void Search::initialize()
   // (have to initialize the heuristics)
   for (Heuristic *h : m_underlying_heuristics) {
     h->evaluate(g_initial_state());// catch the initial value 
+    //reload
+    //h->evaluate(g_initial_state(),0);
   }
   //seems to be useless -- refine offline never be inherited and implemented
   for (HeuristicRefiner *r : m_heuristic_refiner) {
@@ -116,6 +118,7 @@ void Search::initialize()
   State init = g_initial_state();
   bool urec = false;
   if (evaluate(init, urec)) {
+  //if(evaluate(init,urec,0)){
     std::cout << "Solved in initial state!" << std::endl;
     m_solved = true;
   } else if (!m_cached_h || !m_cached_h->is_dead_end()) {
@@ -162,6 +165,32 @@ bool Search::trigger_refiner(const State &state, bool &success)
       if (!m_heuristic_refiner[i]->dead_end_learning_requires_full_component()
           && !m_heuristic_refiner[i]->dead_end_learning_requires_recognized_neighbors()) {
         tmp = m_heuristic_refiner[i]->learn_unrecognized_dead_end(state);
+        if (tmp == HeuristicRefiner::SOLVED && c_unsath_use_plan) {
+          Plan plan;
+          search_space.trace_path(state, plan);
+          m_heuristic_refiner[i]->get_partial_plan(plan);
+          set_plan(plan);
+          return true;
+        } else if (tmp == HeuristicRefiner::SUCCESSFUL) {
+          success = true;
+        }
+      }
+    }
+  }
+  return false;
+}
+//reload
+bool Search::trigger_refiner(const State &state, bool &success, int g_value)
+{
+  unsigned tmp;
+  success = false;
+  for (uint i = 0; i < m_heuristic_refiner.size(); i++) {
+    if (m_heuristic_refiner[i]->get_heuristic()->is_dead_end()) {
+      success = true;
+    } else {
+      if (!m_heuristic_refiner[i]->dead_end_learning_requires_full_component()
+          && !m_heuristic_refiner[i]->dead_end_learning_requires_recognized_neighbors()) {
+        tmp = m_heuristic_refiner[i]->learn_unrecognized_dead_end(state,g_value);
         if (tmp == HeuristicRefiner::SOLVED && c_unsath_use_plan) {
           Plan plan;
           search_space.trace_path(state, plan);
@@ -237,7 +266,8 @@ bool Search::evaluate(SearchNode &node)
 {
   bool u;// will be assign false
   bool res = evaluate(node.get_state(), u);
-  //bool res = evaluate(node.get_state(),u,node.get_g());s
+  //reload
+  //bool res = evaluate(node.get_state(), u, node.get_g());
   if (u) {// if u then recognized
     node.set_u_flag();
     search_progress.inc_u_recognized_dead_ends();
@@ -331,9 +361,9 @@ bool Search::evaluate(const State &state, bool &u, int g_value)
   if (maxh == -1) {
     if (m_unsath_refine) {
       check_dead_end(state, true, g_value);
-      return trigger_refiner(state, u); 
+      return trigger_refiner(state, u, g_value); 
     } else if (c_ensure_u_consistency && !c_unsath_new) {
-      Heuristic *x = check_dead_end(state, c_unsath_new_full,g_value);
+      Heuristic *x = check_dead_end(state, c_unsath_new_full, g_value);
       if (x && x->is_dead_end()) {
         u = true;
       } 
@@ -342,6 +372,7 @@ bool Search::evaluate(const State &state, bool &u, int g_value)
 
   return false;
 }
+//no preferred heuristics
 void Search::get_preferred_operators(const State &state,
                                      std::set<const Operator *> &result)
 {
@@ -383,10 +414,6 @@ StateID Search::fetch_next_state()
     }
     //If g value is larger than the cost bound then mark it and continue;
     //After the heuristic is modified then don't need it anymore
-    if (node.get_g() > get_bound()){
-      node.mark_as_dead_end();
-      continue;
-    }// move this part to step
     return state.get_id();
   }
   return StateID::no_state;
@@ -425,21 +452,19 @@ Search::SearchStatus Search::step()
 
   if (c_unsath_open) {
     //use heuristic to evaluate the dead end
-    /****************reload************************/
-    Heuristic *h = check_dead_end(state, c_unsath_open_full);// the state will take the value about node
+    Heuristic *h = check_dead_end(state, c_unsath_open_full);
+    //reload
     //SearchNode &node = searchspace.get_node(state);
     //Heuristic *h = check_dead_end(state, c_unsath_open_full, node.get_g());
-    /****************************************/
     if (h && h->is_dead_end()) {
       node.mark_as_dead_end();
       node.set_u_flag(); // set it recogenized by u
       search_progress.inc_u_recognized_dead_ends();
       if (m_unsath_refine && (c_unsath_refine_to_initial_state
                               || m_open_states > 0)) {//satisfay 
-        /*************reload the refiner**********/
         trigger_refiner(state, whatever); // refine and back propagate
-        //require input g value, action cost
-        /****************************************/
+        //reload
+        //trigger_refiner(state, whatever, node.get_g());
         backward_propagation(state);
       }
       search_progress.inc_dead_ends(1);
@@ -586,6 +611,11 @@ bool Search::check_and_learn_dead_end(const SearchNode &node,
         HeuristicRefiner::RefinementResult refine = \
           m_heuristic_refiner[i]->learn_unrecognized_dead_ends(visited,
                                                                recognized_neighbors);
+        //reload
+        /*HeuristicRefiner::RefinementResult refine = \
+          m_heuristic_refiner[i]->learn_unrecognized_dead_ends(visited,
+                                                               recognized_neighbors,
+                                                               node.get_g());*/
         new_revision = new_revision || refine == HeuristicRefiner::SUCCESSFUL;
         is_dead_end = is_dead_end 
             || refine == HeuristicRefiner::SUCCESSFUL
@@ -672,6 +702,8 @@ bool Search::search_open_state(SearchNode node,
       //}
       if (c_unsath_closed) {
         Heuristic *h = check_dead_end(succ, c_unsath_closed_full);
+        //reload
+        //Heuristic *h = check_dead_end(succ, c_unsath_closed_full,succ_node.get_g());
         if (h && h->is_dead_end()) {
           mark_dead_ends(succ_node, open_states);
           rn.insert(succ.get_id());
@@ -679,7 +711,7 @@ bool Search::search_open_state(SearchNode node,
         }
       }
       if (succ_node.is_open()) {
-        return true;
+        return true;//has not been expanded
       }
       succ_node.set_revision(m_revision);
       succ_node.set_flag();
@@ -731,6 +763,8 @@ void Search::backward_propagation(std::vector<State> &tbh)
         bool isdead = false;
         if (c_unsath_bprop) {
           Heuristic *h = check_dead_end(parent, c_unsath_bprop_full);
+          //reload
+          //Heuristic *h = check_dead_end(parent, c_unsath_bprop_full,pnode.get_g());
           if (h && h->is_dead_end()) {
             //std::vector<State> open;
 #ifndef NDEBUG
@@ -868,7 +902,7 @@ static SearchEngine *_parse_greedy(OptionParser &parser)
   }
   return NULL;
 }
-
+//This is node finished ......
 static Plugin<SearchEngine> _plugin_dfs("dfs", _parse_dfs);
 static Plugin<SearchEngine> _plugin_astar("astar", _parse_astar);
 static Plugin<SearchEngine> _plugin_greedy("greedy", _parse_greedy);

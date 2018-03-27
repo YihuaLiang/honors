@@ -58,7 +58,7 @@ protected:
     const bool c_eval_hc;
     const bool c_reeval_hc;
 
-    ClauseLearningStatistics m_stats;
+    ClauseLearningStatistics m_stats;//defined above, just for statistics
     ClauseStore *m_clause_store;
     UCClauseExtraction *m_clause_extraction;
 
@@ -78,14 +78,17 @@ public:
     UCHeuristic(const UCHeuristic &h);
     virtual void reevaluate(const State &state);
     //reload
-     std::string h_name = "UC_heuristic";
+    std::string h_name = "UC_heuristic";
     virtual void reevaluate(const State &state, int g_value);
     unsigned find_clause(const State &state);
     bool clause_matches(const State &state);
 
     virtual void refine_clauses(const State &dead_end, bool comp = true);
     virtual void refine_clauses(const std::vector<State> &dead_ends);
-
+    //reload
+    virtual void refine_clauses(const State &dead_end, int g_value, bool comp = true);
+    virtual void refine_clauses(const std::vector<State> &dead_ends, int g_value);
+    
     virtual void statistics() const;
 
     ClauseStore *get_clause_store();

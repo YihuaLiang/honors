@@ -85,8 +85,6 @@ bool UCRefinementOnRN::prepare_refinement(
     bool _early = uc->set_early_termination(false);
     //only quote uc here???
     uc->evaluate(states[0]);//take the evaluation
-    //reload
-    //uc->evaluate(states[0].g_value)//pass the value to prepare
     uc->set_early_termination(_early);
     if (uc->is_dead_end()) {
         return true; //don't need refine
@@ -158,7 +156,7 @@ bool UCRefinementOnRN::prepare_refinement(
 bool UCRefinementOnRN::prepare_refinement(
                             const std::vector<State> &states,
                             const std::unordered_set<StateID> &rn,
-                            int g_value)
+                            int g_value)//only passin the g_value of first one?
 {
     // check if the states are already recognized
     bool _early = uc->set_early_termination(false);
@@ -198,7 +196,6 @@ bool UCRefinementOnRN::prepare_refinement(
         }
     }
     //heuristic will restore conjunction information
-
     // store conjunctions not reachable from the states in the given component
     if (c_use_root_state_conflicts) {
         root_conflicts.resize(uc->num_facts());

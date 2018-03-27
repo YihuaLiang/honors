@@ -70,7 +70,8 @@ protected:
     virtual Heuristic *check_dead_end(const State &state, bool full, int g_value);
 
     bool trigger_refiner(const State &state, bool &success);
-    
+    //reload
+    bool trigger_refiner(const State &state, bool & success, int g_value);
     bool evaluate(const State &state, bool &u);
     //reload
     bool evaluate(const State &state, bool &u, int g_value);

@@ -82,7 +82,7 @@ void Heuristic::evaluate(const State &state, int g_value) {
         initialize();
     preferred_operators.clear();
     
-    heuristic = compute_heuristic(state,g_value);
+    heuristic = compute_heuristic(state, g_value);
     
     for (int i = 0; i < preferred_operators.size(); i++)
         preferred_operators[i]->unmark();

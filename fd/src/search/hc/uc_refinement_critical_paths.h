@@ -55,8 +55,8 @@ protected:
     virtual RefinementResult refine(
             const std::vector<State> &root_component,
             const std::unordered_set<StateID> &,
-            int ) {
-        return refine(root_component.front());
+            int g_value) {
+        return refine(root_component.front(),g_value);
     }
 public:
     UCRefinementCritPaths(const Options &opts);

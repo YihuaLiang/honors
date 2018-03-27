@@ -30,7 +30,7 @@ protected:
     OpenList open;
     OpenList preferred_open;
     size_t _size;
-    V val;
+    V val;//It has a V type value
 public:
     VOpenSet();
     virtual void push(const SearchNode &node, bool is_preferred);
@@ -44,7 +44,7 @@ public:
 
 class AstarOpenSet : public VOpenSet<GPlusHValue> {
 public:
-    AstarOpenSet() : VOpenSet<GPlusHValue>() {}
+    AstarOpenSet() : VOpenSet<GPlusHValue>() {}//consider g+h
     static void add_options_to_parser(OptionParser &parser)
     {
         VOpenSet<GPlusHValue>::add_options_to_parser(parser);
@@ -53,7 +53,7 @@ public:
 
 class GreedyOpenSet : public VOpenSet<HValue> {
 public:
-    GreedyOpenSet() : VOpenSet<HValue>() {}
+    GreedyOpenSet() : VOpenSet<HValue>() {}//only consider h
     static void add_options_to_parser(OptionParser &parser)
     {
         VOpenSet<HValue>::add_options_to_parser(parser);

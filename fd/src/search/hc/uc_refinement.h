@@ -156,6 +156,7 @@ class UCRefinement : public HeuristicRefiner {
       }
       if (res != SOLVED) {
         uc->refine_clauses(root_component);
+        //uc->refine_clauses(root_component,g_value);
         uc->set_dead_end();
 #ifndef NDEBUG
         uc->dump_compilation_information();
@@ -174,6 +175,14 @@ class UCRefinement : public HeuristicRefiner {
 
   virtual void learn_recognized_dead_end(const State &dead_end) {
     uc->refine_clauses(dead_end);
+  }
+//reload
+  virtual void learn_recognized_dead_ends(const std::vector<State> &dead_ends, int g_value) {
+    uc->refine_clauses(dead_ends, g_value);
+  }
+
+  virtual void learn_recognized_dead_end(const State &dead_end, int g_value) {
+    uc->refine_clauses(dead_end, g_value);
   }
 
   virtual bool dead_end_learning_requires_full_component() { return false; }

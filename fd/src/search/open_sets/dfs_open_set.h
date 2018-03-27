@@ -78,7 +78,7 @@ template<typename t_key, typename t_key_constructor>
 
   typedef std::list<int> Store;
   typedef std::map<t_key, typename DFSOpenSet<t_key, t_key_constructor>::Store> OpenList;
-  std::list<DFSOpenSet<t_key, t_key_constructor>::OpenList> open_list;
+  std::list<DFSOpenSet<t_key, t_key_constructor>::OpenList> open_list;//a list of list of int
   std::list<DFSOpenSet<t_key, t_key_constructor>::OpenList> preferred_open_list;
   size_t _size;
   bool newdepth;
@@ -116,7 +116,7 @@ template<typename t_key, typename t_key_constructor>
     if (this->preferred_enabled && this->preferred_open_list.front().size() > 0) {
       typename DFSOpenSet<t_key, t_key_constructor>::OpenList::iterator b = this->preferred_open_list.front().begin();
       typename DFSOpenSet<t_key, t_key_constructor>::Store &store = b->second;
-      id = store.front();
+      id = store.front();//a int list
       store.pop_front();
       if (store.empty()) {
         this->preferred_open_list.front().erase(b);

@@ -1379,20 +1379,18 @@ int HCHeuristic::simple_traversal_wrapper(
       else counter->cost = conjunctions[conj_id].cost;
       //line 2:  
       if( counter->cost + actions[counter->action_id].base_cost > bound) {
-        continue;//follow the can't achieve part
+        continue;//The effect conjunction will be remained as 0
       }
       //counter is action --- the cost should inherit from the conj_id
-      //counter->cost = level;
       if (!counter->effect->is_achieved()) {//cost <0 ---> has not been explored 
         //directly add the base cost here
-        //if not early termination then continue -> jump the dead end???
-        counter->effect->check_and_update(counter->cost + actions[counter->action_id].base_cost, NULL);//add the cost , this will store the result
-        //counter->effect->check_and_update(level+1,NULL);
-
+        //if not early termination then continue -> jump the dead end
+        counter->effect->check_and_update(counter->cost + actions[counter->action_id].base_cost, NULL);
+        //add the cost , this will store the result
         //update the conjunction, the cost are stored in the conjunction
         exploration.push_back(counter->effect->id);//push in new counter
         if (m_goal_id == counter->effect->id) {
-          //goal_level = level + 1; // goal is achieved so it could be returned
+          // goal is achieved so it could be returned
           goal_level = counter->cost + actions[counter->action_id].base_cost;          
           if (early_termination) {
             return goal_level;
@@ -1816,7 +1814,6 @@ void HCHeuristic::extract_all_conjunctions(const Fluent &fluent,
 
 /*
  * Updating conjunction set
- *
  */
 bool HCHeuristic::add_subsets_m(const Fluent &/*base*/,
                                 bool /*is_goal*/, unsigned to_go)

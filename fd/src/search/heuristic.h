@@ -46,10 +46,8 @@ public:
     Heuristic(const Options &options);
     Heuristic(const Heuristic &heuristic);
     virtual ~Heuristic();
-    /***set the cost bound as public variable***********/
     int bound;
     std::string h_name = "Heuristic";
-    /***************************************************/
     void evaluate(const State &state);
     //reload
     void evaluate(const State &state, int g_value);

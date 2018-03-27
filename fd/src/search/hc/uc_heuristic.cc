@@ -91,7 +91,7 @@ int UCHeuristic::compute_heuristic(const State &state) {
         m_stats.end(m_stats.t_hc_evaluation);
         if (res == DEAD_END) {
             m_stats.num_hc_dead_ends++;
-            refine_clauses(state, false);
+            refine_clauses(state, false);//
         }
     }
     return res;
@@ -162,10 +162,31 @@ void UCHeuristic::refine_clauses(const State &state, bool comp)
         hc_evaluate(state);
     }
     assert(is_dead_end());
-    m_clause_extraction->refine(this, state);
+    m_clause_extraction->refine(this, state);//this refine depend on what the option
     m_stats.end(m_stats.t_clause_extraction);
 }
+//reload
+void UCHeuristic::refine_clauses(const std::vector<State> &dead_ends, int g_value)
+{
+    for (const State & s : dead_ends) {
+        refine_clauses(s, g_value);
+    }
+}
 
+void UCHeuristic::refine_clauses(const State &state, int g_value, bool comp)
+{
+    if (!m_clause_extraction || clause_matches(state)) {
+        return;
+    }
+    m_stats.num_clause_extractions++;
+    m_stats.start();
+    if (comp) {
+        hc_evaluate(state, g_value);
+    }
+    assert(is_dead_end());
+    m_clause_extraction->refine(this, state, g_value);//this refine depend on what the option
+    m_stats.end(m_stats.t_clause_extraction);
+}
 void UCHeuristic::statistics() const
 {
   //dump_compilation_information();
