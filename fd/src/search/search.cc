@@ -107,9 +107,9 @@ void Search::initialize()
   // TODO kind of hacky...
   // (have to initialize the heuristics)
   for (Heuristic *h : m_underlying_heuristics) {
-    h->evaluate(g_initial_state());// catch the initial value 
+    //h->evaluate(g_initial_state());// catch the initial value 
     //reload
-    //h->evaluate(g_initial_state(),0);
+    h->evaluate(g_initial_state(),0);
   }
   //seems to be useless -- refine offline never be inherited and implemented
   for (HeuristicRefiner *r : m_heuristic_refiner) {
@@ -117,18 +117,20 @@ void Search::initialize()
   }
   State init = g_initial_state();
   bool urec = false;
-  if (evaluate(init, urec)) {
-  //if(evaluate(init,urec,0)){
+  //reload
+  //if (evaluate(init, urec)) {
+  if(evaluate(init, urec , 0)){
+    //cout<<"H value "<<m_cached_h<<endl;
     std::cout << "Solved in initial state!" << std::endl;
     m_solved = true;
   } else if (!m_cached_h || !m_cached_h->is_dead_end()) {
+    //cout<<"H value "<<m_cached_h<<endl;
     if (m_cached_h) {
       search_progress.add_heuristic(m_cached_h);
       search_progress.get_initial_h_values();
     }
     SearchNode node = search_space.get_node(init);
     node.open_initial(m_cached_h ? m_cached_h->get_value() : 0);
-    //m_open_set->push(node, false);
     m_open_set->push(node, false);
     m_open_states++;
   } else {
@@ -152,8 +154,6 @@ bool Search::check_goal_and_set_plan(const State &state)
   }
   return false;
 }
-//trigger refiner lead PCR 
-//check and learn dead end lead to NR ???
 bool Search::trigger_refiner(const State &state, bool &success)
 {
   unsigned tmp;
@@ -215,7 +215,6 @@ Heuristic *Search::check_dead_end(const State &state, bool full)
     Heuristic *h = *it;
     assert(h != NULL);
     if (full) {
-      //reload this function in heuristic
       h->evaluate(state);
     } else {
       h->reevaluate(state);
@@ -243,7 +242,6 @@ Heuristic *Search::check_dead_end(const State &state, bool full, int g_value)
     Heuristic *h = *it;
     assert(h != NULL);
     if (full) {
-      //reload this function in heuristic
       h->evaluate(state, g_value);
     } else {
       h->reevaluate(state, g_value);
@@ -265,9 +263,9 @@ Heuristic *Search::check_dead_end(const State &state, bool full, int g_value)
 bool Search::evaluate(SearchNode &node)
 {
   bool u;// will be assign false
-  bool res = evaluate(node.get_state(), u);
+  //bool res = evaluate(node.get_state(), u);
   //reload
-  //bool res = evaluate(node.get_state(), u, node.get_g());
+  bool res = evaluate(node.get_state(), u, node.get_g());
   if (u) {// if u then recognized
     node.set_u_flag();
     search_progress.inc_u_recognized_dead_ends();
@@ -353,6 +351,7 @@ bool Search::evaluate(const State &state, bool &u, int g_value)
       }
       if (m_heuristics[i]->get_value() > maxh) {
         maxh = m_heuristics[i]->get_value();
+        //cout<<"In search evaluate "<<maxh<<endl;
         m_cached_h = m_heuristics[i];
       }
     }
@@ -369,7 +368,6 @@ bool Search::evaluate(const State &state, bool &u, int g_value)
       } 
     }
   }
-
   return false;
 }
 //no preferred heuristics
@@ -452,19 +450,18 @@ Search::SearchStatus Search::step()
 
   if (c_unsath_open) {
     //use heuristic to evaluate the dead end
-    Heuristic *h = check_dead_end(state, c_unsath_open_full);
+    //Heuristic *h = check_dead_end(state, c_unsath_open_full);
     //reload
-    //SearchNode &node = searchspace.get_node(state);
-    //Heuristic *h = check_dead_end(state, c_unsath_open_full, node.get_g());
+    Heuristic *h = check_dead_end(state, c_unsath_open_full, node.get_g());
     if (h && h->is_dead_end()) {
       node.mark_as_dead_end();
       node.set_u_flag(); // set it recogenized by u
       search_progress.inc_u_recognized_dead_ends();
       if (m_unsath_refine && (c_unsath_refine_to_initial_state
                               || m_open_states > 0)) {//satisfay 
-        trigger_refiner(state, whatever); // refine and back propagate
+        //trigger_refiner(state, whatever); // refine and back propagate
         //reload
-        //trigger_refiner(state, whatever, node.get_g());
+        trigger_refiner(state, whatever, node.get_g());
         backward_propagation(state);
       }
       search_progress.inc_dead_ends(1);
@@ -502,7 +499,6 @@ Search::SearchStatus Search::step()
       if (evaluate(succ_node)) { // use heuristic on successor
         return SOLVED;
       }
-      //This should be hff, m cached_h will tkae the last evaluate value
       if (m_cached_h && m_cached_h->is_dead_end()) {
         search_progress.inc_dead_ends(1);
         succ_node.mark_as_dead_end();
@@ -608,14 +604,14 @@ bool Search::check_and_learn_dead_end(const SearchNode &node,
         is_dead_end = true; // if one find it is dead end then dead end
       } else {
         //don/t know why but it lead to can lead to both 2 refiners. ask
-        HeuristicRefiner::RefinementResult refine = \
-          m_heuristic_refiner[i]->learn_unrecognized_dead_ends(visited,
-                                                               recognized_neighbors);
-        //reload
         /*HeuristicRefiner::RefinementResult refine = \
           m_heuristic_refiner[i]->learn_unrecognized_dead_ends(visited,
+                                                               recognized_neighbors);*/
+        //reload
+        HeuristicRefiner::RefinementResult refine = \
+          m_heuristic_refiner[i]->learn_unrecognized_dead_ends(visited,
                                                                recognized_neighbors,
-                                                               node.get_g());*/
+                                                               node.get_g());
         new_revision = new_revision || refine == HeuristicRefiner::SUCCESSFUL;
         is_dead_end = is_dead_end 
             || refine == HeuristicRefiner::SUCCESSFUL
@@ -701,9 +697,9 @@ bool Search::search_open_state(SearchNode node,
       //    return true;
       //}
       if (c_unsath_closed) {
-        Heuristic *h = check_dead_end(succ, c_unsath_closed_full);
+        //Heuristic *h = check_dead_end(succ, c_unsath_closed_full);
         //reload
-        //Heuristic *h = check_dead_end(succ, c_unsath_closed_full,succ_node.get_g());
+        Heuristic *h = check_dead_end(succ, c_unsath_closed_full,succ_node.get_g());
         if (h && h->is_dead_end()) {
           mark_dead_ends(succ_node, open_states);
           rn.insert(succ.get_id());
@@ -762,9 +758,9 @@ void Search::backward_propagation(std::vector<State> &tbh)
         //}
         bool isdead = false;
         if (c_unsath_bprop) {
-          Heuristic *h = check_dead_end(parent, c_unsath_bprop_full);
+          //Heuristic *h = check_dead_end(parent, c_unsath_bprop_full);
           //reload
-          //Heuristic *h = check_dead_end(parent, c_unsath_bprop_full,pnode.get_g());
+          Heuristic *h = check_dead_end(parent, c_unsath_bprop_full,pnode.get_g());
           if (h && h->is_dead_end()) {
             //std::vector<State> open;
 #ifndef NDEBUG

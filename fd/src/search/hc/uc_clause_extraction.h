@@ -40,6 +40,7 @@ class UCClauseExtraction {
 public:
     UCClauseExtraction(const Options &) {}
     virtual void refine(HCHeuristic *h, const State &state) = 0;
+    //reload
     virtual void refine(HCHeuristic *h, const State &state, int g_value) = 0;
     virtual ClauseStore *get_store() = 0;
 };

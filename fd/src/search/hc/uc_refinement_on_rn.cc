@@ -162,8 +162,6 @@ bool UCRefinementOnRN::prepare_refinement(
     bool _early = uc->set_early_termination(false);
     //only quote uc here???
     uc->evaluate(states[0],g_value);//take the evaluation
-    //reload
-    //uc->evaluate(states[0].g_value)//pass the value to prepare
     uc->set_early_termination(_early);
     if (uc->is_dead_end()) {
         return true; //don't need refine

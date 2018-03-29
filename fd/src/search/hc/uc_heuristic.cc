@@ -65,6 +65,7 @@ void UCHeuristic::hc_evaluate(const State &state, int g_value){
     }
     heuristic = HCHeuristic::compute_heuristic(state, g_value);
     evaluator_value = heuristic;
+    //cout<<evaluator_value<<endl;
 }
 unsigned UCHeuristic::find_clause(const State &state) {
     m_stats.start();
@@ -111,9 +112,10 @@ int UCHeuristic::compute_heuristic(const State &state, int g_value) {
         m_stats.end(m_stats.t_hc_evaluation);
         if (res == DEAD_END) {
             m_stats.num_hc_dead_ends++;
-            refine_clauses(state, false);
+            refine_clauses(state, g_value, false);
         }
     }
+    //cout<<"H value level 2 "<<res<<endl;
     return res;
 }
 

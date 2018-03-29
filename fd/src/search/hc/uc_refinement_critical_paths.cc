@@ -319,10 +319,9 @@ std::pair<bool, unsigned> UCRefinementCritPaths::compute_conflict(
             regr.insert(action.precondition.begin(), action.precondition.end());
             fluent_op::set_minus(subgoal, action.add_effect, regr);//get the regr
             //
-            assert(action.base_cost > 0);//if base cost = 0 then don't do it?????
-            //when the cost really means cost -- it should not do it 
+            //assert(action.base_cost > 0);//if base cost = 0 then don't do it?????
             //reload
-            ////assert(action.base_cost > 0);
+            //assert(action.base_cost > 0);
             pair<bool, unsigned> child_confl =//recurssive call
                 //it should be base_cost, no modification needed
                 compute_conflict(regr, threshold - action.base_cost, state);

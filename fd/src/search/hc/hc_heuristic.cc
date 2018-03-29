@@ -1099,7 +1099,6 @@ void HCHeuristic::setup_exploration_queue_state(
 
 /*
  * Computation of hmax
- *
  */
 void HCHeuristic::relaxed_exploration()
 {
@@ -1279,8 +1278,6 @@ int HCHeuristic::simple_traversal_setup(const State &state,
 
   return exploration.size();
 }
-
-/******modified******/
 //for every existing conjunction it will provide a h value ---> thats why it doesn't have a early termination
 //
 int HCHeuristic::simple_traversal_wrapper(
@@ -1363,7 +1360,6 @@ int HCHeuristic::simple_traversal_wrapper(
       border = exploration.size();
       //based on unit cost
       level += 1; //add one level -- the distance 
-      //cout << "level enlarge"<<endl;
     }
     unsigned conj_id = exploration[i++]; 
     // think of how to store the cost properly
@@ -1376,8 +1372,10 @@ int HCHeuristic::simple_traversal_wrapper(
       }
       //Initialize the pre-cost
       if(level == 0) counter->cost = g_value;//init to be g, otherwise use the accummulated cost 
-      else counter->cost = conjunctions[conj_id].cost;
-      //line 2:  
+      else {
+        //cout<<"conjunction cost "<<conjunctions[conj_id].cost<<"counter cost "<<counter->cost<<endl;
+        counter->cost = conjunctions[conj_id].cost;
+      }//line 2:  
       if( counter->cost + actions[counter->action_id].base_cost > bound) {
         continue;//The effect conjunction will be remained as 0
       }
@@ -1385,13 +1383,14 @@ int HCHeuristic::simple_traversal_wrapper(
       if (!counter->effect->is_achieved()) {//cost <0 ---> has not been explored 
         //directly add the base cost here
         //if not early termination then continue -> jump the dead end
+        //cout<<"conjunction cost "<<conjunctions[conj_id].cost<<"counter cost "<<counter->base_cost<<endl;
         counter->effect->check_and_update(counter->cost + actions[counter->action_id].base_cost, NULL);
         //add the cost , this will store the result
         //update the conjunction, the cost are stored in the conjunction
         exploration.push_back(counter->effect->id);//push in new counter
         if (m_goal_id == counter->effect->id) {
           // goal is achieved so it could be returned
-          goal_level = counter->cost + actions[counter->action_id].base_cost;          
+          goal_level = counter->cost + actions[counter->action_id].base_cost;  
           if (early_termination) {
             return goal_level;
           }
@@ -1403,7 +1402,6 @@ int HCHeuristic::simple_traversal_wrapper(
   // here need to modified
 }
 
-/******modified******/
 int HCHeuristic::simple_traversal(const State &state)
 {
   vector<unsigned> exploration;
@@ -1416,7 +1414,7 @@ int HCHeuristic::simple_traversal(const State &state)
 
 //reload
 int HCHeuristic::simple_traversal(const State &state, int g_value)
-{
+{;
   vector<unsigned> exploration;
   int x = simple_traversal_setup(state, exploration);
   //put in the size of exploration
@@ -1460,7 +1458,7 @@ int HCHeuristic::compute_heuristic(const State &state)
   }
   return res == DEAD_END ? res : res - 1;
 }
-//**reload*****
+//reload
 int HCHeuristic::compute_heuristic(const State &state,int g_value)
 {
   std::vector<unsigned> prec;

@@ -155,8 +155,9 @@ class UCRefinement : public HeuristicRefiner {
         m_statistics.end(m_statistics.t_real_refinements);
       }
       if (res != SOLVED) {
-        uc->refine_clauses(root_component);
-        //uc->refine_clauses(root_component,g_value);
+        //uc->refine_clauses(root_component);
+        //reload
+        uc->refine_clauses(root_component,g_value);
         uc->set_dead_end();
 #ifndef NDEBUG
         uc->dump_compilation_information();

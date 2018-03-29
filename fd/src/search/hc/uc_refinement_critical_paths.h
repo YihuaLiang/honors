@@ -41,8 +41,6 @@ protected:
     std::pair<bool, unsigned> compute_conflict(const Fluent &subgoal, int threshold, const State &state);
 
     void prepare_refinement();
-    //reload
-    //void prepare_refinement(int g_value);
 
     virtual RefinementResult refine(const State &state);
     virtual RefinementResult refine(

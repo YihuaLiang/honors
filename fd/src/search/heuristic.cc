@@ -83,7 +83,7 @@ void Heuristic::evaluate(const State &state, int g_value) {
     preferred_operators.clear();
     
     heuristic = compute_heuristic(state, g_value);
-    
+    // cout<<"H value level 1 "<<heuristic<<endl;
     for (int i = 0; i < preferred_operators.size(); i++)
         preferred_operators[i]->unmark();
     assert(heuristic == DEAD_END || heuristic >= 0);
