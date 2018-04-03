@@ -21,6 +21,7 @@ class Heuristic : public ScalarEvaluator {
 protected:
     enum {NOT_INITIALIZED = -2};
     int heuristic;
+    //when use 
     int evaluator_value; // usually equal to heuristic but can be different
     // if set with set_evaluator_value which is done if we use precalculated
     // estimates, eg. when re-opening a search node
@@ -31,6 +32,7 @@ protected:
     virtual void initialize() {}
     virtual int compute_heuristic(const State &state) = 0;
     //reload
+    //why return heuristic lead to reaching memory limit????
     virtual int compute_heuristic(const State &, int ){return 0;}
     //provide basic function line 1&2
     // Usage note: It's OK to set the same operator as preferred

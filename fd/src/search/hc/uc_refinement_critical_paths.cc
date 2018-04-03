@@ -80,6 +80,7 @@ void UCRefinementCritPaths::prepare_refinement() {
     if (c_use_caching) {
         m_conflict_data.resize(uc->num_facts());
     }
+    cout<<"prepare succeed"<<endl;
 #ifndef NDEBUG
     for (unsigned i = 0; i < uc->num_conjunctions(); i++) {
         const Conjunction &conj = uc->get_conjunction(i);
@@ -185,6 +186,7 @@ HeuristicRefiner::RefinementResult UCRefinementCritPaths::refine(
         assert(uc->get_counter(i).base_cost >= 1);
     }//here we do not require base cost  > 1
 #endif
+    cout<<"come into pcr "<<endl;
     //cout<<endl<<"PCR called"<<endl;
     bool updated_c = false;
     RefinementResult successful = SUCCESSFUL;
@@ -193,6 +195,7 @@ HeuristicRefiner::RefinementResult UCRefinementCritPaths::refine(
     for (uint i = 0; i < g_goal.size(); i++) {
         goal.insert(g_goal[i]);
     }
+    //fail to quit
     while (successful != FAILED) {//loop == the recursive call
         bool x = uc->set_early_termination(false);
         uc->evaluate(state, g_value);
@@ -200,7 +203,7 @@ HeuristicRefiner::RefinementResult UCRefinementCritPaths::refine(
 #ifndef NDEBUG
         std::cout << "{val = " << uc->get_value() << "}" << std::endl;
 #endif
-        //std::cout << "val = " << uc->get_value() << std::endl;
+        //std::cout << "val = " << uc->get_value() <<"G value"<<g_value<<std::endl;
         if (uc->is_dead_end()) {
             //std::cout << ">>>>>>>>>>>REFINEMENT_END" << std::endl;
             return updated_c ? SUCCESSFUL : UNCHANGED;
@@ -216,9 +219,11 @@ HeuristicRefiner::RefinementResult UCRefinementCritPaths::refine(
         //START = uc->get_value();
         std::pair<bool, unsigned> res = compute_conflict(goal, uc->get_value(), state);
         //std::cout << "done => " << m_conflicts.size() << std::endl;
+        cout<<"return success"<<endl;
         if (res.second == (unsigned) -1) {
             //std::cout << "Found plan in uC refinement!" << std::endl;
             successful = SOLVED;
+            cout<<"break with second = -1"<<endl;
             break;
         } else {
             if (c_use_caching) {
@@ -228,26 +233,31 @@ HeuristicRefiner::RefinementResult UCRefinementCritPaths::refine(
                 open.push_back(res.second);
                 m_pruned[res.second] = true;
                 while (i < open.size()) {
+                    //here is a bug
                     for (std::set<unsigned>::iterator it = m_requires[open[i]].begin(); it != m_requires[open[i]].end(); it++) {
-                        if (!m_pruned[*it]) {
+                        if (!m_pruned[*it]) {//this line
                             m_pruned[*it] = true;
                             open.push_back(*it);
                         }
                     }
                     i++;
-                }
+                    cout<<"open finish"<<endl;
+                }               
                 for (uint i = 0; i < m_conflicts.size(); i++) {
                     if (m_pruned[i]) {
                         if (uc->exceeded_size_limit()) {
+                            cout<<"FAiled"<<endl;
                             successful = FAILED;
                             break;
                         } else {
+                            cout<<"bug in add conflict"<<endl;
                             uc->add_conflict(m_conflicts[i]);
                         }
                     }
                 }
             }
             else if (!uc->update_c(m_conflicts)) {
+                cout<<"bug in update c"<<endl;
                 successful = FAILED;//update the conflicts
             }
         }
@@ -257,6 +267,7 @@ HeuristicRefiner::RefinementResult UCRefinementCritPaths::refine(
         //std::cout << "successful = " << successful << std::endl;
         //exit(1);
         release_memory();
+        cout<<"pcr next round"<<endl;
     }
     //assert(false);
     //std::cout << ">>>>>>>>>>>REFINEMENT_END" << std::endl;
@@ -287,21 +298,24 @@ std::pair<bool, unsigned> UCRefinementCritPaths::compute_conflict(
         }
 #endif
     }
+    cout<<"begin conflict"<<endl;
     unsigned conflict_id = m_conflicts.size();
     m_requires.resize(m_requires.size() + 1);
     m_required_by.resize(m_required_by.size() + 1);
     m_conflicts.resize(m_conflicts.size() + 1);
     m_pruned.push_back(false);
+    cout<<"prepare succeed"<<endl;
     if (!uc->extract_mutex(subgoal, m_conflicts[conflict_id])) {//no mutex
         unsigned cid = (*m_selector)(this, subgoal, threshold);
         if (cid == ConflictSelector::INVALID) {
+            //cout<<"invalid conflict"<<endl;
             return make_pair(false, -1);
         }
         if (!uc->get_conjunction(cid).is_achieved() ||
             uc->get_conjunction(cid).cost > threshold) {//it has been calculated
+            cout<<"can't be achieved"<<endl;
             return make_pair(true, cid);
-        }//hc > n or can not be acheved
-
+        }
         m_conflicts[conflict_id].merge(uc->get_fluent(cid));
 
         const vector<unsigned> &candidates = m_achievers[cid];
@@ -313,7 +327,6 @@ std::pair<bool, unsigned> UCRefinementCritPaths::compute_conflict(
                 continue;//check every action --> intersect set not empty then ad the f_del to the conflict
             }
 
-            //std::cout <<
             //    std::string(START - threshold + 1, ' ') << g_operators[action.operator_no].get_name() << std::endl;
             Fluent regr;
             regr.insert(action.precondition.begin(), action.precondition.end());

@@ -1398,7 +1398,7 @@ int HCHeuristic::simple_traversal_wrapper(
       }
     }
   }
-  return conjunctions[m_goal_id].is_achieved() ? goal_level : DEAD_END; // goal level means the depth of goal 
+  return conjunctions[m_goal_id].is_achieved() ? (goal_level-g_value) : DEAD_END; // goal level means the depth of goal 
   // here need to modified
 }
 

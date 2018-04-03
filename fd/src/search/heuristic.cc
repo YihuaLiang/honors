@@ -102,6 +102,7 @@ void Heuristic::evaluate(const State &state, int g_value) {
             assert(preferred_operators[i]->is_applicable(state));
     }
 #endif
+    
     evaluator_value = heuristic;
 }
 

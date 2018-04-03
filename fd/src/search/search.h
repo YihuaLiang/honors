@@ -75,8 +75,9 @@ protected:
     bool evaluate(const State &state, bool &u);
     //reload
     bool evaluate(const State &state, bool &u, int g_value);
-    bool evaluate(SearchNode &node);//this don't need reload but need to input the g_value
-    
+    bool evaluate(SearchNode &node);
+    //reload
+    bool evaluate(SearchNode &node, int g_value);    
 
     void get_preferred_operators(const State &state, std::set<const Operator *> &result);
 
