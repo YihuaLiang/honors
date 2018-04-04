@@ -20,6 +20,7 @@ struct GreedyConflictSelector : public ConflictSelector {
     virtual unsigned operator()(UCRefinementCritPaths *r, const Fluent &subgoal,
                                 int threshold) {
         UCHeuristic *pic = dynamic_cast<UCHeuristic*>(r->get_heuristic());
+        //get a heuristic
         int best_size = 0;
         int res = -1;
         std::vector<int> in_fluent;
@@ -36,6 +37,7 @@ struct GreedyConflictSelector : public ConflictSelector {
                     if (res == -1 || conj.fluent_size < best_size) {
                         res = cid;
                         best_size = conj.fluent_size;
+                        //control the fluent size
                     }
                 }
             }
@@ -220,6 +222,7 @@ HeuristicRefiner::RefinementResult UCRefinementCritPaths::refine(
         std::pair<bool, unsigned> res = compute_conflict(goal, uc->get_value(), state);
         //std::cout << "done => " << m_conflicts.size() << std::endl;
         cout<<"return success"<<endl;
+        cout<<"res "<<res.second<<endl;
         if (res.second == (unsigned) -1) {
             //std::cout << "Found plan in uC refinement!" << std::endl;
             successful = SOLVED;
@@ -230,14 +233,21 @@ HeuristicRefiner::RefinementResult UCRefinementCritPaths::refine(
                 m_required_by.clear();
                 unsigned i = 0;
                 std::vector<unsigned> open;
+                cout<<"open size "<<open.size()<<endl;
                 open.push_back(res.second);
+                //for the conflicts, go through those conjunctions require it 
                 m_pruned[res.second] = true;
+                cout<<"open size "<<open.size()<<endl;
                 while (i < open.size()) {
                     //here is a bug
+                    //it is because the open[i] is larger than m_requires size --> the size problem is not guaranteed
                     for (std::set<unsigned>::iterator it = m_requires[open[i]].begin(); it != m_requires[open[i]].end(); it++) {
+                        cout<<"open i "<<open[i]<<endl;
+                        cout<<"m require size "<<m_requires.size()<<endl;
+                        cout<<"m pruned "<<m_pruned.size()<<endl;
                         if (!m_pruned[*it]) {//this line
-                            m_pruned[*it] = true;
-                            open.push_back(*it);
+                            m_pruned[*it] = true;//set the predecessor to true and push it into open
+                            open.push_back(*it);            
                         }
                     }
                     i++;
@@ -246,11 +256,9 @@ HeuristicRefiner::RefinementResult UCRefinementCritPaths::refine(
                 for (uint i = 0; i < m_conflicts.size(); i++) {
                     if (m_pruned[i]) {
                         if (uc->exceeded_size_limit()) {
-                            cout<<"FAiled"<<endl;
                             successful = FAILED;
                             break;
                         } else {
-                            cout<<"bug in add conflict"<<endl;
                             uc->add_conflict(m_conflicts[i]);
                         }
                     }
@@ -266,7 +274,7 @@ HeuristicRefiner::RefinementResult UCRefinementCritPaths::refine(
 #endif
         //std::cout << "successful = " << successful << std::endl;
         //exit(1);
-        release_memory();
+        release_memory();//every time it get a new X it will clean the m
         cout<<"pcr next round"<<endl;
     }
     //assert(false);
@@ -305,7 +313,8 @@ std::pair<bool, unsigned> UCRefinementCritPaths::compute_conflict(
     m_conflicts.resize(m_conflicts.size() + 1);
     m_pruned.push_back(false);
     cout<<"prepare succeed"<<endl;
-    if (!uc->extract_mutex(subgoal, m_conflicts[conflict_id])) {//no mutex
+    if (!uc->extract_mutex(subgoal, m_conflicts[conflict_id])) {
+        //look into cid construction
         unsigned cid = (*m_selector)(this, subgoal, threshold);
         if (cid == ConflictSelector::INVALID) {
             //cout<<"invalid conflict"<<endl;
@@ -314,6 +323,8 @@ std::pair<bool, unsigned> UCRefinementCritPaths::compute_conflict(
         if (!uc->get_conjunction(cid).is_achieved() ||
             uc->get_conjunction(cid).cost > threshold) {//it has been calculated
             cout<<"can't be achieved"<<endl;
+            //return a conjunction id, cid should be returned
+            //when return here, the conflicts, requires/d, fail to catch the value 
             return make_pair(true, cid);
         }
         m_conflicts[conflict_id].merge(uc->get_fluent(cid));
@@ -339,6 +350,7 @@ std::pair<bool, unsigned> UCRefinementCritPaths::compute_conflict(
                 //it should be base_cost, no modification needed
                 compute_conflict(regr, threshold - action.base_cost, state);
             regr.clear();//regr means the sub goal
+            
             if (child_confl.second == (unsigned) -1) {//-1 means the result is invalid
                 //_plan.push_back(action.operator_no);
                 m_plan.push_back(&g_operators[action.operator_no]);
@@ -348,12 +360,13 @@ std::pair<bool, unsigned> UCRefinementCritPaths::compute_conflict(
                 fluent_op::set_minus(uc->get_fluent(child_confl.second),
                                      action.precondition, regr);//delete similar function
             } else {//the last return case --false, cid
-                assert(child_confl.second < m_conflicts.size());//???
-                m_requires[conflict_id].insert(child_confl.second);//
+                assert(child_confl.second < m_conflicts.size());//learned cid should be smaller than conflict size?
+                m_requires[conflict_id].insert(child_confl.second);//random in
                 m_required_by[child_confl.second].insert(conflict_id);
                 fluent_op::set_minus(m_conflicts[child_confl.second].get_fluent(),
                                      action.precondition, regr);
             }
+            //child confl return true in can't achieved -> merge into regr
             m_conflicts[conflict_id].merge(regr);
             regr.clear();
         }

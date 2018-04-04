@@ -1287,8 +1287,6 @@ int HCHeuristic::simple_traversal_wrapper(
     return 0;
   }
   //could simply store the values in the vector as exploration
-  
-  //int g = 0;//replace this with G_value
  
   unsigned i = 0;
   unsigned border = lvl0;
@@ -1298,7 +1296,7 @@ int HCHeuristic::simple_traversal_wrapper(
     if (i == border) {//enlarge the exploration, when it go through one level
       border = exploration.size();
       //based on unit cost
-      level += 1; //add one level -- the distance 
+      level += 1; 
       //cout << "level enlarge"<<endl;
     }
     unsigned conj_id = exploration[i++]; 

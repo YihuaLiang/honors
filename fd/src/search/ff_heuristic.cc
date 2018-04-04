@@ -102,6 +102,54 @@ int FFHeuristic::compute_heuristic(const State &state) {
     return h_ff;
 }
 
+int FFHeuristic::compute_heuristic(const State &state, int g_value) {
+    int h_add = compute_add_and_ff(state);
+    if (h_add == DEAD_END)
+        return h_add;
+    std::vector<std::vector<UnaryOperator *> > m_achievers;
+    m_achievers.resize(m_propositions);
+    for (unsigned i = 0; i < unary_operators.size(); i++) {
+      UnaryOperator &op = unary_operators[i];
+      if (op.unsatisfied_preconditions == 0
+          && op.effect->cost == op.cost) {
+        m_achievers[op.effect->id].push_back(&op);
+      }
+    }
+    unsigned prop_id = 0;
+    for (unsigned var = 0; var < g_variable_domain.size(); var++) {
+      for (int val = 0; val < g_variable_domain[var]; val++) {
+        if (!m_achievers[prop_id].empty()) {
+          switch(c_tiebreaking) {
+          case(ARBITRARY):
+            propositions[var][val].reached_by = m_achievers[prop_id][0];
+            break;
+          case(RANDOM):
+            propositions[var][val].reached_by = m_achievers[prop_id][m_rng.next(m_achievers[prop_id].size())];
+            break;
+          }
+        }
+        prop_id++;
+      }
+    }
+    m_achievers.clear();
+
+    // Collecting the relaxed plan also sets the preferred operators.
+    for (int i = 0; i < goal_propositions.size(); i++)
+        mark_preferred_operators_and_relaxed_plan(state, goal_propositions[i]);
+
+    int h_ff = 0;
+    for (int op_no = 0; op_no < relaxed_plan.size(); op_no++) {
+        if (relaxed_plan[op_no]) {
+            relaxed_plan[op_no] = false; // Clean up for next computation.
+            h_ff += get_adjusted_cost(g_operators[op_no]);
+        }
+    }
+    if (h_ff+g_value > bound) {
+        return DEAD_END;
+    }else {
+        return h_ff;
+    }
+}
 
 void FFHeuristic::mark_relaxed_plan(const State &state, Proposition *goal) {
     if (!goal->marked) { // Only consider each subgoal once.

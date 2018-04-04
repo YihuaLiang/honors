@@ -33,7 +33,7 @@ class FFHeuristic : public AdditiveHeuristic {
 protected:
     virtual void initialize();
     virtual int compute_heuristic(const State &state);
-    virtual int compute_heuristic(const State &state, int ){return compute_heuristic(state);};
+    virtual int compute_heuristic(const State &state, int g_value);
     void compute_relaxed_plan(const State &state, RelaxedPlan &returned_relaxed_plan); // Peter: Needed for M&S for finding label set
 public:
    std::string h_name = "FF_heuristic";

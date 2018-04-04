@@ -344,9 +344,9 @@ bool Search::evaluate(const State &state, bool &u, int g_value)
   if (maxh != -1) {
     for (uint i = 0; i < m_heuristics.size(); i++) {
       search_progress.inc_evaluations(1);
-      //m_heuristics[i]->evaluate(state, g_value);
-      m_heuristics[i]->evaluate(state);
-      if (m_heuristics[i]->is_dead_end() || (g_value + m_heuristics[i]->get_value()) > bound) {
+      m_heuristics[i]->evaluate(state, g_value);
+      //m_heuristics[i]->evaluate(state);
+      if (m_heuristics[i]->is_dead_end()/*|| (g_value + m_heuristics[i]->get_value()) > bound*/) {
         maxh = -1;
         m_cached_h = m_heuristics[i];
         break;
@@ -500,7 +500,9 @@ Search::SearchStatus Search::step()
     successors[i] = succ_node.get_state_id();
     succ_node.add_parent(state);
     int succ_g_value = node.get_g() + ops[i]->get_cost();
-    cout<<"succ "<<succ_g_value<<endl;
+    
+    //cout<<"succ "<<succ_g_value<<endl;
+    
     if (succ_node.is_new()) {
       if (evaluate(succ_node, succ_g_value)) { // use heuristic on successor
         return SOLVED;
