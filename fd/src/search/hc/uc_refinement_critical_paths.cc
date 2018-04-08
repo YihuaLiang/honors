@@ -188,8 +188,7 @@ HeuristicRefiner::RefinementResult UCRefinementCritPaths::refine(
         assert(uc->get_counter(i).base_cost >= 1);
     }//here we do not require base cost  > 1
 #endif
-    cout<<"come into pcr "<<endl;
-    //cout<<endl<<"PCR called"<<endl;
+    //cout<<"come into pcr "<<endl;
     bool updated_c = false;
     RefinementResult successful = SUCCESSFUL;
     int old_val = -2;
@@ -197,7 +196,7 @@ HeuristicRefiner::RefinementResult UCRefinementCritPaths::refine(
     for (uint i = 0; i < g_goal.size(); i++) {
         goal.insert(g_goal[i]);
     }
-    //fail to quit
+    //fail to quit?
     while (successful != FAILED) {//loop == the recursive call
         bool x = uc->set_early_termination(false);
         uc->evaluate(state, g_value);
@@ -224,7 +223,6 @@ HeuristicRefiner::RefinementResult UCRefinementCritPaths::refine(
         cout<<"return success"<<endl;
         cout<<"res "<<res.second<<endl;
         if (res.second == (unsigned) -1) {
-            //std::cout << "Found plan in uC refinement!" << std::endl;
             successful = SOLVED;
             cout<<"break with second = -1"<<endl;
             break;
@@ -241,18 +239,20 @@ HeuristicRefiner::RefinementResult UCRefinementCritPaths::refine(
                 while (i < open.size()) {
                     //here is a bug
                     //it is because the open[i] is larger than m_requires size --> the size problem is not guaranteed
+                    //requires contains the child confl, required_by contains parents confl. a vector of unsigned set
                     for (std::set<unsigned>::iterator it = m_requires[open[i]].begin(); it != m_requires[open[i]].end(); it++) {
                         cout<<"open i "<<open[i]<<endl;
                         cout<<"m require size "<<m_requires.size()<<endl;
                         cout<<"m pruned "<<m_pruned.size()<<endl;
-                        if (!m_pruned[*it]) {//this line
-                            m_pruned[*it] = true;//set the predecessor to true and push it into open
-                            open.push_back(*it);            
+                        //*it is a conj requires the open[i]
+                        if (!m_pruned[*it]) {//this line, *it value is not what expected(too large)
+                            m_pruned[*it] = true;//set the child_conflict to true and push it into open
+                            open.push_back(*it);//do this recursively             
                         }
                     }
                     i++;
-                    cout<<"open finish"<<endl;
                 }               
+                //conflict size equal to m_pruned
                 for (uint i = 0; i < m_conflicts.size(); i++) {
                     if (m_pruned[i]) {
                         if (uc->exceeded_size_limit()) {
@@ -265,7 +265,7 @@ HeuristicRefiner::RefinementResult UCRefinementCritPaths::refine(
                 }
             }
             else if (!uc->update_c(m_conflicts)) {
-                cout<<"bug in update c"<<endl;
+                //cout<<"bug in update c"<<endl;
                 successful = FAILED;//update the conflicts
             }
         }
@@ -275,7 +275,7 @@ HeuristicRefiner::RefinementResult UCRefinementCritPaths::refine(
         //std::cout << "successful = " << successful << std::endl;
         //exit(1);
         release_memory();//every time it get a new X it will clean the m
-        cout<<"pcr next round"<<endl;
+        //cout<<"pcr next round"<<endl;
     }
     //assert(false);
     //std::cout << ">>>>>>>>>>>REFINEMENT_END" << std::endl;
@@ -306,15 +306,15 @@ std::pair<bool, unsigned> UCRefinementCritPaths::compute_conflict(
         }
 #endif
     }
-    cout<<"begin conflict"<<endl;
+    //cout<<"begin conflict"<<endl;
     unsigned conflict_id = m_conflicts.size();
     m_requires.resize(m_requires.size() + 1);
     m_required_by.resize(m_required_by.size() + 1);
     m_conflicts.resize(m_conflicts.size() + 1);
     m_pruned.push_back(false);
-    cout<<"prepare succeed"<<endl;
+    
     if (!uc->extract_mutex(subgoal, m_conflicts[conflict_id])) {
-        //look into cid construction
+        //cid is id of the conj selected by greedy strategy
         unsigned cid = (*m_selector)(this, subgoal, threshold);
         if (cid == ConflictSelector::INVALID) {
             //cout<<"invalid conflict"<<endl;
@@ -327,6 +327,7 @@ std::pair<bool, unsigned> UCRefinementCritPaths::compute_conflict(
             //when return here, the conflicts, requires/d, fail to catch the value 
             return make_pair(true, cid);
         }
+        //
         m_conflicts[conflict_id].merge(uc->get_fluent(cid));
 
         const vector<unsigned> &candidates = m_achievers[cid];
@@ -350,7 +351,7 @@ std::pair<bool, unsigned> UCRefinementCritPaths::compute_conflict(
                 //it should be base_cost, no modification needed
                 compute_conflict(regr, threshold - action.base_cost, state);
             regr.clear();//regr means the sub goal
-            
+
             if (child_confl.second == (unsigned) -1) {//-1 means the result is invalid
                 //_plan.push_back(action.operator_no);
                 m_plan.push_back(&g_operators[action.operator_no]);

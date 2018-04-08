@@ -808,8 +808,7 @@ void HCHeuristic::compile_strips()
     
     const Operator &op = g_operators[i];
     //cout<<"Op base cost: "<<op.get_cost()<<endl;
-    int base_cost = get_adjusted_cost(op);
-    //cout<<"Adjusted base cost: "<<base_cost<<endl;
+    int base_cost = get_adjusted_cost(op);//the base cost is alright
     const std::vector<Prevail> &pre = op.get_prevail();
     const std::vector<PrePost> &eff = op.get_pre_post();
 
@@ -1371,17 +1370,17 @@ int HCHeuristic::simple_traversal_wrapper(
       //Initialize the pre-cost
       if(level == 0) counter->cost = g_value;//init to be g, otherwise use the accummulated cost 
       else {
-        //cout<<"conjunction cost "<<conjunctions[conj_id].cost<<"counter cost "<<counter->cost<<endl;
+        //here could be a problem --- what if conj cost is 0
         counter->cost = conjunctions[conj_id].cost;
       }//line 2:  
       if( counter->cost + actions[counter->action_id].base_cost > bound) {
-        continue;//The effect conjunction will be remained as 0
+        continue;//The effect conjunction will be not be updated
       }
       //counter is action --- the cost should inherit from the conj_id
       if (!counter->effect->is_achieved()) {//cost <0 ---> has not been explored 
         //directly add the base cost here
         //if not early termination then continue -> jump the dead end
-        //cout<<"conjunction cost "<<conjunctions[conj_id].cost<<"counter cost "<<counter->base_cost<<endl;
+        //check and update will store the smaller h value
         counter->effect->check_and_update(counter->cost + actions[counter->action_id].base_cost, NULL);
         //add the cost , this will store the result
         //update the conjunction, the cost are stored in the conjunction
@@ -1491,6 +1490,7 @@ int HCHeuristic::compute_heuristic(const State &state,int g_value)
     }
     counters.pop_back();
   }
+  cout<<"hc result"<<res<<endl;
   return res == DEAD_END ? res : res - 1;
 }
 

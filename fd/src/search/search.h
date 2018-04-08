@@ -12,6 +12,8 @@
 #include <vector>
 #include <set>
 #include <unordered_set>
+#include <queue>//quote priority queue
+#include <algorithm>
 
 class Heuristic;
 class HeuristicRefiner;
@@ -53,6 +55,7 @@ protected:
 
     PruningMethod *m_pruning_method;
     
+    std::priority_queue <SearchNode> *m_queue;
     OpenSet *m_open_set;
     std::vector<Heuristic *> m_heuristics;
     std::vector<Heuristic *> m_preferred;

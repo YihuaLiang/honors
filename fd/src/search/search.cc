@@ -125,6 +125,7 @@ void Search::initialize()
     //problem in set the value
     node.open_initial(m_cached_h ? m_cached_h->get_value() : 0);
     m_open_set->push(node, false);
+    //m_queue->push(node);
     m_open_states++;
   } else {
     search_progress.inc_dead_ends();
@@ -177,7 +178,7 @@ bool Search::trigger_refiner(const State &state, bool &success, int g_value)
 {
   unsigned tmp;
   success = false;
-  cout<<"trigger refiner"<<endl;
+  //cout<<"trigger refiner"<<endl;
   for (uint i = 0; i < m_heuristic_refiner.size(); i++) {
     if (m_heuristic_refiner[i]->get_heuristic()->is_dead_end()) {
       success = true;
@@ -331,7 +332,7 @@ bool Search::evaluate(const State &state, bool &u, int g_value)
   m_cached_h = NULL;
   int maxh = 0;
   if (c_unsath_new) {
-    Heuristic *x = check_dead_end(state, c_unsath_new_full, g_value);
+    Heuristic *x = check_dead_end(state, c_unsath_new_full, g_value);//new is false
     if (x && x->is_dead_end()) {//not null and return value is dead-end
       maxh = -1;
       m_cached_h = x;
@@ -362,7 +363,7 @@ bool Search::evaluate(const State &state, bool &u, int g_value)
     if (m_unsath_refine) {
       check_dead_end(state, true, g_value);
       return trigger_refiner(state, u, g_value); 
-    } else if (c_ensure_u_consistency && !c_unsath_new) {
+    } else if (c_ensure_u_consistency && !c_unsath_new) {//consistence is false
       Heuristic *x = check_dead_end(state, c_unsath_new_full, g_value);
       if (x && x->is_dead_end()) {
         u = true;
@@ -407,7 +408,11 @@ StateID Search::fetch_next_state()
     StateID m_next_state_id = m_open_set->pop();
     State state = g_state_registry->lookup_state(m_next_state_id);
     SearchNode node = search_space.get_node(state); // always base on state, so it should be all good
+    if( m_next_state_id == state.get_id()) {
+      cout<<"id is the same"<<endl;
+    }
     //search space is defined in search
+    //SearchNode new_one = m_queue->pop(); could require larger space
     if (node.is_closed() || node.is_dead_end()) {
       continue;
     }
@@ -436,7 +441,7 @@ Search::SearchStatus Search::step()
     return FAILED;
   }
 
-  bool whatever;
+  bool whatever;//the whatever value?
   State state = g_state_registry->lookup_state(m_next_state_id);
   SearchNode node = search_space.get_node(state); // after get no operation is on node
   assert(!node.is_closed() && !node.is_dead_end());// it will judge the dead end here
@@ -452,10 +457,9 @@ Search::SearchStatus Search::step()
   if (c_unsath_open) {
     //use heuristic to evaluate the dead end
     //Heuristic *h = check_dead_end(state, c_unsath_open_full);
-    //reload
-    //cout<<"node g value "<<node.get_g()<<endl;
+    //reload    
+    Heuristic *h = check_dead_end(state, c_unsath_open_full, node.get_g());//2nd is true
     
-    Heuristic *h = check_dead_end(state, c_unsath_open_full, node.get_g());
     if (h && h->is_dead_end()) {
       node.mark_as_dead_end();
       node.set_u_flag(); // set it recogenized by u
@@ -471,11 +475,9 @@ Search::SearchStatus Search::step()
       return IN_PROGRESS; // it is a dead end
     }
   }
-  //use cout to test here --- a little strange??
   search_progress.inc_expanded(1); // statistics
   node.close(); // end operation
   // statistics
-  // cout<<"smallest h "<<m_smallest_h<<"node heuristic "<<node.get_h()<<endl;
   m_smallest_h = m_smallest_h < node.get_h() ? m_smallest_h : node.get_h();
   m_largest_g = m_largest_g > node.get_g() ? m_largest_g : node.get_g();
   //out put information
@@ -488,9 +490,10 @@ Search::SearchStatus Search::step()
   m_pruning_method->prune_operators(state, ops);
   std::set<const Operator *> preferred_ops;
   get_preferred_operators(state, preferred_ops);
-  //cout<<preferred_ops.size()<<endl;
+  //preferred not used
   bool open_child = false;
-  std::vector<StateID> &successors = node.get_all_successors();
+
+  std::vector<StateID> &successors = node.get_all_successors(); 
   successors.resize(ops.size(), StateID::no_state);
   search_progress.inc_generated(ops.size());
   //Modify it to best search
@@ -536,7 +539,7 @@ Search::SearchStatus Search::step()
       open_child = true;
       //push the new node into 
       //succ_node.set_depth(node.get_depth() + 1);
-      m_open_set->push(succ_node, preferred_ops.count(ops[i]));
+      m_open_set->push(succ_node, preferred_ops.count(ops[i]));//if the ops[i] is preferred then true
     }
   }
 
@@ -704,7 +707,7 @@ bool Search::search_open_state(SearchNode node,
       //if (succ_node.get_revision() == m_revision) {
       //    return true;
       //}
-      if (c_unsath_closed) {
+      if (c_unsath_closed) {//closed is false
         //Heuristic *h = check_dead_end(succ, c_unsath_closed_full);
         //reload
         Heuristic *h = check_dead_end(succ, c_unsath_closed_full,succ_node.get_g());
@@ -768,7 +771,7 @@ void Search::backward_propagation(std::vector<State> &tbh)
         if (c_unsath_bprop) {
           //Heuristic *h = check_dead_end(parent, c_unsath_bprop_full);
           //reload
-          Heuristic *h = check_dead_end(parent, c_unsath_bprop_full,pnode.get_g());
+          Heuristic *h = check_dead_end(parent, c_unsath_bprop_full,pnode.get_g());//2nd is true
           if (h && h->is_dead_end()) {
             //std::vector<State> open;
 #ifndef NDEBUG
@@ -848,7 +851,8 @@ void Search::add_options_to_parser(OptionParser &parser)
 {
   parser.add_list_option<Heuristic *>("eval", "", "[]");
   parser.add_list_option<HeuristicRefiner *>("refiner", "", "[]");
-  parser.add_list_option<Heuristic *>("preferred", "", "", OptionFlags(false));
+  //parser.add_list_option<Heuristic *>("preferred", "", "", OptionFlags(false));
+  parser.add_list_option<HeuristicRefiner *>("preferred","","[]");
   parser.add_option<bool>("u_refine", "", "true");
   parser.add_option<bool>("u_refine_initial_state", "", "false");
   parser.add_option<int>("u_new", "", "0");

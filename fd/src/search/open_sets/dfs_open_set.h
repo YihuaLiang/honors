@@ -138,6 +138,25 @@ template<typename t_key, typename t_key_constructor>
     }
     return StateID(id);
   }
+  //for doing priority
+  virtual StateID top(){
+    assert(this->_size > 0);
+    assert(!this->preferred_enabled || this->preferred_open_list.size() == this->open_list.size());
+    assert(this->open_list.size() > 0);
+    this->_size--;
+    this->newdepth = true;
+    int id = -1;
+    if (this->preferred_enabled && this->preferred_open_list.front().size() > 0) {
+      typename DFSOpenSet<t_key, t_key_constructor>::OpenList::iterator b = this->preferred_open_list.front().begin();
+      typename DFSOpenSet<t_key, t_key_constructor>::Store &store = b->second;
+      id = store.front();//a int list
+    } else {
+      typename DFSOpenSet<t_key, t_key_constructor>::OpenList::iterator b = this->open_list.front().begin();
+      typename DFSOpenSet<t_key, t_key_constructor>::Store &store = b->second;
+      id = store.front();
+    }
+    return StateID(id);
+  }
 
   virtual size_t size() const
   {

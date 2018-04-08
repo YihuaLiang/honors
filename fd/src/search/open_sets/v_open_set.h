@@ -34,6 +34,7 @@ protected:
 public:
     VOpenSet();
     virtual void push(const SearchNode &node, bool is_preferred);
+    virtual StateID top();
     virtual StateID pop();
     virtual size_t size() const;
     virtual bool empty() const;

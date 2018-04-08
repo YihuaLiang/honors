@@ -16,10 +16,11 @@ class State;
 
 
 class SearchNode {
+public:
     StateID state_id;
     SearchNodeInfo &info;
     OperatorCost cost_type;
-public:
+
     SearchNode(StateID state_id_, SearchNodeInfo &info_,
                OperatorCost cost_type_);
 
@@ -48,6 +49,9 @@ public:
     void mark_as_dead_end();
 
     void dump() const;
+
+    bool operator > (SearchNode &node1);
+    SearchNode& operator = (SearchNode &node1);
 
     bool is_flagged() const;
     void set_flag(bool flag = true);

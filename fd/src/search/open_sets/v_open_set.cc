@@ -59,6 +59,25 @@ StateID VOpenSet<V>::pop() {
     return StateID(id);
 }
 
+
+template<typename V>
+StateID VOpenSet<V>::top() {
+    assert(_size > 0);
+    _size--;
+    int id;
+    if (!preferred_open.empty()) {
+        std::map<int, Store>::iterator b = preferred_open.begin();
+        Store &store = b->second;
+        id = store.front();
+        store.pop_front();
+    } else {
+        std::map<int, Store>::iterator b = open.begin();
+        Store &store = b->second;
+        id = store.front();
+    }
+    return StateID(id);
+}
+
 template<typename V>
 size_t VOpenSet<V>::size() const {
     return _size;
