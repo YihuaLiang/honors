@@ -125,7 +125,7 @@ void Search::initialize()
     //problem in set the value
     node.open_initial(m_cached_h ? m_cached_h->get_value() : 0);
     m_open_set->push(node, false);
-    //m_queue->push(node);
+    m_queue->push(node);
     m_open_states++;
   } else {
     search_progress.inc_dead_ends();

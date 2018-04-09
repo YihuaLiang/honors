@@ -1,0 +1,9 @@
+The open set only contains state id. 
+The way it return id could hardly be 
+
+1. hc, when it is actually h1, it fails to detect some dd detected by hff
+2. search, it is dfs and the openset is a combination of 2 queue rather than a priority queue. 
+
+
+The memory space is the same. when push in, it pushes in a node into open set every time 
+and return it 

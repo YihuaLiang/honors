@@ -180,22 +180,23 @@ SearchNode SearchSpace::get_node(const State &state) {
 }
 
 //overload operator for priority queue, the smaller the better
-bool SearchNode::operator > (SearchNode &node1){
-    int h1 = this->get_h();
-    int h2 = node1.get_h();
+bool operator<(const SearchNode node1, const SearchNode node2){
+    int h1 = node1.get_h();
+    int h2 = node2.get_h();
     //int g1 = this->get_g();
     //int g2 = node1.get_g();
 
-    return h2 > h1;//only consider h
+    return h1 > h2;//only consider h
     //return (h2 + g2) > (h1 + g1);
 }
-SearchNode& SearchNode::operator= (SearchNode &node1)
+SearchNode& SearchNode::operator=(const SearchNode & node1)
 {
-    node1.state_id = this->state_id;
-    node1.cost_type = this->cost_type;
-    node1.info = this->info;
-    return node1;
+    state_id = node1.state_id;
+    cost_type = node1.cost_type;
+    info = node1.info;    
+    return *this;
 }
+
 void SearchSpace::trace_path(const State &goal_state,
                              vector<const Operator *> &path) {
     State current_state = goal_state;

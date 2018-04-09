@@ -50,8 +50,8 @@ public:
 
     void dump() const;
 
-    bool operator > (SearchNode &node1);
-    SearchNode& operator = (SearchNode &node1);
+    friend bool operator<(const SearchNode node1, const SearchNode node2);
+    SearchNode& operator = (const SearchNode &node1);
 
     bool is_flagged() const;
     void set_flag(bool flag = true);
@@ -65,6 +65,7 @@ public:
     std::vector<StateID> &get_all_successors();
 };
 
+bool operator > (const SearchNode node1, const SearchNode node2);
 
 class SearchSpace {
     SegmentedVector<SearchNodeInfo> m_infos;

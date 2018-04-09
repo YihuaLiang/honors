@@ -409,7 +409,7 @@ void HCHeuristic::initialize()
   //dump_compiled_task_to_file();
   //exit(0);
 
-  if (c_minimize_counter_set) {
+  if (c_minimize_counter_set) {//false
     std::cout << "Checking for subsumed counters ..." << std::endl;
     unsigned num_subsumed_counters = 0;
     std::vector<unsigned> hit;
@@ -789,8 +789,8 @@ void HCHeuristic::compile_strips()
     }
   }
 
-  m_true_id = conjunctions.size();
-  conjunctions.push_back(Conjunction(m_true_id, 0));
+  m_true_id = conjunctions.size();//it is the size of conjunctions
+  conjunctions.push_back(Conjunction(m_true_id, 0));//why add a empty conjunction??
   conjunction_achievers.push_back(std::vector<unsigned>());
   _fluents.push_back(Fluent());
 
@@ -803,7 +803,6 @@ void HCHeuristic::compile_strips()
   facts_to_counters.resize(conjunction_offset);
 
   unsigned action_id = 0;
-  //cout<<"Cost_type "<<cost_type<<endl;s
   for (uint i = 0; i < g_operators.size(); i++) {
     
     const Operator &op = g_operators[i];
@@ -976,9 +975,9 @@ void HCHeuristic::compile_strips()
   set_size_limit_ratio(max_ratio_repr_counters);
 
   cout << "Parsed Pi into "
-       << conjunction_offset << " facts, "
+       << conjunction_offset << " facts, " //see how many action is translated
        << actions.size() << " actions, and "
-       << counters.size() << " counters." << endl;
+       << counters.size() << " counters." << endl;//see how counters 
   //for (uint i=0; i < actions.size() ; i++){ 
   //    cout<<"base_cost: "<<actions[i].base_cost<<endl;
   //}
@@ -1258,15 +1257,15 @@ int HCHeuristic::simple_traversal_setup(const State &state,
     for (uint i = 0; i < conjunctions.size(); i++) {
       Conjunction &conj = conjunctions[i];
       conj.clear();//set cost to -1
-      if (fluent_in_state(_fluents[i], state)) {
-        conj.check_and_update(0, NULL);//its in the state
+      if (fluent_in_state(_fluents[i], state)) {//_fluent is C set for hc
+        conj.check_and_update(0, NULL);//The conj only take a smaller value...if the 
         exploration.push_back(i);//add back to queue
         //exploration only contains id
       }
     }
   }
   
-  conjunctions[m_true_id].check_and_update(0, NULL);//set up and put in the last conjunction?
+  conjunctions[m_true_id].check_and_update(0, NULL);//this is for dual task
   exploration.push_back(m_true_id);
 
   for (uint i = 0; i < counters.size(); i++) { //for every effect
