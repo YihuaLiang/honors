@@ -125,7 +125,7 @@ void Search::initialize()
     //problem in set the value
     node.open_initial(m_cached_h ? m_cached_h->get_value() : 0);
     m_open_set->push(node, false);
-    m_queue->push(node);
+    //m_queue.push(node);
     m_open_states++;
   } else {
     search_progress.inc_dead_ends();
@@ -408,9 +408,11 @@ StateID Search::fetch_next_state()
     StateID m_next_state_id = m_open_set->pop();
     State state = g_state_registry->lookup_state(m_next_state_id);
     SearchNode node = search_space.get_node(state); // always base on state, so it should be all good
-    if( m_next_state_id == state.get_id()) {
-      cout<<"id is the same"<<endl;
-    }
+    
+    //if( m_next_state_id == state.get_id()) {
+    //  cout<<"id is the same"<<endl;
+    //}
+
     //search space is defined in search
     //SearchNode new_one = m_queue->pop(); could require larger space
     if (node.is_closed() || node.is_dead_end()) {
@@ -851,8 +853,8 @@ void Search::add_options_to_parser(OptionParser &parser)
 {
   parser.add_list_option<Heuristic *>("eval", "", "[]");
   parser.add_list_option<HeuristicRefiner *>("refiner", "", "[]");
-  //parser.add_list_option<Heuristic *>("preferred", "", "", OptionFlags(false));
-  parser.add_list_option<HeuristicRefiner *>("preferred","","[]");
+  parser.add_list_option<Heuristic *>("preferred", "", "", OptionFlags(false));
+  //parser.add_list_option<HeuristicRefiner *>("preferred","","[]");
   parser.add_option<bool>("u_refine", "", "true");
   parser.add_option<bool>("u_refine_initial_state", "", "false");
   parser.add_option<int>("u_new", "", "0");

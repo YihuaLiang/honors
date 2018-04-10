@@ -1308,7 +1308,6 @@ int HCHeuristic::simple_traversal_wrapper(
       }
       //counter is action --- the cost should inherit from the conj_id
       counter->cost = level;
-
       //if(level == 0) counter->cost = level;(init to be g)  //otherwise use the accummulated cost 
       //else counter->cost = conjunctions[conj_id].cost
 
@@ -1364,6 +1363,7 @@ int HCHeuristic::simple_traversal_wrapper(
     for (uint j = 0; j < triggered_counters.size(); j++) {
       ActionEffectCounter *counter = triggered_counters[j];//take the first one out 
       if (--counter->unsatisfied_preconditions > 0) { //there must be one satisfied so 1 should be minused
+        //check the
         continue; //can't be used -- jump
       }
       //Initialize the pre-cost

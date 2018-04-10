@@ -301,7 +301,7 @@ class HCHeuristic : public Heuristic
   //std::vector<Conjunction*> conjunctions;
   //std::vector<ActionEffectCounter*> counters;
   SegmentedVector<Conjunction> conjunctions;//_fluents is C 
-  SegmentedVector<ActionEffectCounter> counters;//counters number should be small or equal to action
+  SegmentedVector<ActionEffectCounter> counters;//counters
   //std::vector<Conjunction*> goal_conjunctions;
   unsigned m_true_id;
   unsigned m_goal_id;
