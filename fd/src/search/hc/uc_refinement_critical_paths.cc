@@ -76,13 +76,12 @@ void UCRefinementCritPaths::prepare_refinement() {
         if (counter.unsatisfied_preconditions == 0
                 && counter.cost + counter.base_cost == counter.effect->cost) {
             m_achievers[counter.effect->id].push_back(counter.action_id);//find the true achiever
-        }//should consider the value, if sum of cost larger than g, it should not be achieved? 
-         //or this point could be makes sure in 
+        }
     }
     if (c_use_caching) {
         m_conflict_data.resize(uc->num_facts());
     }
-    cout<<"prepare succeed"<<endl;
+    //cout<<"prepare succeed"<<endl;
 #ifndef NDEBUG
     for (unsigned i = 0; i < uc->num_conjunctions(); i++) {
         const Conjunction &conj = uc->get_conjunction(i);
@@ -215,35 +214,31 @@ HeuristicRefiner::RefinementResult UCRefinementCritPaths::refine(
         }
         old_val = uc->get_value();
         updated_c = true;
-        prepare_refinement();
-        //std::cout << "computing conflicts..." << std::flush;
+        prepare_refinement();;
         //START = uc->get_value();
         std::pair<bool, unsigned> res = compute_conflict(goal, uc->get_value(), state);
-        //std::cout << "done => " << m_conflicts.size() << std::endl;
-        cout<<"return success"<<endl;
-        cout<<"res "<<res.second<<endl;
+        //cout<<"return success"<<endl;
+        //cout<<"res "<<res.second<<endl;
         if (res.second == (unsigned) -1) {
             successful = SOLVED;
-            cout<<"break with second = -1"<<endl;
             break;
         } else {
             if (c_use_caching) {
                 m_required_by.clear();
                 unsigned i = 0;
                 std::vector<unsigned> open;
-                cout<<"open size "<<open.size()<<endl;
+                //cout<<"open size "<<open.size()<<endl;
                 open.push_back(res.second);
                 //for the conflicts, go through those conjunctions require it 
                 m_pruned[res.second] = true;
-                cout<<"open size "<<open.size()<<endl;
+                //cout<<"open size "<<open.size()<<endl;
                 while (i < open.size()) {
-                    //here is a bug
-                    //it is because the open[i] is larger than m_requires size --> the size problem is not guaranteed
+                    //here is a bug //it is because the open[i] is larger than m_requires size --> the size problem is not guaranteed
                     //requires contains the child confl, required_by contains parents confl. a vector of unsigned set
                     for (std::set<unsigned>::iterator it = m_requires[open[i]].begin(); it != m_requires[open[i]].end(); it++) {
-                        cout<<"open i "<<open[i]<<endl;
-                        cout<<"m require size "<<m_requires.size()<<endl;
-                        cout<<"m pruned "<<m_pruned.size()<<endl;
+                        //cout<<"open i "<<open[i]<<endl;
+                        //cout<<"m require size "<<m_requires.size()<<endl;
+                        //cout<<"m pruned "<<m_pruned.size()<<endl;
                         //*it is a conj requires the open[i]
                         if (!m_pruned[*it]) {//this line, *it value is not what expected(too large)
                             m_pruned[*it] = true;//set the child_conflict to true and push it into open

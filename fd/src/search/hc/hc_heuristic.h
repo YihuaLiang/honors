@@ -85,11 +85,16 @@ struct ActionEffectCounter {
   /* cost -- represents the maximal cost of any fact in precondition
    *          that is not infinity */
   int cost;
-
+  unsigned pre_cost;
+  /*pre_cost -- record the max precondition*/
   /* for LM-cut computation */
   //int max_precondition;
   // ff
   //int difficulty;
+  bool operator < (ActionEffectCounter *cop){
+    //return (cop1->cost + cop1->base_cost) < (cop2->cost + cop2->base_cost);
+    return (cost + base_cost) < (cop->cost + cop->base_cost);
+  }
 
   ActionEffectCounter &operator=(const ActionEffectCounter &cop)
   {

@@ -1345,7 +1345,12 @@ int HCHeuristic::simple_traversal_wrapper(
     return 0;
   }
   //could simply store the values in the vector as exploration
-
+  
+  //define a set for exploration
+  //std::set<unsigned> &explored;
+  //explored.clear();
+  //int in_explored_flag = 0;
+  
   unsigned i = 0;
   unsigned border = lvl0;
   int level = 0;
@@ -1357,36 +1362,61 @@ int HCHeuristic::simple_traversal_wrapper(
       level += 1; //add one level -- the distance 
     }
     unsigned conj_id = exploration[i++]; 
-    // think of how to store the cost properly
-    const vector<ActionEffectCounter *> &triggered_counters =
+    //check this conjunction cost
+    // if(explored.find(conj_id)){
+    //   in_explored_flag = 1;
+    // }
+    // else{
+    //    explored.insert(conj_id);
+    //    in_explored_flag = 0;
+    // }
+
+    /*const*/ vector<ActionEffectCounter *> &triggered_counters =
       conjunctions[conj_id].triggered_counters;//The actions could be executed
+
+    //sort the counters
+    std::sort(triggered_counters.begin(),triggered_counters.end());
+    
     for (uint j = 0; j < triggered_counters.size(); j++) {
-      ActionEffectCounter *counter = triggered_counters[j];//take the first one out 
-      if (--counter->unsatisfied_preconditions > 0) { //there must be one satisfied so 1 should be minused
-        //check the
+      ActionEffectCounter *counter = triggered_counters[j]; 
+      if (--counter->unsatisfied_preconditions > 0) { //there must be one satisfied so 1 should be minused        
+        if( conjunctions[conj_id].cost == 0 ){ //at first, explore only contains the cost = 0;
+          counter->cost = g_value;
+          counter->pre_cost = -1;
+        } //keep the number which conjunction keeps the cost
+        else if(conjunctions[conj_id].cost < counter->cost && conj_id == counter->pre_cost ){
+          counter->cost = conjunctions[conj_id].cost;
+          counter->pre_cost = conj_id;
+        }//keep the larger value -- the position of this rule should be modified
+        else if (counter->cost < conjunctions[conj_id].cost){
+          counter->cost = conjunctions[conj_id].cost;
+          counter->pre_cost = conj_id;
+        }
         continue; //can't be used -- jump
       }
-      //Initialize the pre-cost
-      if(level == 0) counter->cost = g_value;//init to be g, otherwise use the accummulated cost 
-      else {
-        //here could be a problem --- what if conj cost is 0
-        counter->cost = conjunctions[conj_id].cost;
-      }//line 2:  
-      if( counter->cost + actions[counter->action_id].base_cost > bound) {
+      //line 2:  
+      if( counter->cost + counter->base_cost > bound) {
         continue;//The effect conjunction will be not be updated
       }
       //counter is action --- the cost should inherit from the conj_id
-      if (!counter->effect->is_achieved()) {//cost <0 ---> has not been explored 
-        //directly add the base cost here
-        //if not early termination then continue -> jump the dead end
+      if (counter->effect->is_achieved()){
+        if(counter->effect->cost > counter->cost + counter->base_cost){
+          counter->effect->check_and_update(counter->cost + counter->base_cost, NULL);
+          //exploration.push_back(counter->effect->id);
+          exploration.insert(exploration.begin(), counter->effect->id);//want to update the counters directly
+          if (m_goal_id == counter->effect->id) {//the early termination should not be operated here
+             goal_level = counter->cost + counter->base_cost;  
+          }
+        }
+      }
+      else if (!counter->effect->is_achieved()) {//cost <0 ---> has not been explored 
+        //directly add the base cost here if not early termination then continue -> jump the dead end
         //check and update will store the smaller h value
-        counter->effect->check_and_update(counter->cost + actions[counter->action_id].base_cost, NULL);
-        //add the cost , this will store the result
+        counter->effect->check_and_update(counter->cost + counter->base_cost, NULL);
         //update the conjunction, the cost are stored in the conjunction
-        exploration.push_back(counter->effect->id);//push in new counter
+        exploration.push_back(counter->effect->id);//it could not guarantee, the first round do not have effect
         if (m_goal_id == counter->effect->id) {
-          // goal is achieved so it could be returned
-          goal_level = counter->cost + actions[counter->action_id].base_cost;  
+          goal_level = counter->cost + counter->base_cost;  
           if (early_termination) {
             return goal_level;
           }
