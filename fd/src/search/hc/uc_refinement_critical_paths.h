@@ -26,13 +26,15 @@ protected:
     const bool c_use_caching;
 
     ConflictSelector *m_selector;
-    //std::vector<Conflict> m_conflicts;
+
     std::vector<Conflict> m_conflicts;
     std::vector<std::vector<ConflictData> > m_conflict_data;
     std::vector<bool> m_pruned;
     std::vector<std::set<unsigned> > m_requires;
     std::vector<std::set<unsigned> > m_required_by;
     std::vector<std::vector<unsigned> > m_achievers;
+    //used to mark the zero cost achievers -- if in the set, then not allowed to take
+    std::set<unsigned>m_zero_achievers; //aid should be seem as the order
     std::vector<const Operator *> m_plan;
 
     //std::map<Fluent, ConflictData> m_duplicate_checking;

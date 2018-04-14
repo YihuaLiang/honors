@@ -1379,19 +1379,21 @@ int HCHeuristic::simple_traversal_wrapper(
     
     for (uint j = 0; j < triggered_counters.size(); j++) {
       ActionEffectCounter *counter = triggered_counters[j]; 
+      
+      if( conjunctions[conj_id].cost == 0 ){ //at first, explore only contains the cost = 0;
+        counter->cost = g_value;
+        counter->pre_cost = -1;
+      } //keep the number which conjunction keeps the cost
+      else if(conjunctions[conj_id].cost < counter->cost && conj_id == counter->pre_cost ){
+        counter->cost = conjunctions[conj_id].cost;
+        counter->pre_cost = conj_id;
+      }//keep the larger value -- the position of this rule should be modified
+      else if (counter->cost < conjunctions[conj_id].cost){
+        counter->cost = conjunctions[conj_id].cost;
+        counter->pre_cost = conj_id;
+      }
+      
       if (--counter->unsatisfied_preconditions > 0) { //there must be one satisfied so 1 should be minused        
-        if( conjunctions[conj_id].cost == 0 ){ //at first, explore only contains the cost = 0;
-          counter->cost = g_value;
-          counter->pre_cost = -1;
-        } //keep the number which conjunction keeps the cost
-        else if(conjunctions[conj_id].cost < counter->cost && conj_id == counter->pre_cost ){
-          counter->cost = conjunctions[conj_id].cost;
-          counter->pre_cost = conj_id;
-        }//keep the larger value -- the position of this rule should be modified
-        else if (counter->cost < conjunctions[conj_id].cost){
-          counter->cost = conjunctions[conj_id].cost;
-          counter->pre_cost = conj_id;
-        }
         continue; //can't be used -- jump
       }
       //line 2:  

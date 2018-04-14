@@ -23,6 +23,17 @@ class OptionParser;
 class State;
 class PruningMethod;
 
+//search overload2
+struct node_in_queue{
+    StateID id;
+    int g;
+    int h;
+    node_in_queue(StateID state, int g_value, int h_value):id(state),g(g_value),h(h_value){};
+};
+bool operator<(const node_in_queue node1, const node_in_queue node2){
+    //return (node1.g + node1.h)>(node2.g + node2.h);
+    return node1.h > node2.h;
+}
 class Search : public SearchEngine
 {
 protected:
@@ -55,8 +66,14 @@ protected:
 
     PruningMethod *m_pruning_method;
     
-    std::priority_queue <SearchNode> m_queue;
+    //std::priority_queue <SearchNode> *m_queue;
     OpenSet *m_open_set;
+    //search overload1
+    //std::vector<SearchNode> m_node_vector;
+    
+    //search overload2
+    std::priority_queue<node_in_queue> m_node_pq;
+
     std::vector<Heuristic *> m_heuristics;
     std::vector<Heuristic *> m_preferred;
     std::vector<HeuristicRefiner *> m_heuristic_refiner;

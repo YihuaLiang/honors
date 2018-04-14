@@ -31,6 +31,7 @@ struct GreedyConflictSelector : public ConflictSelector {
             for (uint i = 0; i < f_conjs.size(); i++) {
                 unsigned cid = f_conjs[i];
                 const Conjunction &conj = pic->get_conjunction(cid);
+                //go through the conjunction -- the first one equal to size
                 if (++in_fluent[cid] == conj.fluent_size &&
                     (!conj.is_achieved() ||
                      conj.cost >= threshold)) {
@@ -334,6 +335,15 @@ std::pair<bool, unsigned> UCRefinementCritPaths::compute_conflict(
                 continue;//check every action --> intersect set not empty then ad the f_del to the conflict
             }
 
+            //add this for pruning duplicated executing of same action
+            else if(m_zero_achievers.count(action.aid)){
+                //the zero cost action has been used once -- do not take it again
+                continue;
+            }
+            else if(action.base_cost == 0){
+                m_zero_achievers.insert(action.aid);
+            }
+            
             //    std::string(START - threshold + 1, ' ') << g_operators[action.operator_no].get_name() << std::endl;
             Fluent regr;
             regr.insert(action.precondition.begin(), action.precondition.end());

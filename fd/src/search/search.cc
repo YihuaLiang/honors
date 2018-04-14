@@ -125,7 +125,10 @@ void Search::initialize()
     //problem in set the value
     node.open_initial(m_cached_h ? m_cached_h->get_value() : 0);
     m_open_set->push(node, false);
-    //m_queue.push(node);
+
+    node_in_queue init_node(init.get_id(),node.get_g(),node.get_h());
+    m_node_pq.push(init_node);
+
     m_open_states++;
   } else {
     search_progress.inc_dead_ends();
@@ -404,22 +407,51 @@ void Search::statistics() const
 
 StateID Search::fetch_next_state()
 { //just fetch no judge?
-  while (!m_open_set->empty()) {
-    StateID m_next_state_id = m_open_set->pop();
-    State state = g_state_registry->lookup_state(m_next_state_id);
-    SearchNode node = search_space.get_node(state); // always base on state, so it should be all good
-    
-    //if( m_next_state_id == state.get_id()) {
-    //  cout<<"id is the same"<<endl;
-    //}
+ 
+  // while (!m_open_set->empty()) {
+  //   StateID m_next_state_id = m_open_set->pop();
+  //   State state = g_state_registry->lookup_state(m_next_state_id);
+  //   SearchNode node = search_space.get_node(state); // always base on state, so it should be all good
 
-    //search space is defined in search
-    //SearchNode new_one = m_queue->pop(); could require larger space
-    if (node.is_closed() || node.is_dead_end()) {
+  //   //SearchNode new_one = m_queue->top();//could require larger space
+  //   //m_queue->pop();
+  //   if (node.is_closed() || node.is_dead_end()) {
+  //     continue;
+  //   }
+  //   return state.get_id();
+  // }
+
+  //search overload1
+  // int min = std::numeric_limits<int>::max();
+  // int position = -1;
+  // if(!m_node_vector.empty()){
+  //   for(uint i = 0 ; i < m_node_vector.size(); i++){
+  //     if(m_node_vector[i].is_closed() || m_node_vector.is_dead_end()){
+  //       continue;
+  //     }
+  //     else if(m_node_vector[i].get_h() + m_node_vector.get_g() < min){
+  //       min = m_node_vector[i].get_h() + m_node_vector.get_g();
+  //       position = i;
+  //     }
+  //   }
+  //   if(position == -1) return StateID::no_state;
+  //   else {
+  //     SearchNode node = m_node_vector[i];
+  //     m_node_vector.erase(m_node_vector.begin()+i);        
+  //     state = node.get_state();
+  //     return state.get_id();
+  //   }
+  // }
+  
+  //search overload2
+  while(!m_node_pq.empty()){
+    node_in_queue new_node = m_node_pq.top();
+    m_node_pq.pop();
+    State state = g_state_registry->lookup_state(new_node.id);
+    SearchNode node = search_space.get_node(state);
+    if (node.is_closed() || node.is_dead_end()){
       continue;
-    }
-    //If g value is larger than the cost bound then mark it and continue;
-    //After the heuristic is modified then don't need it anymore
+    } 
     return state.get_id();
   }
   return StateID::no_state;
@@ -541,7 +573,15 @@ Search::SearchStatus Search::step()
       open_child = true;
       //push the new node into 
       //succ_node.set_depth(node.get_depth() + 1);
-      m_open_set->push(succ_node, preferred_ops.count(ops[i]));//if the ops[i] is preferred then true
+      
+      //m_open_set->push(succ_node, preferred_ops.count(ops[i]));//if the ops[i] is preferred then true
+
+      //search overload1
+      //m_node_vector.push_back(succ_node);
+      
+      //search overload2
+      node_in_queue node_pq(succ.get_id(),succ_node.get_g(),succ_node.get_h());
+      m_node_pq.push(node_pq);
     }
   }
 

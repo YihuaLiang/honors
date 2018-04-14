@@ -53,8 +53,8 @@ HeuristicRefiner::RefinementResult UCRefinementOnRN::refine(const std::vector<St
                             int g_value)
 {
     std::unordered_set<StateID> mapped_rn;
-    (*m_rn_map)(uc, rn, mapped_rn);//contruct the
-    if (prepare_refinement(states, mapped_rn,g_value)) {
+    (*m_rn_map)(uc, rn, mapped_rn);//contruct the map
+    if (prepare_refinement(states, mapped_rn, g_value)) {
         return UNCHANGED;//some how detected the dead end
     }
 
