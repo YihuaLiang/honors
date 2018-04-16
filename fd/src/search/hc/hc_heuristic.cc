@@ -813,12 +813,13 @@ void HCHeuristic::compile_strips()
 
     StripsAction action;
     action.base_cost = base_cost;
-    action.operator_no = i;
-
+    action.operator_no = i; 
+    //here added -- preconditon???
     Fluent &precondition = action.precondition;
     Fluent &add_effect = action.add_effect;
     Fluent &del_effect = action.del_effect;
 
+    //use reference to insert pre, add, del
     for (uint i = 0; i < pre.size(); i++) {
       precondition.insert(get_fact(pre[i].var,
                                    pre[i].prev));
@@ -1267,11 +1268,12 @@ int HCHeuristic::simple_traversal_setup(const State &state,
   
   conjunctions[m_true_id].check_and_update(0, NULL);//this is for dual task
   exploration.push_back(m_true_id);
-
+  //m_goal_id is not pushed in exploration
   for (uint i = 0; i < counters.size(); i++) { //for every effect
     ActionEffectCounter &counter = counters[i];
     counter.unsatisfied_preconditions = counter.preconditions;//all preconditons unsatisfied
     counter.cost = 0;//Initial to be zero
+    counter.pre_cost = -1;
   }
 
   return exploration.size();
@@ -1346,15 +1348,11 @@ int HCHeuristic::simple_traversal_wrapper(
   }
   //could simply store the values in the vector as exploration
   
-  //define a set for exploration
-  //std::set<unsigned> &explored;
-  //explored.clear();
-  //int in_explored_flag = 0;
-  
   unsigned i = 0;
   unsigned border = lvl0;
   int level = 0;
   int goal_level = 0;
+  cout<<exploration.size()<<"in the state"<<endl;
   while (i < exploration.size()) {
     if (i == border) {//enlarge the exploration, when it go through one level
       border = exploration.size();
@@ -1362,14 +1360,6 @@ int HCHeuristic::simple_traversal_wrapper(
       level += 1; //add one level -- the distance 
     }
     unsigned conj_id = exploration[i++]; 
-    //check this conjunction cost
-    // if(explored.find(conj_id)){
-    //   in_explored_flag = 1;
-    // }
-    // else{
-    //    explored.insert(conj_id);
-    //    in_explored_flag = 0;
-    // }
 
     /*const*/ vector<ActionEffectCounter *> &triggered_counters =
       conjunctions[conj_id].triggered_counters;//The actions could be executed
@@ -1379,33 +1369,40 @@ int HCHeuristic::simple_traversal_wrapper(
     
     for (uint j = 0; j < triggered_counters.size(); j++) {
       ActionEffectCounter *counter = triggered_counters[j]; 
-      
+
       if( conjunctions[conj_id].cost == 0 ){ //at first, explore only contains the cost = 0;
         counter->cost = g_value;
         counter->pre_cost = -1;
+        cout<<"The conjunction is in the state, counter take a cost "<<g_value<<endl;
       } //keep the number which conjunction keeps the cost
       else if(conjunctions[conj_id].cost < counter->cost && conj_id == counter->pre_cost ){
         counter->cost = conjunctions[conj_id].cost;
         counter->pre_cost = conj_id;
+        
+        cout<<"The conjunction "<<conj_id <<" lead to the counter cost, now cost shrink to "<<g_value<<endl;
       }//keep the larger value -- the position of this rule should be modified
       else if (counter->cost < conjunctions[conj_id].cost){
         counter->cost = conjunctions[conj_id].cost;
         counter->pre_cost = conj_id;
+
+        cout<<"The conjunction "<<conj_id<<" lead to a larger counter cost "<<g_value<<endl;
       }
       
       if (--counter->unsatisfied_preconditions > 0) { //there must be one satisfied so 1 should be minused        
         continue; //can't be used -- jump
       }
       //line 2:  
-      if( counter->cost + counter->base_cost > bound) {
+      if( counter->cost + counter->base_cost > bound) { //g_value is not invaluated probably
+        cout<<"The conjunction "<<conj_id<<" excess the bound"<<endl;
         continue;//The effect conjunction will be not be updated
       }
       //counter is action --- the cost should inherit from the conj_id
+     
       if (counter->effect->is_achieved()){
         if(counter->effect->cost > counter->cost + counter->base_cost){
           counter->effect->check_and_update(counter->cost + counter->base_cost, NULL);
-          //exploration.push_back(counter->effect->id);
-          exploration.insert(exploration.begin(), counter->effect->id);//want to update the counters directly
+          cout<<"The conjunction "<<counter->effect->id<<" get a smaller cost "<<counter->cost + counter->base_cost<<endl;
+          exploration.insert(exploration.begin() + i, counter->effect->id);//want to update the counters directly
           if (m_goal_id == counter->effect->id) {//the early termination should not be operated here
              goal_level = counter->cost + counter->base_cost;  
           }
@@ -1416,6 +1413,7 @@ int HCHeuristic::simple_traversal_wrapper(
         //check and update will store the smaller h value
         counter->effect->check_and_update(counter->cost + counter->base_cost, NULL);
         //update the conjunction, the cost are stored in the conjunction
+        cout<<"The conjunction "<<counter->effect->id<<" is achieved with cost "<<counter->cost + counter->base_cost<<endl;
         exploration.push_back(counter->effect->id);//it could not guarantee, the first round do not have effect
         if (m_goal_id == counter->effect->id) {
           goal_level = counter->cost + counter->base_cost;  
@@ -1426,7 +1424,7 @@ int HCHeuristic::simple_traversal_wrapper(
       }
     }
   }
-  return conjunctions[m_goal_id].is_achieved() ? (goal_level-g_value) : DEAD_END; // goal level means the depth of goal 
+  return conjunctions[m_goal_id].is_achieved() ? (goal_level - g_value) : DEAD_END; // goal level means the depth of goal 
   // here need to modified
 }
 
@@ -1521,7 +1519,7 @@ int HCHeuristic::compute_heuristic(const State &state,int g_value)
     }
     counters.pop_back();
   }
-  cout<<"hc result"<<res<<endl;
+  //cout<<"hc result"<<res<<endl;
   return res == DEAD_END ? res : res - 1;
 }
 

@@ -124,11 +124,11 @@ void Search::initialize()
     SearchNode node = search_space.get_node(init);
     //problem in set the value
     node.open_initial(m_cached_h ? m_cached_h->get_value() : 0);
-    m_open_set->push(node, false);
+    //m_open_set->push(node, false);
 
     node_in_queue init_node(init.get_id(),node.get_g(),node.get_h());
     m_node_pq.push(init_node);
-
+      
     m_open_states++;
   } else {
     search_progress.inc_dead_ends();
@@ -181,7 +181,6 @@ bool Search::trigger_refiner(const State &state, bool &success, int g_value)
 {
   unsigned tmp;
   success = false;
-  //cout<<"trigger refiner"<<endl;
   for (uint i = 0; i < m_heuristic_refiner.size(); i++) {
     if (m_heuristic_refiner[i]->get_heuristic()->is_dead_end()) {
       success = true;
@@ -348,9 +347,9 @@ bool Search::evaluate(const State &state, bool &u, int g_value)
   if (maxh != -1) {
     for (uint i = 0; i < m_heuristics.size(); i++) {
       search_progress.inc_evaluations(1);
-      m_heuristics[i]->evaluate(state, g_value);
-      //m_heuristics[i]->evaluate(state);
-      if (m_heuristics[i]->is_dead_end()/*|| (g_value + m_heuristics[i]->get_value()) > bound*/) {
+      //m_heuristics[i]->evaluate(state, g_value);
+      m_heuristics[i]->evaluate(state);
+      if (m_heuristics[i]->is_dead_end() || (g_value + m_heuristics[i]->get_value()) > bound ) {
         maxh = -1;
         m_cached_h = m_heuristics[i];
         break;
@@ -364,7 +363,14 @@ bool Search::evaluate(const State &state, bool &u, int g_value)
 
   if (maxh == -1) {
     if (m_unsath_refine) {
-      check_dead_end(state, true, g_value);
+      //check_dead_end(state, true, g_value);
+      Heuristic *hc = check_dead_end(state,true,g_value);
+      if(hc->is_dead_end()){
+        cout<<"both dead end"<<endl;
+      }
+      else{
+        cout<<"H1 failed"<<endl;
+      }
       return trigger_refiner(state, u, g_value); 
     } else if (c_ensure_u_consistency && !c_unsath_new) {//consistence is false
       Heuristic *x = check_dead_end(state, c_unsath_new_full, g_value);
@@ -475,7 +481,7 @@ Search::SearchStatus Search::step()
     return FAILED;
   }
 
-  bool whatever;//the whatever value?
+  bool whatever;
   State state = g_state_registry->lookup_state(m_next_state_id);
   SearchNode node = search_space.get_node(state); // after get no operation is on node
   assert(!node.is_closed() && !node.is_dead_end());// it will judge the dead end here
@@ -537,8 +543,6 @@ Search::SearchStatus Search::step()
     successors[i] = succ_node.get_state_id();
     succ_node.add_parent(state);
     int succ_g_value = node.get_g() + ops[i]->get_cost();
-    
-    //cout<<"succ "<<succ_g_value<<endl;
     
     if (succ_node.is_new()) {
       if (evaluate(succ_node, succ_g_value)) { // use heuristic on successor

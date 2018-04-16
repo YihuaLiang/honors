@@ -87,6 +87,7 @@ struct ActionEffectCounter {
   int cost;
   unsigned pre_cost;
   /*pre_cost -- record the max precondition*/
+  
   /* for LM-cut computation */
   //int max_precondition;
   // ff
