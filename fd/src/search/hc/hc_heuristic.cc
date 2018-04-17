@@ -1370,22 +1370,20 @@ int HCHeuristic::simple_traversal_wrapper(
     for (uint j = 0; j < triggered_counters.size(); j++) {
       ActionEffectCounter *counter = triggered_counters[j]; 
 
-      if( conjunctions[conj_id].cost == 0 ){ //at first, explore only contains the cost = 0;
+      if( conjunctions[conj_id].cost == 0 && counter->cost == 0){ //at first, explore only contains the cost = 0;
         counter->cost = g_value;
         counter->pre_cost = -1;
-        cout<<"The conjunction is in the state, counter take a cost "<<g_value<<endl;
+        // /cout<<"The conjunction is in the state, counter take a cost "<<g_value<<endl;//should not be like this
       } //keep the number which conjunction keeps the cost
       else if(conjunctions[conj_id].cost < counter->cost && conj_id == counter->pre_cost ){
         counter->cost = conjunctions[conj_id].cost;
         counter->pre_cost = conj_id;
-        
-        cout<<"The conjunction "<<conj_id <<" lead to the counter cost, now cost shrink to "<<g_value<<endl;
+        //cout<<"The conjunction "<<conj_id <<" lead to the counter cost, now cost shrink to "<<conjunctions[conj_id].cost<<endl;
       }//keep the larger value -- the position of this rule should be modified
       else if (counter->cost < conjunctions[conj_id].cost){
         counter->cost = conjunctions[conj_id].cost;
         counter->pre_cost = conj_id;
-
-        cout<<"The conjunction "<<conj_id<<" lead to a larger counter cost "<<g_value<<endl;
+        //cout<<"The conjunction "<<conj_id<<" lead to a larger counter cost "<<conjunctions[conj_id].cost<<endl;
       }
       
       if (--counter->unsatisfied_preconditions > 0) { //there must be one satisfied so 1 should be minused        
@@ -1393,27 +1391,25 @@ int HCHeuristic::simple_traversal_wrapper(
       }
       //line 2:  
       if( counter->cost + counter->base_cost > bound) { //g_value is not invaluated probably
-        cout<<"The conjunction "<<conj_id<<" excess the bound"<<endl;
+        //cout<<"The conjunction "<<conj_id<<" excess the bound"<<endl;
         continue;//The effect conjunction will be not be updated
       }
       //counter is action --- the cost should inherit from the conj_id
      
-      if (counter->effect->is_achieved()){
-        if(counter->effect->cost > counter->cost + counter->base_cost){
+      if (counter->effect->is_achieved() && (counter->effect->cost > counter->cost + counter->base_cost)){
           counter->effect->check_and_update(counter->cost + counter->base_cost, NULL);
-          cout<<"The conjunction "<<counter->effect->id<<" get a smaller cost "<<counter->cost + counter->base_cost<<endl;
-          exploration.insert(exploration.begin() + i, counter->effect->id);//want to update the counters directly
+          //cout<<"The conjunction "<<counter->effect->id<<" get a smaller cost "<<counter->cost + counter->base_cost<<endl;
+          exploration.insert(exploration.begin() + i, counter->effect->id);//want to update the counters next
           if (m_goal_id == counter->effect->id) {//the early termination should not be operated here
              goal_level = counter->cost + counter->base_cost;  
           }
-        }
       }
       else if (!counter->effect->is_achieved()) {//cost <0 ---> has not been explored 
         //directly add the base cost here if not early termination then continue -> jump the dead end
         //check and update will store the smaller h value
         counter->effect->check_and_update(counter->cost + counter->base_cost, NULL);
         //update the conjunction, the cost are stored in the conjunction
-        cout<<"The conjunction "<<counter->effect->id<<" is achieved with cost "<<counter->cost + counter->base_cost<<endl;
+        //cout<<"The conjunction "<<counter->effect->id<<" is achieved with cost "<<counter->cost + counter->base_cost<<endl;
         exploration.push_back(counter->effect->id);//it could not guarantee, the first round do not have effect
         if (m_goal_id == counter->effect->id) {
           goal_level = counter->cost + counter->base_cost;  

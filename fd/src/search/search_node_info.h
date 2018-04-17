@@ -16,6 +16,7 @@ struct SearchNodeInfo {
   unsigned int status : 2;
   int g : 30;
   int h;
+  int open_child;
   unsigned revision : 30;
   unsigned flag : 1;
   unsigned u_flag : 1;

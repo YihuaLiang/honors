@@ -347,9 +347,8 @@ bool Search::evaluate(const State &state, bool &u, int g_value)
   if (maxh != -1) {
     for (uint i = 0; i < m_heuristics.size(); i++) {
       search_progress.inc_evaluations(1);
-      //m_heuristics[i]->evaluate(state, g_value);
       m_heuristics[i]->evaluate(state);
-      if (m_heuristics[i]->is_dead_end() || (g_value + m_heuristics[i]->get_value()) > bound ) {
+      if (m_heuristics[i]->is_dead_end()) {
         maxh = -1;
         m_cached_h = m_heuristics[i];
         break;
@@ -363,14 +362,15 @@ bool Search::evaluate(const State &state, bool &u, int g_value)
 
   if (maxh == -1) {
     if (m_unsath_refine) {
-      //check_dead_end(state, true, g_value);
-      Heuristic *hc = check_dead_end(state,true,g_value);
-      if(hc->is_dead_end()){
-        cout<<"both dead end"<<endl;
-      }
-      else{
-        cout<<"H1 failed"<<endl;
-      }
+      check_dead_end(state, true, g_value);
+      // Heuristic *hc = check_dead_end(state,true,g_value);
+      // if(hc->is_dead_end()){
+      //   cout<<"both dead end"<<endl;
+      // }
+      // else{
+      //   cout<<"H1 failed"<<endl;
+      // }
+      //here the trigger_refiner will be ok cause the structure usually do not have problem
       return trigger_refiner(state, u, g_value); 
     } else if (c_ensure_u_consistency && !c_unsath_new) {//consistence is false
       Heuristic *x = check_dead_end(state, c_unsath_new_full, g_value);
