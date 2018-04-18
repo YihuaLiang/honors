@@ -16,7 +16,7 @@ struct SearchNodeInfo {
   unsigned int status : 2;
   int g : 30;
   int h;
-  int open_child;
+  int open_succ; //child counter
   unsigned revision : 30;
   unsigned flag : 1;
   unsigned u_flag : 1;
@@ -28,7 +28,7 @@ struct SearchNodeInfo {
 
 SearchNodeInfo()
 : status(NEW), g(-1), h(-1), revision(0), flag(0), u_flag(0),
-    parent_state_id(StateID::no_state), creating_operator(0) {
+    parent_state_id(StateID::no_state), creating_operator(0),open_succ(0) {
 }
 };
 

@@ -52,6 +52,7 @@ void SearchNode::open_initial(int h) {
     info.h = h;
     info.parent_state_id = StateID::no_state;
     info.creating_operator = 0;
+    info.open_succ = 0;
 }
 
 void SearchNode::open(int h, const SearchNode &parent_node,
@@ -62,6 +63,7 @@ void SearchNode::open(int h, const SearchNode &parent_node,
     info.h = h;
     info.parent_state_id = parent_node.get_state_id();
     info.creating_operator = parent_op;
+    info.open_succ = 0;
 }
 
 void SearchNode::reopen(const SearchNode &parent_node,

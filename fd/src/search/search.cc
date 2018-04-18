@@ -561,12 +561,12 @@ Search::SearchStatus Search::step()
       int newg = node.get_g() + get_adjusted_cost(*ops[i]); // set new g
       // allow reopen nodes && reopen success
       // for a node it could be new , open , closed , deadend
-      if (c_reopen_nodes && m_open_set->reopen(succ_node, node, newg)) {
+      if (c_reopen_nodes && m_open_set->reopen(succ_node, node, newg)) {//reopen false
         succ_node.reopen(node, ops[i]);
         m_open_states++;
       } else if (newg < node.get_g()) { //get a better information
         bool closed = succ_node.is_closed();
-        succ_node.reopen(node, ops[i]); // update information -- then make it closed
+        succ_node.reopen(node, ops[i]); // update the g_value
         if (closed)
         succ_node.close();
       }
@@ -660,7 +660,6 @@ bool Search::check_and_learn_dead_end(const SearchNode &node,
       if (m_heuristic_refiner[i]->get_heuristic()->is_dead_end()) {
         is_dead_end = true; // if one find it is dead end then dead end
       } else {
-        //don/t know why but it lead to can lead to both 2 refiners. ask
         /*HeuristicRefiner::RefinementResult refine = \
           m_heuristic_refiner[i]->learn_unrecognized_dead_ends(visited,
                                                                recognized_neighbors);*/

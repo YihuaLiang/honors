@@ -14,6 +14,7 @@ t0 - truck
 (visited l3)
 
 (= (distance l1 l3) 2) (= (distance l2 l3) 1) (= (distance l4 l3) 1) (= (distance l3 l5) 0) (= (distance l5 l6) 3) 
+(= (distance l3 l1) 2) (= (distance l3 l2) 1) (= (distance l3 l4) 1) (= (distance l5 l3) 0) (= (distance l6 l5) 3)
 (= (total-cost) 0)
 
 )
