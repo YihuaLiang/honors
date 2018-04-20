@@ -127,8 +127,7 @@ void Search::initialize()
     //m_open_set->push(node, false);
 
     node_in_queue init_node(init.get_id(),node.get_g(),node.get_h());
-    m_node_pq.push(init_node);
-      
+    m_node_pq.push(init_node); 
     m_open_states++;
   } else {
     search_progress.inc_dead_ends();
@@ -455,7 +454,7 @@ StateID Search::fetch_next_state()
     m_node_pq.pop();
     State state = g_state_registry->lookup_state(new_node.id);
     SearchNode node = search_space.get_node(state);
-    if (node.is_closed() || node.is_dead_end()){
+    if (node.is_closed() || node.is_dead_end()){//this node is marked in the expansion part
       continue;
     } 
     return state.get_id();
@@ -499,15 +498,27 @@ Search::SearchStatus Search::step()
     //Heuristic *h = check_dead_end(state, c_unsath_open_full);
     //reload    
     Heuristic *h = check_dead_end(state, c_unsath_open_full, node.get_g());//2nd is true
-    
+
+    cout<<"hc value "<<h->get_value()<<endl;
+    //finished hff could find the results with a second best cost
+    //but fail to find the best cost
     if (h && h->is_dead_end()) {
       node.mark_as_dead_end();
       node.set_u_flag(); // set it recogenized by u
+      //Initial 
+      StateID parent_id = node.info.parent_state_id;
+      if(parent_id == StateID::no_state){
+        return IN_PROGRESS;
+      }
+      State parent_state = g_state_registry->lookup_state(parent_id);
+      SearchNode  parent_node = search_space.get_node(parent_state);
+      parent_node.info.open_succ--;
+
       search_progress.inc_u_recognized_dead_ends();
       if (m_unsath_refine && (c_unsath_refine_to_initial_state
                               || m_open_states > 0)) {//satisfay 
         //trigger_refiner(state, whatever); // refine and back propagate
-        //reload
+        //reload       
         trigger_refiner(state, whatever, node.get_g());
         backward_propagation(state);
       }
@@ -548,7 +559,7 @@ Search::SearchStatus Search::step()
       if (evaluate(succ_node, succ_g_value)) { // use heuristic on successor
         return SOLVED;
       }
-      if (m_cached_h && m_cached_h->is_dead_end()) {
+      if ( (m_cached_h && m_cached_h->is_dead_end()) ||succ_g_value > bound) {
         search_progress.inc_dead_ends(1);
         succ_node.mark_as_dead_end();
         continue;//mark as dead end then go to next successor

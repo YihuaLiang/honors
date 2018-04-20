@@ -188,7 +188,7 @@ HeuristicRefiner::RefinementResult UCRefinementCritPaths::refine(
         assert(uc->get_counter(i).base_cost >= 1);
     }//here we do not require base cost  > 1
 #endif
-    //cout<<"come into pcr "<<endl;
+    cout<<"come into pcr "<<endl;
     bool updated_c = false;
     RefinementResult successful = SUCCESSFUL;
     int old_val = -2;
@@ -209,7 +209,8 @@ HeuristicRefiner::RefinementResult UCRefinementCritPaths::refine(
             //std::cout << ">>>>>>>>>>>REFINEMENT_END" << std::endl;
             return updated_c ? SUCCESSFUL : UNCHANGED;
         }
-        if (uc->get_value() == old_val) {//value is not updated --> there is a problem
+        if (uc->get_value() == old_val) {//value is not updated
+            cout<<"old val is "<<old_val<<endl;
             assert(false);
             break;
         }
@@ -217,9 +218,7 @@ HeuristicRefiner::RefinementResult UCRefinementCritPaths::refine(
         updated_c = true;
         prepare_refinement();;
         //START = uc->get_value();
-        std::pair<bool, unsigned> res = compute_conflict(goal, uc->get_value(), state);
-        //cout<<"return success"<<endl;
-        //cout<<"res "<<res.second<<endl;
+        std::pair<bool, unsigned> res = compute_conflict(goal, uc->get_value()+g_value, state);
         if (res.second == (unsigned) -1) {
             successful = SOLVED;
             break;
@@ -228,7 +227,6 @@ HeuristicRefiner::RefinementResult UCRefinementCritPaths::refine(
                 m_required_by.clear();
                 unsigned i = 0;
                 std::vector<unsigned> open;
-                //cout<<"open size "<<open.size()<<endl;
                 open.push_back(res.second);
                 //for the conflicts, go through those conjunctions require it 
                 m_pruned[res.second] = true;
@@ -237,9 +235,6 @@ HeuristicRefiner::RefinementResult UCRefinementCritPaths::refine(
                     //here is a bug //it is because the open[i] is larger than m_requires size --> the size problem is not guaranteed
                     //requires contains the child confl, required_by contains parents confl. a vector of unsigned set
                     for (std::set<unsigned>::iterator it = m_requires[open[i]].begin(); it != m_requires[open[i]].end(); it++) {
-                        //cout<<"open i "<<open[i]<<endl;
-                        //cout<<"m require size "<<m_requires.size()<<endl;
-                        //cout<<"m pruned "<<m_pruned.size()<<endl;
                         //*it is a conj requires the open[i]
                         if (!m_pruned[*it]) {//this line, *it value is not what expected(too large)
                             m_pruned[*it] = true;//set the child_conflict to true and push it into open
@@ -256,6 +251,11 @@ HeuristicRefiner::RefinementResult UCRefinementCritPaths::refine(
                             break;
                         } else {
                             uc->add_conflict(m_conflicts[i]);
+                            // Fluent new_conflict = m_conflicts[i].get_fluent();
+                            // cout<<"Fluent here"<<endl;
+                            // for(std::set<Fact>::iterator it = new_conflict.begin(); it!=new_conflict.end(); ++it){
+                            //     cout<<(*it).first<<" "<<(*it).second<<endl;
+                            // }
                         }
                     }
                 }
@@ -273,8 +273,6 @@ HeuristicRefiner::RefinementResult UCRefinementCritPaths::refine(
         release_memory();//every time it get a new X it will clean the m
         //cout<<"pcr next round"<<endl;
     }
-    //assert(false);
-    //std::cout << ">>>>>>>>>>>REFINEMENT_END" << std::endl;
     return successful;
 }
 //it will return true and id when success
@@ -317,13 +315,9 @@ std::pair<bool, unsigned> UCRefinementCritPaths::compute_conflict(
             return make_pair(false, -1);
         }
         if (!uc->get_conjunction(cid).is_achieved() ||
-            uc->get_conjunction(cid).cost > threshold) {//it has been calculated
-            cout<<"can't be achieved"<<endl;
-            //return a conjunction id, cid should be returned
-            //when return here, the conflicts, requires/d, fail to catch the value 
-            return make_pair(true, cid);
+            uc->get_conjunction(cid).cost > threshold) {//it has been calculated 
+            return make_pair(true, cid);//mark the return true to refine
         }
-        //
         m_conflicts[conflict_id].merge(uc->get_fluent(cid));
 
         const vector<unsigned> &candidates = m_achievers[cid];

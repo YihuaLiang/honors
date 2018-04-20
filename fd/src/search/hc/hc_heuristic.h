@@ -64,6 +64,34 @@ StripsAction(int opnum, const Fluent &pre, const Fluent &add, const Fluent &del,
 
 struct Conjunction;
 
+struct pre_record{
+  int cost;
+  unsigned conj;
+  pre_record(int cost, unsigned conj):cost(cost),conj(conj){}
+  pre_record():cost(0),conj(-1){};
+};
+
+inline pre_record find_max(std::vector<pre_record> v){
+  pre_record max_pre;
+  for(std::vector<pre_record>::iterator it = v.begin(); it != v.end(); ++it){
+    if((*it).cost > max_pre.cost){
+      max_pre = (*it);
+    }
+  }
+  return max_pre;
+}
+
+inline bool update_pre(std::vector<pre_record> v, pre_record pre){
+  for(std::vector<pre_record>::iterator it = v.begin(); it != v.end(); ++it){
+    if((*it).conj == pre.conj){
+      (*it).conj = pre.conj;
+      (*it).cost = pre.cost;
+      return true; 
+    }
+  }
+  return false;
+}
+
 struct ActionEffectCounter {
   /*
    * static data -- set during initialization
@@ -74,7 +102,7 @@ struct ActionEffectCounter {
   Conjunction *effect; // id of conjunction
   int base_cost; // base action cost
   int preconditions;
-
+  std::vector<pre_record> pre_vector;
   /*
    * dynamic data -- these variables will be updated while computing hmax
    */
@@ -87,7 +115,7 @@ struct ActionEffectCounter {
   int cost;
   unsigned pre_cost;
   /*pre_cost -- record the max precondition*/
-  
+
   /* for LM-cut computation */
   //int max_precondition;
   // ff

@@ -1259,7 +1259,7 @@ int HCHeuristic::simple_traversal_setup(const State &state,
       Conjunction &conj = conjunctions[i];
       conj.clear();//set cost to -1
       if (fluent_in_state(_fluents[i], state)) {//_fluent is C set for hc
-        conj.check_and_update(0, NULL);//The conj only take a smaller value...if the 
+        conj.check_and_update(0, NULL);//
         exploration.push_back(i);//add back to queue
         //exploration only contains id
       }
@@ -1273,6 +1273,7 @@ int HCHeuristic::simple_traversal_setup(const State &state,
     ActionEffectCounter &counter = counters[i];
     counter.unsatisfied_preconditions = counter.preconditions;//all preconditons unsatisfied
     counter.cost = 0;//Initial to be zero
+    counter.pre_vector.resize(0);//set the size to zero, push in gradually.
     counter.pre_cost = -1;
   }
 
@@ -1352,7 +1353,10 @@ int HCHeuristic::simple_traversal_wrapper(
   unsigned border = lvl0;
   int level = 0;
   int goal_level = 0;
-  cout<<exploration.size()<<"in the state"<<endl;
+  pre_record pre_achieved;
+  pre_record max_pre;
+  
+  //unsigned goal_trigger = 0;//record the goal trigger counter
   while (i < exploration.size()) {
     if (i == border) {//enlarge the exploration, when it go through one level
       border = exploration.size();
@@ -1360,61 +1364,75 @@ int HCHeuristic::simple_traversal_wrapper(
       level += 1; //add one level -- the distance 
     }
     unsigned conj_id = exploration[i++]; 
-
+    
     /*const*/ vector<ActionEffectCounter *> &triggered_counters =
       conjunctions[conj_id].triggered_counters;//The actions could be executed
-
-    //sort the counters
     std::sort(triggered_counters.begin(),triggered_counters.end());
     
+    if(conjunctions[conj_id].cost == 0){
+      conjunctions[conj_id].cost = g_value;
+    }
+    pre_achieved.cost = conjunctions[conj_id].cost;
+    pre_achieved.conj = conj_id;
+
     for (uint j = 0; j < triggered_counters.size(); j++) {
       ActionEffectCounter *counter = triggered_counters[j]; 
 
-      if( conjunctions[conj_id].cost == 0 && counter->cost == 0){ //at first, explore only contains the cost = 0;
-        counter->cost = g_value;
-        counter->pre_cost = -1;
-        // /cout<<"The conjunction is in the state, counter take a cost "<<g_value<<endl;//should not be like this
-      } //keep the number which conjunction keeps the cost
-      else if(conjunctions[conj_id].cost < counter->cost && conj_id == counter->pre_cost ){
-        counter->cost = conjunctions[conj_id].cost;
-        counter->pre_cost = conj_id;
-        //cout<<"The conjunction "<<conj_id <<" lead to the counter cost, now cost shrink to "<<conjunctions[conj_id].cost<<endl;
-      }//keep the larger value -- the position of this rule should be modified
-      else if (counter->cost < conjunctions[conj_id].cost){
-        counter->cost = conjunctions[conj_id].cost;
-        counter->pre_cost = conj_id;
-        //cout<<"The conjunction "<<conj_id<<" lead to a larger counter cost "<<conjunctions[conj_id].cost<<endl;
+      bool flag = update_pre(counter->pre_vector, pre_achieved);
+      if(!flag){
+        counter->pre_vector.push_back(pre_achieved);
       }
+      max_pre = find_max(counter->pre_vector);
+      counter->cost = max_pre.cost;
+      counter->pre_cost = max_pre.conj;
+      // if( conjunctions[conj_id].cost == 0 && counter->cost == 0){ //at first, explore only contains the cost = 0;
+      //   counter->pre_vector.push_back(pre_achieved);
+      //   max_pre = find_max(counter->pre_vector);
+      //   counter->cost = max_pre.cost;
+      //   counter->conj = max_pre.conj;
+      // } //keep the number which conjunction keeps the cost
+      // else if(conjunctions[conj_id].cost < counter->cost && conj_id == counter->pre_cost ){
+      //   counter->cost = conjunctions[conj_id].cost;
+      //   counter->pre_cost = conj_id;
+      // }//keep the larger value -- the position of this rule should be modified
+      // else if (counter->cost < conjunctions[conj_id].cost){
+      //   counter->cost = conjunctions[conj_id].cost;
+      //   counter->pre_cost = conj_id;
+      // }
       
       if (--counter->unsatisfied_preconditions > 0) { //there must be one satisfied so 1 should be minused        
         continue; //can't be used -- jump
       }
       //line 2:  
       if( counter->cost + counter->base_cost > bound) { //g_value is not invaluated probably
-        //cout<<"The conjunction "<<conj_id<<" excess the bound"<<endl;
         continue;//The effect conjunction will be not be updated
-      }
-      //counter is action --- the cost should inherit from the conj_id
-     
+      }     
       if (counter->effect->is_achieved() && (counter->effect->cost > counter->cost + counter->base_cost)){
           counter->effect->check_and_update(counter->cost + counter->base_cost, NULL);
-          //cout<<"The conjunction "<<counter->effect->id<<" get a smaller cost "<<counter->cost + counter->base_cost<<endl;
           exploration.insert(exploration.begin() + i, counter->effect->id);//want to update the counters next
           if (m_goal_id == counter->effect->id) {//the early termination should not be operated here
-             goal_level = counter->cost + counter->base_cost;  
+            if(goal_level == 0 || counter->cost + counter->base_cost > goal_level ){
+              goal_level = counter->cost + counter->base_cost;  
+              //goal_trigger = counter->id;
+              if (early_termination){
+                return goal_level;
+              } 
+            }
           }
       }
       else if (!counter->effect->is_achieved()) {//cost <0 ---> has not been explored 
         //directly add the base cost here if not early termination then continue -> jump the dead end
         //check and update will store the smaller h value
         counter->effect->check_and_update(counter->cost + counter->base_cost, NULL);
-        //update the conjunction, the cost are stored in the conjunction
-        //cout<<"The conjunction "<<counter->effect->id<<" is achieved with cost "<<counter->cost + counter->base_cost<<endl;
         exploration.push_back(counter->effect->id);//it could not guarantee, the first round do not have effect
         if (m_goal_id == counter->effect->id) {
-          goal_level = counter->cost + counter->base_cost;  
-          if (early_termination) {
-            return goal_level;
+          //the goal level could only be here
+          if(goal_level == 0 || counter->cost + counter->base_cost > goal_level ){
+            goal_level = counter->cost + counter->base_cost;  
+            //goal_trigger = counter->id;
+            if (early_termination){
+               return goal_level;
+            } 
           }
         }
       }
@@ -1436,7 +1454,7 @@ int HCHeuristic::simple_traversal(const State &state)
 
 //reload
 int HCHeuristic::simple_traversal(const State &state, int g_value)
-{;
+{
   vector<unsigned> exploration;
   int x = simple_traversal_setup(state, exploration);
   //put in the size of exploration
@@ -1925,6 +1943,7 @@ void HCHeuristic::update_triggered_counters(unsigned conj_id)
       ActionEffectCounter *counter = facts_to_counters[fact_id][i];
       if (++comp_counters[counter->id] == conj.fluent_size) {
         add_counter_precondition(counter, &conj);
+        cout<<"counter precondition added"<<endl;
       }
     }
   }
@@ -2006,7 +2025,7 @@ void HCHeuristic::add_conflict(const Conflict &confl)
 
   vector<int> can_add_fluent;
   compute_can_add(can_add_fluent, confl.get_fluent(), true);
-
+  cout<<"can add size "<<can_add_fluent.size()<<endl;
   // add counters that add the new conjunction
   for (uint act = 0; act < can_add_fluent.size(); act++) {
     if (can_add_fluent[act] == 1) {

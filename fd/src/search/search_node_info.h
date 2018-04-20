@@ -27,8 +27,8 @@ struct SearchNodeInfo {
   std::vector<StateID> successors;
 
 SearchNodeInfo()
-: status(NEW), g(-1), h(-1), revision(0), flag(0), u_flag(0),
-    parent_state_id(StateID::no_state), creating_operator(0),open_succ(0) {
+: status(NEW), g(-1), h(-1), open_succ(0),revision(0), flag(0), u_flag(0),
+    parent_state_id(StateID::no_state), creating_operator(0) {
 }
 };
 

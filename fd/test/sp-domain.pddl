@@ -12,7 +12,7 @@
 
 (:functions
 	(total-cost) - number
-        (distance ?l1 city ?l2 - city) - number
+        (distance ?l1 - city ?l2 - city) - number
 )
 
 (:action drive
