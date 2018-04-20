@@ -251,6 +251,8 @@ Heuristic *Search::check_dead_end(const State &state, bool full, int g_value)
     } else if (maxh >= 0 && h->get_value() > maxh)  {
       maxh = h->get_value();
       res = h;
+    } else if (h->get_value() == 0){
+      res = h;
     }
   }
   return res;
@@ -469,7 +471,6 @@ Search::SearchStatus Search::step()
   }
 
   StateID m_next_state_id = fetch_next_state();
-
   if (m_next_state_id == StateID::no_state) {
     std::cout << "Completely explored state space!" << std::endl;
 #ifndef NDEBUG
@@ -485,11 +486,9 @@ Search::SearchStatus Search::step()
   SearchNode node = search_space.get_node(state); // after get no operation is on node
   assert(!node.is_closed() && !node.is_dead_end());// it will judge the dead end here
   m_next_state_id = StateID::no_state;
-
   if (check_goal_and_set_plan(state)) {
     return SOLVED; // found a plan
   }
-
   m_open_states--;
   m_revision++;
 
@@ -502,17 +501,18 @@ Search::SearchStatus Search::step()
     cout<<"hc value "<<h->get_value()<<endl;
     //finished hff could find the results with a second best cost
     //but fail to find the best cost
+
     if (h && h->is_dead_end()) {
       node.mark_as_dead_end();
       node.set_u_flag(); // set it recogenized by u
       //Initial 
-      StateID parent_id = node.info.parent_state_id;
-      if(parent_id == StateID::no_state){
-        return IN_PROGRESS;
-      }
-      State parent_state = g_state_registry->lookup_state(parent_id);
-      SearchNode  parent_node = search_space.get_node(parent_state);
-      parent_node.info.open_succ--;
+      // StateID parent_id = node.info.parent_state_id;
+      // if(parent_id == StateID::no_state){
+      //   return IN_PROGRESS;
+      // }
+      // State parent_state = g_state_registry->lookup_state(parent_id);
+      // SearchNode  parent_node = search_space.get_node(parent_state);
+      // parent_node.info.open_succ--;
 
       search_progress.inc_u_recognized_dead_ends();
       if (m_unsath_refine && (c_unsath_refine_to_initial_state
@@ -533,7 +533,6 @@ Search::SearchStatus Search::step()
   m_largest_g = m_largest_g > node.get_g() ? m_largest_g : node.get_g();
   //out put information
   progress_information();
-
   std::vector<const Operator *> ops;
   //add new node to openset
   //be careful here, don't want hff to get g_value
@@ -554,7 +553,6 @@ Search::SearchStatus Search::step()
     successors[i] = succ_node.get_state_id();
     succ_node.add_parent(state);
     int succ_g_value = node.get_g() + ops[i]->get_cost();
-    
     if (succ_node.is_new()) {
       if (evaluate(succ_node, succ_g_value)) { // use heuristic on successor
         return SOLVED;
@@ -613,6 +611,7 @@ bool Search::check_and_learn_dead_end(const SearchNode &node)
     return false;
   }
   std::vector<State> component;
+  cout<<"trigger learn daed end"<<endl;
   bool res = check_and_learn_dead_end(node, component);// it put in a node then don't need to catch the g
   backward_propagation(component);
   return res;

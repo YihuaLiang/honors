@@ -1364,7 +1364,6 @@ int HCHeuristic::simple_traversal_wrapper(
       level += 1; //add one level -- the distance 
     }
     unsigned conj_id = exploration[i++]; 
-    
     /*const*/ vector<ActionEffectCounter *> &triggered_counters =
       conjunctions[conj_id].triggered_counters;//The actions could be executed
     std::sort(triggered_counters.begin(),triggered_counters.end());
@@ -1385,11 +1384,10 @@ int HCHeuristic::simple_traversal_wrapper(
       max_pre = find_max(counter->pre_vector);
       counter->cost = max_pre.cost;
       counter->pre_cost = max_pre.conj;
+
       // if( conjunctions[conj_id].cost == 0 && counter->cost == 0){ //at first, explore only contains the cost = 0;
-      //   counter->pre_vector.push_back(pre_achieved);
-      //   max_pre = find_max(counter->pre_vector);
-      //   counter->cost = max_pre.cost;
-      //   counter->conj = max_pre.conj;
+      //   counter->cost = g_value;
+      //   counter->pre_cost = conj_id;
       // } //keep the number which conjunction keeps the cost
       // else if(conjunctions[conj_id].cost < counter->cost && conj_id == counter->pre_cost ){
       //   counter->cost = conjunctions[conj_id].cost;
@@ -2000,7 +1998,6 @@ void HCHeuristic::add_conflict(const Conflict &confl)
   }
 
   unsigned conj_id = conjunctions.size();
-
   /* Update existing part */
   // add new conjunction to conjunctions set
   //conjunctions.push_back(Conjunction(conj_id, it->get_fluent()));
@@ -2048,6 +2045,7 @@ void HCHeuristic::add_conflict(const Conflict &confl)
       // (contains_mutex(confl.get_fluent(), action.add_effect));
       if (!contains_mutex(precondition)) {
         create_counter(act, conj_id, action.base_cost, precondition);
+        cout<<"added conflict id "<<conj_id<<endl;
       }
       precondition.clear();
     }
