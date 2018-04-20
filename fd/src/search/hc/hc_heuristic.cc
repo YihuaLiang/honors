@@ -1358,19 +1358,16 @@ int HCHeuristic::simple_traversal_wrapper(
   
   //unsigned goal_trigger = 0;//record the goal trigger counter
   while (i < exploration.size()) {
-    if (i == border) {//enlarge the exploration, when it go through one level
-      border = exploration.size();
-      //based on unit cost
-      level += 1; //add one level -- the distance 
-    }
+    // if (i == border) {//enlarge the exploration, when it go through one level
+    //   border = exploration.size();
+    //   //based on unit cost
+    //   level += 1; //add one level -- the distance 
+    // }
     unsigned conj_id = exploration[i++]; 
     /*const*/ vector<ActionEffectCounter *> &triggered_counters =
       conjunctions[conj_id].triggered_counters;//The actions could be executed
     std::sort(triggered_counters.begin(),triggered_counters.end());
     
-    if(conjunctions[conj_id].cost == 0){
-      conjunctions[conj_id].cost = g_value;
-    }
     pre_achieved.cost = conjunctions[conj_id].cost;
     pre_achieved.conj = conj_id;
 
@@ -1398,11 +1395,11 @@ int HCHeuristic::simple_traversal_wrapper(
       //   counter->pre_cost = conj_id;
       // }
       
-      if (--counter->unsatisfied_preconditions > 0) { //there must be one satisfied so 1 should be minused        
+      if (--(counter->unsatisfied_preconditions) > 0) { //there must be one satisfied so 1 should be minused        
         continue; //can't be used -- jump
       }
       //line 2:  
-      if( counter->cost + counter->base_cost > bound) { //g_value is not invaluated probably
+      if( counter->cost + counter->base_cost + g_value > bound) { //g_value is not invaluated probably
         continue;//The effect conjunction will be not be updated
       }     
       if (counter->effect->is_achieved() && (counter->effect->cost > counter->cost + counter->base_cost)){
@@ -1436,7 +1433,7 @@ int HCHeuristic::simple_traversal_wrapper(
       }
     }
   }
-  return conjunctions[m_goal_id].is_achieved() ? (goal_level - g_value) : DEAD_END; // goal level means the depth of goal 
+  return conjunctions[m_goal_id].is_achieved() ? (goal_level) : DEAD_END; // goal level means the depth of goal 
   // here need to modified
 }
 
@@ -1941,7 +1938,6 @@ void HCHeuristic::update_triggered_counters(unsigned conj_id)
       ActionEffectCounter *counter = facts_to_counters[fact_id][i];
       if (++comp_counters[counter->id] == conj.fluent_size) {
         add_counter_precondition(counter, &conj);
-        cout<<"counter precondition added"<<endl;
       }
     }
   }

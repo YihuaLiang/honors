@@ -189,6 +189,11 @@ HeuristicRefiner::RefinementResult UCRefinementCritPaths::refine(
     }//here we do not require base cost  > 1
 #endif
     cout<<"come into pcr "<<endl;
+    for (Fluent::iterator f = _fluents.begin(); f != _fluents.end(); f++) {
+        if (state[f->first] == f->second) {
+          cout<<"Instate "<<g_fact_names[f->first][f->second]<<endl;
+        }
+    }
     bool updated_c = false;
     RefinementResult successful = SUCCESSFUL;
     int old_val = -2;
@@ -218,7 +223,7 @@ HeuristicRefiner::RefinementResult UCRefinementCritPaths::refine(
         updated_c = true;
         prepare_refinement();;
         //START = uc->get_value();
-        std::pair<bool, unsigned> res = compute_conflict(goal, uc->get_value()+g_value, state);
+        std::pair<bool, unsigned> res = compute_conflict(goal, uc->get_value(), state);
         if (res.second == (unsigned) -1) {
             successful = SOLVED;
             break;
@@ -251,11 +256,11 @@ HeuristicRefiner::RefinementResult UCRefinementCritPaths::refine(
                             break;
                         } else {
                             uc->add_conflict(m_conflicts[i]);
-                            // Fluent new_conflict = m_conflicts[i].get_fluent();
-                            // cout<<"Fluent here"<<endl;
-                            // for(std::set<Fact>::iterator it = new_conflict.begin(); it!=new_conflict.end(); ++it){
-                            //     cout<<(*it).first<<" "<<(*it).second<<endl;
-                            // }
+                            Fluent new_conflict = m_conflicts[i].get_fluent();
+                            cout<<"Fluent here"<<endl;
+                            for(std::set<Fact>::iterator it = new_conflict.begin(); it!=new_conflict.end(); ++it){
+                                cout<<g_fact_names[(*it).first][(*it).second]<<endl;
+                            }
                         }
                     }
                 }
@@ -273,6 +278,7 @@ HeuristicRefiner::RefinementResult UCRefinementCritPaths::refine(
         release_memory();//every time it get a new X it will clean the m
         //cout<<"pcr next round"<<endl;
     }
+    //if(successful == SOLVED){ cout<<"SOLVE"<<endl;}
     return successful;
 }
 //it will return true and id when success
@@ -300,7 +306,6 @@ std::pair<bool, unsigned> UCRefinementCritPaths::compute_conflict(
         }
 #endif
     }
-    //cout<<"begin conflict"<<endl;
     unsigned conflict_id = m_conflicts.size();
     m_requires.resize(m_requires.size() + 1);
     m_required_by.resize(m_required_by.size() + 1);
