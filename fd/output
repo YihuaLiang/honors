@@ -14,22 +14,22 @@ Atom truck-at(t0, l2)
 Atom truck-at(t0, l3)
 end_variable
 begin_variable
+var3
+-1
+2
+Atom visited(l3)
+NegatedAtom visited(l3)
+end_variable
+begin_variable
 var2
 -1
 2
 Atom visited(l2)
 NegatedAtom visited(l2)
 end_variable
-begin_variable
-var1
--1
-2
-Atom visited(l1)
-NegatedAtom visited(l1)
-end_variable
 0
 begin_state
-2
+0
 1
 1
 end_state
@@ -44,30 +44,29 @@ drive t0 l1 l2
 0
 2
 0 0 0 1
-0 1 -1 0
+0 2 -1 0
 1
 end_operator
 begin_operator
 drive t0 l1 l3
 0
-1
+2
 0 0 0 2
+0 1 -1 0
 1
 end_operator
 begin_operator
 drive t0 l2 l1
 0
-2
+1
 0 0 1 0
-0 2 -1 0
 1
 end_operator
 begin_operator
 drive t0 l3 l1
 0
-2
+1
 0 0 2 0
-0 2 -1 0
 1
 end_operator
 0
@@ -104,25 +103,21 @@ begin_DTG
 0
 1
 0
-0
+1
 1
 0 0
 end_DTG
 begin_DTG
 0
-2
-0
-2
 1
-0 1
 0
-3
+0
 1
-0 2
+0 0
 end_DTG
 begin_CG
 2
-2 2
+2 1
 1 1
 0
 0

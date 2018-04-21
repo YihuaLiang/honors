@@ -1262,6 +1262,9 @@ int HCHeuristic::simple_traversal_setup(const State &state,
         conj.check_and_update(0, NULL);//
         exploration.push_back(i);//add back to queue
         //exploration only contains id
+        for (Fluent::iterator f = _fluents[i].begin(); f != _fluents[i].end(); f++) {
+          cout<<"CONJ IN STATE "<<g_fact_names[f->first][f->second]<<endl;
+        }    
       }
     }
   }
@@ -1358,12 +1361,15 @@ int HCHeuristic::simple_traversal_wrapper(
   
   //unsigned goal_trigger = 0;//record the goal trigger counter
   while (i < exploration.size()) {
-    // if (i == border) {//enlarge the exploration, when it go through one level
-    //   border = exploration.size();
-    //   //based on unit cost
-    //   level += 1; //add one level -- the distance 
-    // }
+    if (i == border) {//enlarge the exploration, when it go through one level
+      border = exploration.size();
+      //based on unit cost
+      level += 1; //add one level -- the distance 
+    }
     unsigned conj_id = exploration[i++]; 
+    for (Fluent::iterator f = _fluents[conj_id].begin(); f != _fluents[conj_id].end(); f++) {
+        cout<<"conj fetch"<<g_fact_names[f->first][f->second]<<endl;
+    }
     /*const*/ vector<ActionEffectCounter *> &triggered_counters =
       conjunctions[conj_id].triggered_counters;//The actions could be executed
     std::sort(triggered_counters.begin(),triggered_counters.end());
@@ -1399,9 +1405,9 @@ int HCHeuristic::simple_traversal_wrapper(
         continue; //can't be used -- jump
       }
       //line 2:  
-      if( counter->cost + counter->base_cost + g_value > bound) { //g_value is not invaluated probably
+      if( (counter->cost + counter->base_cost + g_value > bound + 1) ){ //g_value is not invaluated probably
         continue;//The effect conjunction will be not be updated
-      }     
+      } 
       if (counter->effect->is_achieved() && (counter->effect->cost > counter->cost + counter->base_cost)){
           counter->effect->check_and_update(counter->cost + counter->base_cost, NULL);
           exploration.insert(exploration.begin() + i, counter->effect->id);//want to update the counters next
@@ -1420,6 +1426,9 @@ int HCHeuristic::simple_traversal_wrapper(
         //check and update will store the smaller h value
         counter->effect->check_and_update(counter->cost + counter->base_cost, NULL);
         exploration.push_back(counter->effect->id);//it could not guarantee, the first round do not have effect
+        for (Fluent::iterator f = _fluents[counter->effect->id].begin(); f != _fluents[counter->effect->id].end(); f++) {
+            cout<<"conj achieved "<<g_fact_names[f->first][f->second]<<" with "<<counter->cost + counter->base_cost<<endl;
+        }
         if (m_goal_id == counter->effect->id) {
           //the goal level could only be here
           if(goal_level == 0 || counter->cost + counter->base_cost > goal_level ){
@@ -1937,6 +1946,7 @@ void HCHeuristic::update_triggered_counters(unsigned conj_id)
     for (uint i = 0; i < facts_to_counters[fact_id].size(); i++) {
       ActionEffectCounter *counter = facts_to_counters[fact_id][i];
       if (++comp_counters[counter->id] == conj.fluent_size) {
+        //checkk
         add_counter_precondition(counter, &conj);
       }
     }
@@ -1972,7 +1982,7 @@ void HCHeuristic::create_counter(unsigned counter_id,
          it != precondition.end();
          it++) {
       unsigned fid = get_fact_id(*it);
-      facts_to_counters[fid].push_back(&counter);
+      facts_to_counters[fid].push_back(&counter);//fact_to_counters calculated the counter--it will added at first
       const vector<unsigned> &conjs = facts_conjunctions_relation[fid];
       for (size_t i = 0; i < conjs.size(); i++) {
         const unsigned &cid = conjs[i];
@@ -1992,7 +2002,11 @@ void HCHeuristic::add_conflict(const Conflict &confl)
   if (contains_mutex(confl.get_fluent())) {
     return;
   }
-
+  //added check here avoid getting same 
+  // Fluent New_C = confl.get_fluent();
+  // for(std::vector<Fluent>::iterator it = _fluents.begin(); it!=_fluents.end(); it++){
+  //   if(New_C == (*it)) return;
+  // }
   unsigned conj_id = conjunctions.size();
   /* Update existing part */
   // add new conjunction to conjunctions set

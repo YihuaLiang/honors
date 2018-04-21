@@ -4,7 +4,7 @@ end_version
 begin_metric
 1
 end_metric
-3
+4
 begin_variable
 var0
 -1
@@ -27,6 +27,13 @@ var2
 Atom visited(l2)
 NegatedAtom visited(l2)
 end_variable
+begin_variable
+var3
+-1
+2
+Atom visited(l3)
+NegatedAtom visited(l3)
+end_variable
 1
 begin_mutex_group
 3
@@ -35,14 +42,15 @@ begin_mutex_group
 0 2
 end_mutex_group
 begin_state
-2
+0
+1
 1
 1
 end_state
 begin_goal
 2
-1 0
 2 0
+3 0
 end_goal
 4
 begin_operator
@@ -56,8 +64,9 @@ end_operator
 begin_operator
 drive t0 l1 l3
 0
-1
+2
 0 0 0 2
+0 3 -1 0
 1
 end_operator
 begin_operator

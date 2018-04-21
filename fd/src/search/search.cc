@@ -810,6 +810,7 @@ void Search::backward_propagation(std::vector<State> &tbh)
   unsigned i = 0;
   while (i < tbh.size()) {
     State state = tbh[i++];
+    cout<<"triggered bw propagation"<<endl;
     SearchNode node = search_space.get_node(state);
     const std::unordered_set<StateID> &parents = node.get_all_parents();
     for (std::unordered_set<StateID>::const_iterator it = parents.begin();
@@ -909,7 +910,7 @@ void Search::add_options_to_parser(OptionParser &parser)
   parser.add_list_option<Heuristic *>("preferred", "", "", OptionFlags(false));
   //parser.add_list_option<HeuristicRefiner *>("preferred","","[]");
   parser.add_option<bool>("u_refine", "", "true");
-  parser.add_option<bool>("u_refine_initial_state", "", "false");
+  parser.add_option<bool>("u_refine_initial_state", "", "true");
   parser.add_option<int>("u_new", "", "0");
   parser.add_option<int>("u_open", "", "2");
   parser.add_option<int>("u_closed", "", "0");
