@@ -187,7 +187,7 @@ HeuristicRefiner::RefinementResult UCRefinementCritPaths::refine(
         assert(uc->get_counter(i).base_cost >= 1);
     }//here we do not require base cost  > 1
 #endif
-    //cout<<"come into pcr "<<endl;
+    cout<<"come into pcr "<<endl;
     // for (Fluent::iterator f = _fluents.begin(); f != _fluents.end(); f++) {
     //     if (state[f->first] == f->second) {
     //       cout<<"Instate "<<g_fact_names[f->first][f->second]<<endl;
@@ -208,13 +208,13 @@ HeuristicRefiner::RefinementResult UCRefinementCritPaths::refine(
 #ifndef NDEBUG
         std::cout << "{val = " << uc->get_value() << "}" << std::endl;
 #endif
-        //std::cout << "val = " << uc->get_value() <<std::endl;
+        std::cout << "val = " << uc->get_value() <<std::endl;
         if (uc->is_dead_end()) {
             //std::cout << ">>>>>>>>>>>REFINEMENT_END" << std::endl;
             return updated_c ? SUCCESSFUL : UNCHANGED;
         }
         if (uc->get_value() == old_val) {//value is not updated
-            //cout<<"old val is "<<old_val<<endl;
+            cout<<"old val is "<<old_val<<endl;
             assert(false);
             break;
         }
@@ -255,11 +255,11 @@ HeuristicRefiner::RefinementResult UCRefinementCritPaths::refine(
                             break;
                         } else {
                             uc->add_conflict(m_conflicts[i]);
-                            // Fluent new_conflict = m_conflicts[i].get_fluent();
-                            // cout<<"Fluent here, id is"<<i<<endl;
-                            // for(std::set<Fact>::iterator it = new_conflict.begin(); it!=new_conflict.end(); ++it){
-                            //     cout<<g_fact_names[(*it).first][(*it).second]<<endl;
-                            // }
+                            Fluent new_conflict = m_conflicts[i].get_fluent();
+                            cout<<"Fluent here, id is"<<i<<endl;
+                            for(std::set<Fact>::iterator it = new_conflict.begin(); it!=new_conflict.end(); ++it){
+                                cout<<g_fact_names[(*it).first][(*it).second]<<endl;
+                            }
                         }
                     }
                 }
