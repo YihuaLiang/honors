@@ -57,7 +57,7 @@ HeuristicRefiner::RefinementResult UCRefinementOnRN::refine(const std::vector<St
     if (prepare_refinement(states, mapped_rn, g_value)) {
         return UNCHANGED;//some how detected the dead end
     }
-
+    cout<<"enter nr"<<endl;
     Fluent goal;
     for (uint i = 0; i < g_goal.size(); i++) {
         goal.insert(g_goal[i]);
@@ -66,6 +66,14 @@ HeuristicRefiner::RefinementResult UCRefinementOnRN::refine(const std::vector<St
     compute_conflict_set(goal);
     
     //return the update effect
+    cout<<"_conflict size "<<_conflicts.size()<<endl;
+    for(int i = 0; i < _conflicts.size(); i++){ 
+        Fluent new_conflict = _conflicts[i].get_fluent();
+        cout<<"Fluent here, id is"<<i<<endl;
+        for(std::set<Fact>::iterator it = new_conflict.begin(); it!=new_conflict.end(); ++it){
+            cout<<g_fact_names[(*it).first][(*it).second]<<endl;
+        }
+    }
     bool res = uc->update_c(_conflicts);
 
     _component = NULL;

@@ -499,8 +499,6 @@ Search::SearchStatus Search::step()
     Heuristic *h = check_dead_end(state, c_unsath_open_full, node.get_g());//2nd is true
 
     cout<<"hc value "<<h->get_value()<<endl;
-    //finished hff could find the results with a second best cost
-    //but fail to find the best cost
 
     if (h && h->is_dead_end()) {
       node.mark_as_dead_end();
@@ -562,7 +560,6 @@ Search::SearchStatus Search::step()
         succ_node.mark_as_dead_end();
         continue;//mark as dead end then go to next successor
       } else {
-        //1: h-value 2: parent node, parent op
         succ_node.open(m_cached_h ? m_cached_h->get_value() : 0, node, ops[i]);
         m_open_states++;
       }
@@ -611,7 +608,7 @@ bool Search::check_and_learn_dead_end(const SearchNode &node)
     return false;
   }
   std::vector<State> component;
-  cout<<"trigger learn daed end"<<endl;
+  //cout<<"trigger learn daed end"<<endl;
   bool res = check_and_learn_dead_end(node, component);// it put in a node then don't need to catch the g
   backward_propagation(component);
   return res;
@@ -834,6 +831,7 @@ void Search::backward_propagation(std::vector<State> &tbh)
             //size_t tmp_size = tbh.size();
 #endif
             mark_dead_ends(node, tbh);
+            cout<<"parent marked as dead end"<<endl;
             //backward_propagation(open);
 #ifndef NDEBUG
             //std::cout << "Recognized dead end during backward propagation." << std::endl;
