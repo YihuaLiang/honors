@@ -14,14 +14,14 @@ Atom truck-at(t0, l2)
 Atom truck-at(t0, l3)
 end_variable
 begin_variable
-var3
+var2
 -1
 2
 Atom visited(l3)
 NegatedAtom visited(l3)
 end_variable
 begin_variable
-var2
+var1
 -1
 2
 Atom visited(l2)

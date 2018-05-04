@@ -10,16 +10,19 @@
 
 struct RNMap {
     virtual void operator()(UCHeuristic *h, StateID state) = 0;
+    virtual void operator()(UCHeuristic *h, StateID state, int g_value) = 0;
     virtual void operator()(UCHeuristic *h, const std::unordered_set<StateID> &in, std::unordered_set<StateID> &out) = 0;
 };
 
 struct StateRNMap : public RNMap {
     virtual void operator()(UCHeuristic *h, StateID state_id);
+    virtual void operator()(UCHeuristic *h, StateID state_id, int g_value);
     virtual void operator()(UCHeuristic *h, const std::unordered_set<StateID> &in, std::unordered_set<StateID> &out);
 };
 
 struct ClauseRNMap : public RNMap {
     virtual void operator()(UCHeuristic *h, StateID clause_id);
+    virtual void operator()(UCHeuristic *h, StateID clause_id, int g_value);
     virtual void operator()(UCHeuristic *h, const std::unordered_set<StateID> &in, std::unordered_set<StateID> &out);
 };
 

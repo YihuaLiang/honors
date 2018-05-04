@@ -1,0 +1,4 @@
+result time -- total time
+result states -- evaluated, registerd, dead end. u recognized dead end.
+result h -- h recognize, h time
+result refine -- refine number, refine time 

@@ -1033,6 +1033,8 @@ vector
 -
 cstdio
 -
+fstream
+-
 
 /home/admin-u6487831/honors/fd/src/search/hc/uc_heuristic.h
 hc_heuristic.h
@@ -1056,6 +1058,8 @@ uc_refinement.h
 iostream
 -
 cstdio
+-
+fstream
 -
 
 /home/admin-u6487831/honors/fd/src/search/hc/uc_refinement.h
@@ -1687,6 +1691,8 @@ state_registry.h
 /home/admin-u6487831/honors/fd/src/search/state_registry.h
 iostream
 -
+fstream
+-
 new
 -
 vector
@@ -1896,6 +1902,8 @@ search_progress.h
 utilities.h
 /home/admin-u6487831/honors/fd/src/search/utilities.h
 iostream
+-
+fstream
 -
 
 /home/admin-u6487831/honors/fd/src/search/search_progress.h

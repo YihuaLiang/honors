@@ -398,17 +398,18 @@ void HCHeuristic::initialize()
   
   heuristic = 0;
   evaluator_value = 0;
-  //int accumultor = 0;
-  //for (uint i = 0 ; i < g_operators.size() ; i ++)
- // {
-  //  if(g_operators[i].get_cost() == 0) accumultor++;
-  //}
-  //cout<<"0 cost action"<<accumultor<<endl;
   compile_strips();//learn the strips
-
   //dump_compiled_task_to_file();
   //exit(0);
-
+  // unsigend pre_conj;
+  // for(int i = 0; i<counters.size() ; i++){
+  //   if(counters[i].effect->id == m_goal_id){
+  //     cout<<" action_id "<<counters[i].action_id;
+  //     cout<<" base cost "<<counters[i].base_cost;
+  //     cout<<" precondition "<<counters[i].preconditions;
+  //     cout<<" goal id "<<m_goal_id<<endl;
+  //   }
+  // }
   if (c_minimize_counter_set) {//false
     std::cout << "Checking for subsumed counters ..." << std::endl;
     unsigned num_subsumed_counters = 0;
@@ -605,7 +606,7 @@ void HCHeuristic::remove_conjunctions(const std::vector<unsigned> &ids)
       }
     }
 #ifndef NDEBUG
-    std::cout << "updating facts to counters..." << std::endl;
+    std::cout << "updating  to counters..." << std::endl;
 #endif
     for (unsigned i = 0; i < facts_to_counters.size(); i++) {
       std::vector<ActionEffectCounter*> old;
@@ -968,7 +969,9 @@ void HCHeuristic::compile_strips()
     for (uint i = 0; i < g_goal.size(); i++) {
       _fluents[m_goal_id].insert(g_goal[i]);
     }
-    create_counter(-1, m_goal_id, 1, _fluents[m_goal_id]);
+    //create_counter(-1, m_goal_id, 1, _fluents[m_goal_id]);
+    //modify
+    create_counter(-1, m_goal_id, 0, _fluents[m_goal_id]);
   }
 
   _num_counters = counters.size();
@@ -1261,10 +1264,10 @@ int HCHeuristic::simple_traversal_setup(const State &state,
       if (fluent_in_state(_fluents[i], state)) {//_fluent is C set for hc
         conj.check_and_update(0, NULL);//
         exploration.push_back(i);//add back to queue
-        //exploration only contains id
-        for (Fluent::iterator f = _fluents[i].begin(); f != _fluents[i].end(); f++) {
-          cout<<"CONJ IN STATE "<<g_fact_names[f->first][f->second]<<endl;
-        }    
+        //debug
+        // for (Fluent::iterator f = _fluents[i].begin(); f != _fluents[i].end(); f++) {
+        //   cout<<"CONJ IN STATE "<<g_fact_names[f->first][f->second]<<endl;
+        // }    
       }
     }
   }
@@ -1361,15 +1364,22 @@ int HCHeuristic::simple_traversal_wrapper(
   
   //unsigned goal_trigger = 0;//record the goal trigger counter
   while (i < exploration.size()) {
+   
     if (i == border) {//enlarge the exploration, when it go through one level
       border = exploration.size();
       //based on unit cost
       level += 1; //add one level -- the distance 
     }
+    
+    //debug
+    //cout<<"exploration size "<<exploration.size()<<" i "<<i;
     unsigned conj_id = exploration[i++]; 
-    for (Fluent::iterator f = _fluents[conj_id].begin(); f != _fluents[conj_id].end(); f++) {
-        cout<<"conj fetch"<<g_fact_names[f->first][f->second]<<endl;
-    }
+    //debug
+    // cout<<"fetched conj id "<<conj_id<<endl;
+    // for (Fluent::iterator f = _fluents[conj_id].begin(); f != _fluents[conj_id].end(); f++) {
+    //     cout<<g_fact_names[f->first][f->second]<<endl;
+    // }
+
     /*const*/ vector<ActionEffectCounter *> &triggered_counters =
       conjunctions[conj_id].triggered_counters;//The actions could be executed
     std::sort(triggered_counters.begin(),triggered_counters.end());
@@ -1387,29 +1397,23 @@ int HCHeuristic::simple_traversal_wrapper(
       max_pre = find_max(counter->pre_vector);
       counter->cost = max_pre.cost;
       counter->pre_cost = max_pre.conj;
-
-      // if( conjunctions[conj_id].cost == 0 && counter->cost == 0){ //at first, explore only contains the cost = 0;
-      //   counter->cost = g_value;
-      //   counter->pre_cost = conj_id;
-      // } //keep the number which conjunction keeps the cost
-      // else if(conjunctions[conj_id].cost < counter->cost && conj_id == counter->pre_cost ){
-      //   counter->cost = conjunctions[conj_id].cost;
-      //   counter->pre_cost = conj_id;
-      // }//keep the larger value -- the position of this rule should be modified
-      // else if (counter->cost < conjunctions[conj_id].cost){
-      //   counter->cost = conjunctions[conj_id].cost;
-      //   counter->pre_cost = conj_id;
-      // }
       
       if (--(counter->unsatisfied_preconditions) > 0) { //there must be one satisfied so 1 should be minused        
         continue; //can't be used -- jump
       }
       //line 2:  
-      if( (counter->cost + counter->base_cost + g_value > bound + 1) ){ //g_value is not invaluated probably
+      if( (counter->cost + counter->base_cost + g_value > bound ) ){ //g_value is not invaluated probably
         continue;//The effect conjunction will be not be updated
       } 
+
       if (counter->effect->is_achieved() && (counter->effect->cost > counter->cost + counter->base_cost)){
           counter->effect->check_and_update(counter->cost + counter->base_cost, NULL);
+          // debug
+          // for (Fluent::iterator f = _fluents[counter->effect->id].begin(); f != _fluents[counter->effect->id].end(); f++) {
+          //   cout<<"conj shrinked "<<g_fact_names[f->first][f->second]<<" with "<<counter->cost + counter->base_cost;
+          //   cout<<"g_Value "<<g_value<<endl;
+          // }
+
           exploration.insert(exploration.begin() + i, counter->effect->id);//want to update the counters next
           if (m_goal_id == counter->effect->id) {//the early termination should not be operated here
             if(goal_level == 0 || counter->cost + counter->base_cost > goal_level ){
@@ -1426,11 +1430,19 @@ int HCHeuristic::simple_traversal_wrapper(
         //check and update will store the smaller h value
         counter->effect->check_and_update(counter->cost + counter->base_cost, NULL);
         exploration.push_back(counter->effect->id);//it could not guarantee, the first round do not have effect
-        for (Fluent::iterator f = _fluents[counter->effect->id].begin(); f != _fluents[counter->effect->id].end(); f++) {
-            cout<<"conj achieved "<<g_fact_names[f->first][f->second]<<" with "<<counter->cost + counter->base_cost<<endl;
-        }
+        
+        //debug
+        // cout<<"conj id "<<counter->effect->id<<endl;
+        // for (Fluent::iterator f = _fluents[counter->effect->id].begin(); f != _fluents[counter->effect->id].end(); f++) {
+        //     cout<<"conj achieved "<<g_fact_names[f->first][f->second]<<" with "<<counter->cost + counter->base_cost;
+        //     cout<<"g_Value "<<g_value<<endl;
+        // }
+
         if (m_goal_id == counter->effect->id) {
           //the goal level could only be here
+          //debug
+          // cout<<"counter action_id "<<counter->action_id<<endl;
+          // cout<<"achieve goal"<<counter->effect->cost<<endl;
           if(goal_level == 0 || counter->cost + counter->base_cost > goal_level ){
             goal_level = counter->cost + counter->base_cost;  
             //goal_trigger = counter->id;
@@ -1442,6 +1454,8 @@ int HCHeuristic::simple_traversal_wrapper(
       }
     }
   }
+  //debug
+  // cout<<"Final goal level "<<goal_level<<endl;
   return conjunctions[m_goal_id].is_achieved() ? (goal_level) : DEAD_END; // goal level means the depth of goal 
   // here need to modified
 }
@@ -1460,10 +1474,12 @@ int HCHeuristic::simple_traversal(const State &state)
 int HCHeuristic::simple_traversal(const State &state, int g_value)
 {
   vector<unsigned> exploration;
+  //debug
+  // cout<<"come into simple travesal"<<endl;
   int x = simple_traversal_setup(state, exploration);
-  //put in the size of exploration
   int res = simple_traversal_wrapper(exploration, x, g_value);
   exploration.clear();
+  //cout<<"come back from simple traversal"<<endl;
   return res;
 }
 int HCHeuristic::compute_heuristic(const State &state)
@@ -1537,8 +1553,7 @@ int HCHeuristic::compute_heuristic(const State &state,int g_value)
     }
     counters.pop_back();
   }
-  //cout<<"hc result"<<res<<endl;
-  return res == DEAD_END ? res : res - 1;
+  return res == DEAD_END ? res : res ;
 }
 
 #if 0
@@ -2032,7 +2047,8 @@ void HCHeuristic::add_conflict(const Conflict &confl)
 
   vector<int> can_add_fluent;
   compute_can_add(can_add_fluent, confl.get_fluent(), true);
-  cout<<"can add size "<<can_add_fluent.size()<<endl;
+  //debug
+  //cout<<"can add size "<<can_add_fluent.size()<<endl;
   // add counters that add the new conjunction
   for (uint act = 0; act < can_add_fluent.size(); act++) {
     if (can_add_fluent[act] == 1) {
@@ -2055,7 +2071,7 @@ void HCHeuristic::add_conflict(const Conflict &confl)
       // (contains_mutex(confl.get_fluent(), action.add_effect));
       if (!contains_mutex(precondition)) {
         create_counter(act, conj_id, action.base_cost, precondition);
-        cout<<"added conflict id "<<conj_id<<endl;
+        //cout<<"added conflict id "<<conj_id<<endl;
       }
       precondition.clear();
     }

@@ -10,6 +10,7 @@
 #include "state_registry.h"
 
 #include <iostream>
+#include <fstream>
 #include <new>
 
 #include <vector>
@@ -54,7 +55,10 @@ int main(int argc, const char **argv) {
     engine->statistics();
     cout << "Search time: " << search_timer << endl;
     cout << "Total time: " << g_timer << endl;
-
+    // ofstream my_time_file;
+    // my_time_file.open("result-time.txt",ios::app);
+    // my_time_file<<g_timer<<" ";
+    
 #ifdef CHECK_EXPANDED_DEAD_ENDS
     size_t expanded_dead_ends = 0;
     if (engine->found_solution()) {
@@ -97,8 +101,12 @@ int main(int argc, const char **argv) {
 #endif
 
     if (engine->found_solution()) {
+        // my_time_file<<"1"<<endl;
+        // my_time_file.close();
         exit_with(EXIT_PLAN_FOUND);
     } else {
+        // my_time_file<<"0"<<endl;
+        // my_time_file.close();
         exit_with(EXIT_UNSOLVED_INCOMPLETE);
     }
 }

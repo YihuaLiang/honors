@@ -11,7 +11,7 @@ t0 - truck
 (next l1 l2)(next l3 l1)
 
 (truck-at t0 l1)
-
+(visited l1)
 (= (distance l1 l3) 1) (= (distance l2 l1) 1)
 (= (distance l3 l1) 1) (= (distance l1 l2) 1)
 (= (total-cost) 0)
@@ -20,6 +20,7 @@ t0 - truck
 
 (:goal
 (and
+(visited l1)
 (visited l2)
 (visited l3)
 ))

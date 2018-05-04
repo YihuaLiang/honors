@@ -31,7 +31,11 @@ public:
             const std::vector<State> &/*root_component*/,
             const std::unordered_set<StateID> &/*recognized_neighbors*/,
             int ) { return FAILED; }
-            
+    virtual RefinementResult learn_unrecognized_dead_ends(
+            const std::vector<State> &/*root_component*/,
+            const std::unordered_set<StateID> &/*recognized_neighbors*/,
+            std::vector<std::pair<StateID,int>>){return FAILED;}        
+
     virtual void learn_recognized_dead_ends(const std::vector<State> &/*dead_ends*/) {};
     virtual void learn_recognized_dead_end(const State &/*dead_end*/) {};
     //reload

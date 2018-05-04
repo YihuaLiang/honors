@@ -2,6 +2,7 @@
 #include "utilities.h"
 
 #include <iostream>
+#include <fstream>
 using namespace std;
 
 SearchProgress::SearchProgress() {
@@ -118,6 +119,12 @@ void SearchProgress::print_statistics() const {
     cout << "Generated " << generated_states << " state(s)." << endl;
     cout << "Dead ends: " << dead_end_states << " state(s)." << endl;
     cout << "u-recognized dead ends: " << u_recognized_dead_ends << " state(s)." << endl;
+
+    // ofstream my_states_file;
+    // my_states_file.open("result-states.txt",ios::app);
+    // my_states_file<<evaluated_states<<" "<<evaluations<<" "<<dead_end_states<<" "<<u_recognized_dead_ends<<" "<<endl;
+    // my_states_file.close();
+    
     if (pathmax_corrections > 0) {
         cout << "Pathmax corrections: " << pathmax_corrections << endl;
     }

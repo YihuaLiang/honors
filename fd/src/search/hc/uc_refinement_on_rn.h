@@ -24,6 +24,14 @@ protected:
     std::vector<std::vector<std::vector<unsigned> > > facts_to_conflicts;
 
     void compute_conflict_set(Fluent &subgoal);
+    //reload
+    void compute_conflict_set(Fluent &subgoal, 
+            const std::vector<State> &states, 
+            const std::unordered_set<StateID> &rn, 
+            std::vector<std::pair<StateID,int>> g_value, 
+            int recursive_act,
+            bool subgoal_check);
+
     bool conflict_exists(const Fluent &x) const;
     void break_subset(const Fluent &subgoal, Conflict &conflict) const;
     virtual void select_conflict(const Fluent &subgoal, Conflict &conflict) = 0;
@@ -31,6 +39,13 @@ protected:
     bool prepare_refinement(const std::vector<State> &states, const std::unordered_set<StateID> &rn);
     //reload
     bool prepare_refinement(const std::vector<State> &states, const std::unordered_set<StateID> &rn, int g_value);
+    //reload
+    bool prepare_refinement(const Fluent &subgoal,
+                            const std::vector<State> &states, 
+                            const std::unordered_set<StateID> &rn, 
+                            std::vector<std::pair<StateID,int>> g_value,
+                            int recursive_act,
+                            bool subgoal_check);
     virtual RefinementResult refine(
             const std::vector<State> &root_component,
             const std::unordered_set<StateID> &recognized_neighbors);
@@ -39,6 +54,11 @@ protected:
             const std::vector<State> &root_component,
             const std::unordered_set<StateID> &recognized_neighbors,
             int g_value);
+    //reload
+    virtual RefinementResult refine(
+            const std::vector<State> &root_component,
+            const std::unordered_set<StateID> &recognized_neighbors,
+            std::vector<std::pair<StateID,int>> g_value);
 public:
     UCRefinementOnRN(const Options &opts);
     virtual bool dead_end_learning_requires_full_component() { return true; }

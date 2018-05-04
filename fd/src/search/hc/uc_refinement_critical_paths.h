@@ -58,6 +58,12 @@ protected:
             int g_value) {
         return refine(root_component.front(),g_value);
     }
+    virtual RefinementResult refine(
+        const std::vector<State> &root_component,
+        const std::unordered_set<StateID> &,
+        std::vector<std::pair<StateID,int>> g_value){
+        return refine(root_component.front(),g_value.front().second);
+    }
 public:
     UCRefinementCritPaths(const Options &opts);
     virtual bool dead_end_learning_requires_full_component() { return false; }

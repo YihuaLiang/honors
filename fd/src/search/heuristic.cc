@@ -14,14 +14,6 @@ Heuristic::Heuristic(const Options &opts)
     heuristic = NOT_INITIALIZED;
 
     //is_unit_cost = true;
-    
-
-    //for (size_t i = 0; i < g_operators.size(); ++i) {
-    //    if (get_adjusted_cost(g_operators[i]) != 1) {
-    //        is_unit_cost = false;
-    //        break;
-    //    }
-    //}
     cost_type=NORMAL;
     is_unit_cost=false;
     if(opts.get<int>("bound")<0){
@@ -81,9 +73,7 @@ void Heuristic::evaluate(const State &state, int g_value) {
     if (heuristic == NOT_INITIALIZED)
         initialize();
     preferred_operators.clear();
-    
     heuristic = compute_heuristic(state, g_value);
-    // cout<<"H value level 1 "<<heuristic<<endl;
     for (int i = 0; i < preferred_operators.size(); i++)
         preferred_operators[i]->unmark();
     assert(heuristic == DEAD_END || heuristic >= 0);

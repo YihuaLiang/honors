@@ -12,6 +12,7 @@
 
 #include <vector>
 #include <cstdio>
+#include <fstream>
 
 void ClauseLearningStatistics::dump() const {
     std::cout << "Number of uC Evaluations: " << num_total_evaluations << std::endl;
@@ -21,6 +22,11 @@ void ClauseLearningStatistics::dump() const {
     printf("Time spent on clause matching: %.5fs\n", t_clause_matching);
     printf("Time spent on clause extraction: %.5fs\n", t_clause_extraction);
     printf("Time spent on hC computations: %.5fs\n", t_hc_evaluation);
+
+    // std::ofstream my_h_file;
+    // my_h_file.open("result-h.txt",ios::app);
+    // my_h_file<<num_hc_dead_ends<<" "<<t_hc_evaluation<<endl;
+    // my_h_file.close();
 }
 
 UCHeuristic::UCHeuristic(const Options &opts)
@@ -100,9 +106,11 @@ int UCHeuristic::compute_heuristic(const State &state) {
 //reload
 int UCHeuristic::compute_heuristic(const State &state, int g_value) {
     m_stats.num_total_evaluations++;
-    if (clause_matches(state)) {
-        return DEAD_END;
-    }
+    //clause remove
+    // if (clause_matches(state)) {
+    //     cout<<"matched done"<<endl;
+    //     return DEAD_END;
+    // }
     int res = 0;
     if (c_eval_hc) {
         m_stats.start();
@@ -110,12 +118,14 @@ int UCHeuristic::compute_heuristic(const State &state, int g_value) {
         hc_evaluate(state,g_value);
         res = heuristic;
         m_stats.end(m_stats.t_hc_evaluation);
-        if (res == DEAD_END) {
-            m_stats.num_hc_dead_ends++;
-            refine_clauses(state, g_value, false);
-        }
+        //clause remove
+        // if (res == DEAD_END) {
+        //     m_stats.num_hc_dead_ends++;
+        //     cout<<"refine clauses"<<endl;
+        //     refine_clauses(state, g_value, false);
+        //     cout<<"refine clauses done"<<endl;
+        // }
     }
-    //cout<<"H value level 2 "<<res<<endl;
     return res;
 }
 

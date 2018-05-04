@@ -52,22 +52,75 @@ HeuristicRefiner::RefinementResult UCRefinementOnRN::refine(const std::vector<St
                             const std::unordered_set<StateID> &rn,
                             int g_value)
 {
-    std::unordered_set<StateID> mapped_rn;
-    (*m_rn_map)(uc, rn, mapped_rn);//contruct the map
-    if (prepare_refinement(states, mapped_rn, g_value)) {
-        return UNCHANGED;//some how detected the dead end
-    }
-
+    
     Fluent goal;
     for (uint i = 0; i < g_goal.size(); i++) {
         goal.insert(g_goal[i]);
+    }
+
+    std::unordered_set<StateID> mapped_rn;
+    (*m_rn_map)(uc, rn, mapped_rn);//contruct the map
+    //debug
+    //cout<<"mapped rn "<<mapped_rn.size()<<endl;
+    //cout<<"states size "<<states.size()<<endl;
+    
+    if (prepare_refinement(states, mapped_rn, g_value)) {
+        return UNCHANGED;//some how detected the dead end
     }
 
     compute_conflict_set(goal);
     
     //return the update effect
     bool res = uc->update_c(_conflicts);
+    //debug
+    // cout<<"Fluent here"<<endl;
+    // for(std::vector<Conflict>::iterator i = _conflicts.begin(); i != _conflicts.end() ; i++){
+    //     Fluent new_conflict = i->get_fluent();
+    //     for(Fluent::iterator it = new_conflict.begin(); it != new_conflict.end(); it ++){
+    //         cout<<"conj added "<<g_fact_names[it->first][it->second]<<endl;
+    //     }
+    // }
+    _component = NULL;
+    current_states.clear();
+    facts_to_conflicts.clear();
+    _conflicts.clear();
+    root_conflicts.clear();
+    successor_conflicts.clear();
 
+    return res ? SUCCESSFUL : FAILED;
+}
+//reload
+HeuristicRefiner::RefinementResult UCRefinementOnRN::refine(const std::vector<State> &states,
+                            const std::unordered_set<StateID> &rn,
+                            std::vector<std::pair<StateID,int>> g_value)
+{
+    
+    Fluent goal;
+    for (uint i = 0; i < g_goal.size(); i++) {
+        goal.insert(g_goal[i]);
+    }
+    std::unordered_set<StateID> mapped_rn;
+    (*m_rn_map)(uc, rn, mapped_rn);//contruct the map
+    //debug
+    // cout<<"mapped rn "<<mapped_rn.size()<<endl;
+    // cout<<"new states size "<<states.size()<<endl;
+    
+    if(prepare_refinement(goal,states,rn,g_value,0, false)){
+        return UNCHANGED;
+    }//RUN AN EXTRA ONE TO FOR DETECTING CONFLICTS EXIST
+    compute_conflict_set(goal, states, rn, g_value, 0, false);
+    
+    //return the update effect
+    bool res = uc->update_c(_conflicts);
+    //debug
+    // cout<<"Fluent here"<<endl;
+    // for(std::vector<Conflict>::iterator i = _conflicts.begin(); i != _conflicts.end() ; i++){
+    //     Fluent new_conflict = i->get_fluent();
+    //     cout<<endl;
+    //     for(Fluent::iterator it = new_conflict.begin(); it != new_conflict.end(); it ++){
+    //         cout<<"conj added "<<g_fact_names[it->first][it->second]<<endl;
+    //     }
+    // }
     _component = NULL;
     current_states.clear();
     facts_to_conflicts.clear();
@@ -167,8 +220,6 @@ bool UCRefinementOnRN::prepare_refinement(
         return true; //don't need refine
     }
 
-    // setup data structures used for the refinement
-    // component which should be recognized afterwards
     _component = &states;
 
     //not finished??
@@ -190,6 +241,10 @@ bool UCRefinementOnRN::prepare_refinement(
                 if (states[state][var] != val) {
                     current_states[f].push_back(state);
                 } //
+                //debug
+                // else if(states[state][var] == val){
+                //     cout<<"in state "<<g_fact_names[var][val]<<endl;
+                // }
             }
         }
     }
@@ -206,7 +261,6 @@ bool UCRefinementOnRN::prepare_refinement(
             }
         }
     }
-
     // for each successor state in the recognized neighborhood, store the conjunctions
     // that are not reachable from this state
     successor_conflicts.resize(uc->num_conjunctions());
@@ -215,7 +269,9 @@ bool UCRefinementOnRN::prepare_refinement(
          succ_id != rn.end(); succ_id++) {
         // update the uc data structure to mark all conjunctions not reachable from
         // this state
-        (*m_rn_map)(uc, *succ_id);
+        //reload
+        //(*m_rn_map)(uc, *succ_id);
+        (*m_rn_map)(uc, *succ_id, g_value);
         // collect and store all of these conjunctions
         for (unsigned i = 0; i < uc->num_conjunctions(); i++) {
             const Conjunction &conj = uc->get_conjunction(i);
@@ -225,7 +281,145 @@ bool UCRefinementOnRN::prepare_refinement(
         }
         recognized_neighborhood_size++; // add number
     }
-
+    return false;//need refine
+}
+//reload
+bool UCRefinementOnRN::prepare_refinement(
+                            const Fluent &subgoal,
+                            const std::vector<State> &states,
+                            const std::unordered_set<StateID> &rn,
+                            std::vector<std::pair<StateID,int>> g_value,
+                            int recursive_act,
+                            bool subgoal_check)
+{
+    // check if the states are already recognized
+    bool _early = uc->set_early_termination(false);
+    //debug
+    //cout<<"prepare called"<<endl;
+    uc->evaluate(states[0],g_value.front().second + recursive_act);//take the evaluation
+    uc->set_early_termination(_early);
+    if (uc->is_dead_end()) {
+        return true; //don't need refine
+    }
+    //debug
+    //cout<<"finish checking dead end in prepare"<<endl;
+    _component = &states;
+    
+    //make it only applie to subgoal.
+    if(subgoal_check){
+        bool cost_flaged = false;
+        for(int i = 0; i < states.size(); i++){//ignore the 0
+            for(int j = 0; j < g_value.size(); j++){
+                if(g_value[j].first == states[i].get_id()){
+                    if(g_value[j].second + recursive_act > uc->bound) break;
+                    else{
+                        uc->evaluate(states[i], g_value[j].second + recursive_act);
+                        for(int k = 0 ; k < uc->num_conjunctions(); k ++){
+                            Fluent check_fluent = uc->get_fluent(k);
+                            if((check_fluent == subgoal||fluent_op::is_subset(subgoal, check_fluent))&&uc->get_conjunction(k).is_achieved()){
+                                cost_flaged = true;
+                                //debug
+                                //cout<<"break out in subgoal equal or contained "<<endl;
+                                break;
+                            }
+                        }
+                        if(cost_flaged) break;
+                        std::vector<int> subgoal_cost;
+                        subgoal_cost.resize(0);
+                        for(Fluent::iterator it = subgoal.begin() ; it != subgoal.end() ; it++){
+                            unsigned check_fid = uc->get_fact_id(*it);
+                            const vector<unsigned> &check_conjs = uc->get_fact_conj_relation(check_fid);
+                            for(int k = 0 ; k < check_conjs.size() ; k ++){
+                                if(uc->get_conjunction(k).is_achieved()){
+                                    subgoal_cost.push_back(uc->get_conjunction(k).cost);
+                                    break;
+                                }
+                            }
+                        }
+                        if(subgoal_cost.size() == subgoal.size()){
+                            cost_flaged = true;
+                            //debug
+                            //cout<<"subgoal break out in fact achieved separately"<<endl;
+                            break;
+                        }
+                    }
+                    break;
+                }
+            }
+            if(cost_flaged){
+                break;
+            }
+        }
+        if(!cost_flaged){
+            return true;
+        }
+    }
+    facts_to_conflicts.resize(g_variable_domain.size());
+    for (unsigned var = 0; var < facts_to_conflicts.size(); var++) {
+        facts_to_conflicts[var].resize(g_variable_domain[var]);
+    }
+    //debug
+    //cout<<"resize fact to conflict succeed"<<endl;
+    // used to check whether the conflict intermediate result is a subset of a state
+    state_component_size = states.size();
+    //recompute the facts
+    current_states.clear();
+    current_states.resize(uc->num_facts());//which fact are involved in this state
+    for (unsigned var = 0; var < g_variable_domain.size(); var++) {
+        for (int val = 0; val < g_variable_domain[var]; val++) {
+            unsigned f = uc->get_fact_id(var, val);
+            for (unsigned state = 0; state < states.size(); state++) {
+                if (states[state][var] != val) {
+                    current_states[f].push_back(state);
+                } 
+                //debug
+                // else if(states[state][var] == val){
+                //     cout<<"in state "<<g_fact_names[var][val]<<endl;
+                // }
+            }
+        }
+    }
+    //store conjunctions not reachable from the states in the given component
+    if (c_use_root_state_conflicts) {
+        root_conflicts.resize(uc->num_facts());
+        for (unsigned i = 0; i < uc->num_conjunctions(); i++) {
+            if (!uc->get_conjunction(i).is_achieved()) { //conjunction is not achieved ----> leave the extract to the hc
+                const Fluent &fluent = uc->get_fluent(i);
+                for (Fluent::const_iterator it = fluent.begin(); it != fluent.end(); it++) {
+                    root_conflicts[uc->get_fact_id(it->first, it->second)].push_back(i);
+                }
+            }
+        }
+    }
+    //clear facts
+    successor_conflicts.clear();
+    successor_conflicts.resize(uc->num_conjunctions());
+    recognized_neighborhood_size = 0;
+    for (std::unordered_set<StateID>::const_iterator succ_id = rn.begin();
+         succ_id != rn.end(); succ_id++) {
+         for(int j = 0 ; j < g_value.size() ; j++) {
+            if(g_value[j].first == *succ_id){
+                (*m_rn_map)(uc, *succ_id, g_value[j].second + recursive_act);
+                // collect and store all of these conjunctions
+                for (unsigned i = 0; i < uc->num_conjunctions(); i++) {
+                    const Conjunction &conj = uc->get_conjunction(i);
+                    if (!conj.is_achieved()) {//push in the not achieved for successor
+                        successor_conflicts[i].push_back(recognized_neighborhood_size);
+                        //debug
+                        // Fluent conflict_fluent = uc->get_fluent(conj.id);
+                        // cout<<"conj id "<<i<<endl;
+                        // for(Fluent::iterator itt = conflict_fluent.begin(); itt != conflict_fluent.end();itt++ ){
+                        //     cout<<"conflict add conj "<<g_fact_names[itt->first][itt->second]<<endl;
+                        // }
+                    }
+                }
+                recognized_neighborhood_size++;
+                break;
+            }
+        }
+    }
+    //debug
+    //cout<<"neighbors hc done recognized neigbhbor "<<recognized_neighborhood_size<<endl;
     return false;//need refine
 }
 /* returns true if (a) there is already a conjunction subset of subgoal that is
@@ -234,7 +428,6 @@ bool UCRefinementOnRN::prepare_refinement(
 bool UCRefinementOnRN::conflict_exists(const Fluent &subgoal) const
 {
     std::vector<int> subset;
-
     if (c_use_root_state_conflicts) {
         subset.resize(uc->num_conjunctions(), 0);
         for (Fluent::const_iterator it = subgoal.begin(); it != subgoal.end(); it++) {
@@ -247,7 +440,6 @@ bool UCRefinementOnRN::conflict_exists(const Fluent &subgoal) const
             }
         }
     }
-
     subset.clear();
     subset.resize(_conflicts.size(), 0);
     for (Fluent::const_iterator it = subgoal.begin(); it != subgoal.end(); it++) {
@@ -268,17 +460,17 @@ void UCRefinementOnRN::compute_conflict_set(Fluent &subgoal)
     if (conflict_exists(subgoal)) { // the if() line
         return;
     }
-    //Extract 
+
     unsigned conflict_id = _conflicts.size(); //enlarge the size
     _conflicts.resize(_conflicts.size() + 1); //
     Conflict &conflict = _conflicts.back();
-    
+    //Extract
     select_conflict(subgoal, conflict);
     break_subset(subgoal, conflict);
 
     for (Fluent::const_iterator it = conflict.get_fluent().begin();
          it != conflict.get_fluent().end(); it++) {
-        facts_to_conflicts[it->first][it->second].push_back(conflict_id);//put in the conflict??
+        facts_to_conflicts[it->first][it->second].push_back(conflict_id);
     }
 
     std::vector<int> can_add;
@@ -298,7 +490,70 @@ void UCRefinementOnRN::compute_conflict_set(Fluent &subgoal)
                              pre);
 
         //if (!uc->contains_mutex(pre)) {
-            compute_conflict_set(pre);
+        compute_conflict_set(pre);
+        //here need recompute??
+            //} 
+    }
+    can_add.clear();
+}
+//reload
+void UCRefinementOnRN::compute_conflict_set(Fluent &subgoal, 
+                                    const std::vector<State>& states,
+                                    const std::unordered_set<StateID> & rn,
+                                    std::vector<std::pair<StateID,int>> g_value,
+                                    int recursive_act,
+                                    bool subgoal_check)
+{
+    if (conflict_exists(subgoal)) { // the if() line
+        return;
+    }
+    //debug
+    // cout<<"right compute called"<<endl;
+    // for(Fluent::iterator it = subgoal.begin(); it != subgoal.end(); it++){
+    //     cout<<"In subgoal "<<g_fact_names[it->first][it->second]<<endl;
+    // }
+    if(prepare_refinement(subgoal, states, rn, g_value, recursive_act, subgoal_check)){//already dead end return
+        return;
+    }
+
+    unsigned conflict_id = _conflicts.size(); //enlarge the size
+    _conflicts.resize(_conflicts.size() + 1); //
+    Conflict &conflict = _conflicts.back();
+    //Extract
+    select_conflict(subgoal, conflict);
+    //debug
+    // cout<<"conflict size "<<conflict.get_fluent().size()<<endl;
+    // Fluent new_conflict = conflict.get_fluent();
+    // for(Fluent::iterator it = new_conflict.begin(); it != new_conflict.end(); it ++){
+    //     cout<<"out select conj added "<<g_fact_names[it->first][it->second]<<endl;
+    // }
+    
+    break_subset(subgoal, conflict);
+
+    for (Fluent::const_iterator it = conflict.get_fluent().begin();
+         it != conflict.get_fluent().end(); it++) {
+        facts_to_conflicts[it->first][it->second].push_back(conflict_id);
+    }
+
+    std::vector<int> can_add;
+    uc->compute_can_add(can_add, conflict.get_fluent(), true);
+    for (unsigned act = 0; act < can_add.size(); act++) {
+        // NOTE that the conflict reference might become invalid due to vector
+        // reallocation when going into recursion!
+        if (can_add[act] != 1) {
+            continue;
+        }
+        //find the action 
+        const StripsAction &action = uc->get_action(act);
+        //recursive call
+        Fluent pre;
+        pre.insert(action.precondition.begin(), action.precondition.end());
+        fluent_op::set_minus(_conflicts[conflict_id].get_fluent(), action.add_effect,
+                             pre);
+
+        //if (!uc->contains_mutex(pre)) {
+        compute_conflict_set(pre, states, rn, g_value, recursive_act + action.base_cost, true);
+        //here need recompute??
             //} 
     }
     can_add.clear();
@@ -483,17 +738,24 @@ void Greedy2UCRefinementOnRN<T>::select_conflict(const Fluent &subgoal,
     open_facts.resize(uc->num_conjunctions(), 0);
 
     best = -1;
-    //c1_max_successors = -1;
-    //c2_min_size = -1;
 
     update_best.reset();
     for (Fluent::const_iterator it = subgoal.begin(); it != subgoal.end();
          it++) {
+        //debug
+        //cout<<"it is "<<g_fact_names[it->first][it->second]<<endl;
         const std::vector<unsigned> &conjs = uc->get_fact_conj_relation(uc->get_fact_id(
                 *it));
+        //debug
+        // cout<<"conjs size "<<conjs.size()<<endl;
+        // for(int k = 0 ; k < conjs.size(); k++){
+        //     cout<<"conjs id "<<conjs[k]<<endl;
+        // }
         for (const unsigned & cid : conjs) {
             if (++counter[cid] == uc->get_conjunction(cid).fluent_size
                     && successor_conflicts[cid].size() > 0) {
+                //debug
+                //cout<<"cid added "<<cid<<endl;
                 candidates.push_back(cid);
                 for (const int &x : successor_conflicts[cid]) {
                     selected_conflicts[x].push_back(cid);
@@ -501,6 +763,8 @@ void Greedy2UCRefinementOnRN<T>::select_conflict(const Fluent &subgoal,
                 open_successors[cid] = successor_conflicts[cid].size();
                 open_facts[cid] = uc->get_fluent(cid).size();
                 if (update_best(cid)) {
+                    //debug
+                    //cout<<"updated cid "<<cid<<endl;
                     best = cid;
                     best_pos = candidates.size() - 1;
                 }
