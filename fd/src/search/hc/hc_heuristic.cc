@@ -1398,7 +1398,7 @@ int HCHeuristic::simple_traversal_wrapper(
       counter->cost = max_pre.cost;
       counter->pre_cost = max_pre.conj;
       
-      if (--(counter->unsatisfied_preconditions) > 0) { //there must be one satisfied so 1 should be minused        
+      if (--(counter->unsatisfied_preconditions) > 0 && (!conjunctions[conj_id].is_achieved())) { //there must be one satisfied so 1 should be minused        
         continue; //can't be used -- jump
       }
       //line 2:  
@@ -1516,7 +1516,7 @@ int HCHeuristic::compute_heuristic(const State &state)
     }
     counters.pop_back();
   }
-  return res == DEAD_END ? res : res - 1;
+  return res == DEAD_END ? res : res;
 }
 //reload
 int HCHeuristic::compute_heuristic(const State &state,int g_value)

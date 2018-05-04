@@ -18,6 +18,7 @@ protected:
     std::vector<std::vector<int> > root_conflicts;
     size_t recognized_neighborhood_size;
     std::vector<std::vector<int> > successor_conflicts;
+    std::set<unsigned>m_zero_achievers; //aid should be seem as the order
 
     /* Output data */
     std::vector<Conflict> _conflicts;

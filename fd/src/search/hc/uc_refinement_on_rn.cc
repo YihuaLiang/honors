@@ -546,6 +546,12 @@ void UCRefinementOnRN::compute_conflict_set(Fluent &subgoal,
         //find the action 
         const StripsAction &action = uc->get_action(act);
         //recursive call
+        if(m_zero_achievers.count(action.aid)){
+                //the zero cost action has been used once -- do not take it again
+                continue;
+        }else if(action.base_cost == 0){
+           m_zero_achievers.insert(action.aid);
+        }
         Fluent pre;
         pre.insert(action.precondition.begin(), action.precondition.end());
         fluent_op::set_minus(_conflicts[conflict_id].get_fluent(), action.add_effect,
