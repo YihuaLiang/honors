@@ -1,0 +1,163 @@
+INFO     Running translator.
+INFO     translator input: ['ipc2008/elevators-strips/p18-domain.pddl', 'ipc2008/elevators-strips/p18.pddl']
+INFO     translator arguments: []
+INFO     translator time limit: 1800.0s
+INFO     translator memory limit: 3906 MB
+INFO     callstring: /usr/bin/python /home/admin-u6487831/honors/fd/builds/release32/bin/translate/translate.py ipc2008/elevators-strips/p18-domain.pddl ipc2008/elevators-strips/p18.pddl
+time limit 1800.00 -> (1800, 1800)
+Parsing...
+Parsing: [0.000s CPU, 0.004s wall-clock]
+Normalizing task... [0.000s CPU, 0.000s wall-clock]
+Instantiating...
+Generating Datalog program... [0.000s CPU, 0.001s wall-clock]
+Normalizing Datalog program...
+Normalizing Datalog program: [0.010s CPU, 0.002s wall-clock]
+Preparing model... [0.000s CPU, 0.002s wall-clock]
+Generated 46 rules.
+Computing model... [0.050s CPU, 0.052s wall-clock]
+5156 relevant atoms
+3200 auxiliary atoms
+8356 final queue length
+16334 total queue pushes
+Completing instantiation... [0.150s CPU, 0.149s wall-clock]
+Instantiating: [0.210s CPU, 0.207s wall-clock]
+Computing fact groups...
+Finding invariants...
+12 initial candidates
+Finding invariants: [0.010s CPU, 0.003s wall-clock]
+Checking invariant weight... [0.000s CPU, 0.000s wall-clock]
+Instantiating groups... [0.000s CPU, 0.002s wall-clock]
+Collecting mutex groups... [0.000s CPU, 0.000s wall-clock]
+Choosing groups...
+0 uncovered facts
+Choosing groups: [0.000s CPU, 0.001s wall-clock]
+Building translation key... [0.000s CPU, 0.001s wall-clock]
+Computing fact groups: [0.010s CPU, 0.010s wall-clock]
+Building STRIPS to SAS dictionary... [0.000s CPU, 0.000s wall-clock]
+Building dictionary for full mutex groups... [0.000s CPU, 0.000s wall-clock]
+Building mutex information...
+Building mutex information: [0.000s CPU, 0.000s wall-clock]
+Translating task...
+Processing axioms...
+Simplifying axioms... [0.000s CPU, 0.000s wall-clock]
+Processing axioms: [0.010s CPU, 0.007s wall-clock]
+Translating task: [0.120s CPU, 0.120s wall-clock]
+0 effect conditions simplified
+0 implied preconditions added
+Detecting unreachable propositions...
+0 operators removed
+0 axioms removed
+30 propositions removed
+Detecting unreachable propositions: [0.060s CPU, 0.052s wall-clock]
+Translator variables: 30
+Translator derived variables: 0
+Translator facts: 508
+Translator goal facts: 22
+Translator mutex groups: 30
+Translator total mutex groups size: 508
+Translator operators: 4320
+Translator axioms: 0
+Translator task size: 26436
+Translator peak memory: 59392 KB
+Writing output... [0.020s CPU, 0.023s wall-clock]
+Done! [0.430s CPU, 0.423s wall-clock]
+INFO     Running preprocessor (release32).
+INFO     preprocessor input: output.sas
+INFO     preprocessor arguments: []
+INFO     preprocessor time limit: 1799.57s
+INFO     preprocessor memory limit: 3906 MB
+INFO     callstring: /home/admin-u6487831/honors/fd/builds/release32/bin/preprocess < output.sas
+time limit 1799.57 -> (1800, 1800)
+Building causal graph...
+The causal graph is not acyclic.
+30 variables of 30 necessary
+0 of 30 mutex groups necessary.
+4320 of 4320 operators necessary.
+0 of 0 axiom rules necessary.
+Building domain transition graphs...
+solveable in poly time 0
+Building successor generator...
+Preprocessor facts: 508
+Preprocessor derived variables: 0
+Preprocessor task size: 25928
+Writing output...
+done
+INFO     Running search (release32).
+INFO     search input: output
+INFO     search arguments: ['--heuristic', 'hff=ff(cost_type=NORMAL)', '--heuristic', 'u=uc(x=-1,clauses=statemin,bound=440)', '--search', 'dfs(hff,refiner=ucrn2_1(uc=u),reopen=true,bound=440)']
+INFO     search time limit: 1799.41s
+INFO     search memory limit: 3906 MB
+INFO     search executable: /home/admin-u6487831/honors/fd/builds/release32/bin/downward
+INFO     callstring: /home/admin-u6487831/honors/fd/builds/release32/bin/downward --heuristic 'hff=ff(cost_type=NORMAL)' --heuristic 'u=uc(x=-1,clauses=statemin,bound=440)' --search 'dfs(hff,refiner=ucrn2_1(uc=u),reopen=true,bound=440)' --internal-plan-file sas_plan < output
+time limit 1799.41 -> (1800, 1800)
+reading input... [t=0s]
+Simplifying transitions... done!
+done reading input! [t=0.04s]
+building causal graph...done! [t=0.04s]
+packing state variables...Variables: 30
+Bytes per state: 20
+done! [t=0.04s]
+done initalizing global data [t=0.04s]
+... has axioms: 0
+... has conditional effects: 0
+pruning method: none
+Initializing h^max(Pi^C) heuristic ...
+Constructing Pi^C for h^max computation ...
+Parsed Pi into 508 facts, 4320 actions, and 8457 counters.
+Initializing FF heuristic...
+Initializing additive heuristic...
+Simplifying 8456 unary operators... done! [8456 unary operators]
+[g = 0, h = 102, registered=1, expanded=1, open_states=0, dead_ends=0, t=0.120]
+[g = 8, h = 91, registered=27, expanded=2, open_states=25, dead_ends=0, t=0.120]
+[g = 8, h = 91, registered=47, expanded=3, open_states=44, dead_ends=0, t=0.120]
+[g = 8, h = 91, registered=66, expanded=4, open_states=62, dead_ends=0, t=0.120]
+[g = 8, h = 91, registered=91, expanded=5, open_states=86, dead_ends=0, t=0.140]
+[g = 33, h = 91, registered=117, expanded=6, open_states=111, dead_ends=0, t=0.140]
+[g = 33, h = 91, registered=138, expanded=7, open_states=130, dead_ends=1, t=0.160]
+[g = 33, h = 91, registered=159, expanded=8, open_states=150, dead_ends=1, t=0.160]
+[g = 33, h = 91, registered=261, expanded=13, open_states=246, dead_ends=2, t=0.200]
+[g = 63, h = 91, registered=529, expanded=28, open_states=502, dead_ends=3, t=0.280]
+[g = 64, h = 91, registered=1033, expanded=57, open_states=994, dead_ends=7, t=0.440]
+[g = 107, h = 91, registered=2068, expanded=115, open_states=2067, dead_ends=10, t=0.780]
+[g = 143, h = 91, registered=4112, expanded=244, open_states=4259, dead_ends=22, t=1.460]
+[g = 284, h = 79, registered=8213, expanded=447, open_states=8300, dead_ends=30, t=2.680]
+[g = 347, h = 79, registered=16389, expanded=902, open_states=17281, dead_ends=66, t=5.280]
+[g = 394, h = 79, registered=32777, expanded=1864, open_states=34878, dead_ends=134, t=10.560]
+[g = 427, h = 79, registered=65545, expanded=3540, open_states=29771, dead_ends=2926, t=24.120]
+[g = 428, h = 79, registered=131074, expanded=6944, open_states=23505, dead_ends=15451, t=52.600]
+COULD NOT ENSURE SUBSET PROPERTY!
+[lift-at(slow0-0, n2)]
+STATE 0
+Atom lift-at(slow1-0, n10)
+Atom lift-at(slow0-0, n2)
+Atom lift-at(fast1, n4)
+Atom lift-at(fast0, n8)
+Atom passengers(fast0, n0)
+Atom passengers(fast1, n1)
+Atom passengers(slow0-0, n2)
+Atom passengers(slow1-0, n1)
+Atom passenger-at(p0, n2)
+Atom passenger-at(p1, n12)
+Atom passenger-at(p10, n11)
+Atom boarded(p11, slow1-0)
+Atom boarded(p12, slow0-0)
+Atom passenger-at(p13, n9)
+Atom passenger-at(p14, n3)
+Atom passenger-at(p15, n3)
+Atom passenger-at(p16, n13)
+Atom passenger-at(p17, n12)
+Atom passenger-at(p18, n14)
+Atom passenger-at(p19, n9)
+Atom passenger-at(p2, n5)
+Atom passenger-at(p20, n5)
+Atom passenger-at(p21, n4)
+Atom passenger-at(p3, n1)
+Atom passenger-at(p4, n7)
+Atom passenger-at(p5, n11)
+Atom passenger-at(p6, n13)
+Atom boarded(p7, slow0-0)
+Atom boarded(p8, fast1)
+Atom passenger-at(p9, n7)
+Peak memory: 57096 KB
+caught signal 11 -- exiting
+Command '['/home/admin-u6487831/honors/fd/builds/release32/bin/downward', '--heuristic', 'hff=ff(cost_type=NORMAL)', '--heuristic', 'u=uc(x=-1,clauses=statemin,bound=440)', '--search', 'dfs(hff,refiner=ucrn2_1(uc=u),reopen=true,bound=440)', '--internal-plan-file', 'sas_plan']' returned non-zero exit status -11

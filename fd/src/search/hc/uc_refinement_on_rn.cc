@@ -609,20 +609,21 @@ void UCRefinementOnRN::break_subset(const Fluent &subgoal,
         }
     }
 #ifndef NDEDBUG
-    if (togo > 0) {
-        std::cout << "COULD NOT ENSURE SUBSET PROPERTY!" << std::endl;
-        uc->dump_fluent_pddl(subgoal);
-        std::cout << std::endl;
-        for (uint i = 0; i < conflicts.size(); i++) {
-            if (conflicts[i] == -1) {
-                std::cout << "STATE " << i << std::endl;
-                (*_component)[i].dump_pddl();
-            }
-        }
-    }
+    // if (togo > 0) {
+    //     std::cout << "COULD NOT ENSURE SUBSET PROPERTY!" << std::endl;
+    //     uc->dump_fluent_pddl(subgoal);
+    //     std::cout << std::endl;
+    //     for (uint i = 0; i < conflicts.size(); i++) {
+    //         if (conflicts[i] == -1) {
+    //             std::cout << "STATE " << i << std::endl;
+    //             (*_component)[i].dump_pddl();
+    //         }
+    //     }
+    // }
 #endif
-    assert(togo == 0);
+    //assert(togo == 0);
     for (unsigned i = 0; i < conflicts.size(); i++) {
+        if(conflicts[i]==-1) continue;
         assert(conflicts[i] >= 0);
         if (counter[conflicts[i]]) {
             continue;
@@ -819,7 +820,7 @@ void Greedy2UCRefinementOnRN<T>::select_conflict(const Fluent &subgoal,
             }
         }
 
-        candidates.erase(candidates.begin() + best_pos);
+        //candidates.erase(candidates.begin() + best_pos);
         best = -1;
         best_pos = -1;
         update_best.reset();

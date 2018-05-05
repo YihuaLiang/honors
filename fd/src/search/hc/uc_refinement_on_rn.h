@@ -23,7 +23,6 @@ protected:
     /* Output data */
     std::vector<Conflict> _conflicts;
     std::vector<std::vector<std::vector<unsigned> > > facts_to_conflicts;
-
     void compute_conflict_set(Fluent &subgoal);
     //reload
     void compute_conflict_set(Fluent &subgoal, 
@@ -60,6 +59,24 @@ protected:
             const std::vector<State> &root_component,
             const std::unordered_set<StateID> &recognized_neighbors,
             std::vector<std::pair<StateID,int>> g_value);
+// struct state_to_conjunction{
+//         StateID state_id;
+//         unsigned conjunction_id;
+//         int cost;
+//         state_to_conjunction(StateID state_id, unsigned id, int cost):
+//         state_id(state_id),conjunction_id(id),cost(cost){}
+
+//         inline void increase_cost(int action_cost){
+//                  if(cost < 0) return;
+//                  cost += action_cost;
+//         }
+//         inline void decrease_cost(int action_cost){
+//                 if(cost < 0) return;
+//                 cost-=action_cost;
+//         }
+// };
+// std::vector<state_to_conjunction> recursive_cost;
+
 public:
     UCRefinementOnRN(const Options &opts);
     virtual bool dead_end_learning_requires_full_component() { return true; }

@@ -243,6 +243,7 @@ Heuristic *Search::check_dead_end(const State &state, bool full, int g_value)
     assert(h != NULL);
     if (full) {
       h->evaluate(state, g_value);
+      //cout<<"h value"<<h->get_value()<<endl;
     } else {
       h->reevaluate(state, g_value);
     }
@@ -568,7 +569,7 @@ Search::SearchStatus Search::step()
       int newg = node.get_g() + get_adjusted_cost(*ops[i]); // set new g
       // allow reopen nodes && reopen success
       // for a node it could be new , open , closed , deadend
-      if (c_reopen_nodes && !succ_node.is_new() && newg < succ_node.get_g()) {//reopen false
+      if (c_reopen_nodes && newg < succ_node.get_g()) {//reopen false
         //cout<<"reopen succeed"<<endl;
         succ_node.reopen(node, ops[i]);
         m_open_states++;

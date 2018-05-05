@@ -11,8 +11,8 @@ t0 - truck
 (next l1 l2)(next l3 l1)
 
 (truck-at t0 l1)
-(= (distance l1 l3) 1) (= (distance l2 l1) 1)
 (= (distance l3 l1) 1) (= (distance l1 l2) 1)
+(= (distance l2 l3) 1) (= (distance l3 l2) 1)
 (= (total-cost) 0)
 
 )

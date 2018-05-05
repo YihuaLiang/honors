@@ -241,7 +241,7 @@ HeuristicRefiner::RefinementResult UCRefinementCritPaths::refine(
                     //here is a bug //it is because the open[i] is larger than m_requires size --> the size problem is not guaranteed
                     //requires contains the child confl, required_by contains parents confl. a vector of unsigned set
                     for (std::set<unsigned>::iterator it = m_requires[open[i]].begin(); it != m_requires[open[i]].end(); it++) {
-                        if(res.first==true) cout<<"first is true"<<endl;
+                        //if(res.first==true) cout<<"first is true"<<endl;
 
                         if (!m_pruned[*it]) {//this line, *it value is not what expected(too large)
                             m_pruned[*it] = true;//set the child_conflict to true and push it into open

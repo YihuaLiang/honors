@@ -1,0 +1,250 @@
+INFO     Running translator.
+INFO     translator input: ['ipc2008/openstacks-strips/p14-domain.pddl', 'ipc2008/openstacks-strips/p14.pddl']
+INFO     translator arguments: []
+INFO     translator time limit: 1799.99s
+INFO     translator memory limit: 3906 MB
+INFO     callstring: /usr/bin/python /home/admin-u6487831/honors/fd/builds/release32/bin/translate/translate.py ipc2008/openstacks-strips/p14-domain.pddl ipc2008/openstacks-strips/p14.pddl
+time limit 1799.99 -> (1800, 1800)
+Parsing...
+Parsing: [0.010s CPU, 0.009s wall-clock]
+Normalizing task... [0.000s CPU, 0.001s wall-clock]
+Instantiating...
+Generating Datalog program... [0.000s CPU, 0.002s wall-clock]
+Normalizing Datalog program...
+Normalizing Datalog program: [0.000s CPU, 0.005s wall-clock]
+Preparing model... [0.010s CPU, 0.005s wall-clock]
+Generated 252 rules.
+Computing model... [0.030s CPU, 0.038s wall-clock]
+2402 relevant atoms
+2912 auxiliary atoms
+5314 final queue length
+8854 total queue pushes
+Completing instantiation... [0.060s CPU, 0.058s wall-clock]
+Instantiating: [0.100s CPU, 0.108s wall-clock]
+Computing fact groups...
+Finding invariants...
+12 initial candidates
+Finding invariants: [0.020s CPU, 0.014s wall-clock]
+Checking invariant weight... [0.000s CPU, 0.001s wall-clock]
+Instantiating groups... [0.000s CPU, 0.000s wall-clock]
+Collecting mutex groups... [0.000s CPU, 0.000s wall-clock]
+Choosing groups...
+0 uncovered facts
+Choosing groups: [0.000s CPU, 0.001s wall-clock]
+Building translation key... [0.000s CPU, 0.000s wall-clock]
+Computing fact groups: [0.020s CPU, 0.017s wall-clock]
+Building STRIPS to SAS dictionary... [0.000s CPU, 0.000s wall-clock]
+Building dictionary for full mutex groups... [0.000s CPU, 0.000s wall-clock]
+Building mutex information...
+Building mutex information: [0.000s CPU, 0.000s wall-clock]
+Translating task...
+Processing axioms...
+Simplifying axioms... [0.000s CPU, 0.000s wall-clock]
+Processing axioms: [0.000s CPU, 0.003s wall-clock]
+Translating task: [0.060s CPU, 0.055s wall-clock]
+0 effect conditions simplified
+0 implied preconditions added
+Detecting unreachable propositions...
+0 operators removed
+0 axioms removed
+61 propositions removed
+Detecting unreachable propositions: [0.020s CPU, 0.022s wall-clock]
+Translator variables: 61
+Translator derived variables: 0
+Translator facts: 181
+Translator goal facts: 30
+Translator mutex groups: 91
+Translator total mutex groups size: 241
+Translator operators: 1860
+Translator axioms: 0
+Translator task size: 11460
+Translator peak memory: 42992 KB
+Writing output... [0.010s CPU, 0.011s wall-clock]
+Done! [0.220s CPU, 0.227s wall-clock]
+INFO     Running preprocessor (release32).
+INFO     preprocessor input: output.sas
+INFO     preprocessor arguments: []
+INFO     preprocessor time limit: 1799.75s
+INFO     preprocessor memory limit: 3906 MB
+INFO     callstring: /home/admin-u6487831/honors/fd/builds/release32/bin/preprocess < output.sas
+time limit 1799.75 -> (1800, 1800)
+Building causal graph...
+The causal graph is not acyclic.
+61 variables of 61 necessary
+0 of 91 mutex groups necessary.
+1860 of 1860 operators necessary.
+0 of 0 axiom rules necessary.
+Building domain transition graphs...
+solveable in poly time 0
+Building successor generator...
+Preprocessor facts: 181
+Preprocessor derived variables: 0
+Preprocessor task size: 11219
+Writing output...
+done
+INFO     Running search (release32).
+INFO     search input: output
+INFO     search arguments: ['--heuristic', 'hff=ff(cost_type=NORMAL)', '--heuristic', 'u=uc(x=-1,clauses=statemin,bound=4)', '--search', 'dfs(hff,refiner=uccp(uc=u),reopen=true,bound=4)']
+INFO     search time limit: 1799.69s
+INFO     search memory limit: 3906 MB
+INFO     search executable: /home/admin-u6487831/honors/fd/builds/release32/bin/downward
+INFO     callstring: /home/admin-u6487831/honors/fd/builds/release32/bin/downward --heuristic 'hff=ff(cost_type=NORMAL)' --heuristic 'u=uc(x=-1,clauses=statemin,bound=4)' --search 'dfs(hff,refiner=uccp(uc=u),reopen=true,bound=4)' --internal-plan-file sas_plan < output
+time limit 1799.69 -> (1800, 1800)
+reading input... [t=0s]
+Simplifying transitions... done!
+done reading input! [t=0s]
+building causal graph...done! [t=0s]
+packing state variables...Variables: 61
+Bytes per state: 12
+done! [t=0s]
+done initalizing global data [t=0s]
+... has axioms: 0
+... has conditional effects: 0
+pruning method: none
+Initializing h^max(Pi^C) heuristic ...
+Constructing Pi^C for h^max computation ...
+Parsed Pi into 181 facts, 1860 actions, and 3661 counters.
+Initializing FF heuristic...
+Initializing additive heuristic...
+Simplifying 3660 unary operators... done! [3660 unary operators]
+[g = 0, h = 1, registered=1, expanded=1, open_states=0, dead_ends=0, t=0.020]
+[g = 1, h = 0, registered=2, expanded=2, open_states=0, dead_ends=0, t=0.020]
+[g = 1, h = 0, registered=33, expanded=3, open_states=30, dead_ends=0, t=0.020]
+[g = 2, h = 0, registered=36, expanded=4, open_states=32, dead_ends=0, t=0.020]
+[g = 2, h = 0, registered=66, expanded=5, open_states=61, dead_ends=0, t=0.020]
+[g = 2, h = 0, registered=68, expanded=6, open_states=62, dead_ends=0, t=0.020]
+[g = 2, h = 0, registered=98, expanded=7, open_states=91, dead_ends=0, t=0.040]
+[g = 2, h = 0, registered=155, expanded=9, open_states=146, dead_ends=0, t=0.040]
+[g = 3, h = 0, registered=265, expanded=13, open_states=251, dead_ends=1, t=0.040]
+[g = 3, h = 0, registered=526, expanded=24, open_states=501, dead_ends=1, t=0.060]
+[g = 4, h = 0, registered=1047, expanded=50, open_states=990, dead_ends=7, t=0.120]
+[g = 4, h = 0, registered=2055, expanded=130, open_states=1892, dead_ends=33, t=0.240]
+[g = 4, h = 0, registered=4097, expanded=275, open_states=3668, dead_ends=154, t=0.460]
+[g = 4, h = 0, registered=8199, expanded=732, open_states=6803, dead_ends=664, t=1.020]
+[g = 4, h = 0, registered=16390, expanded=1912, open_states=12488, dead_ends=1990, t=2.240]
+Solution found!
+Actual search time: 4.42s [t=4.44s]
+open-new-stack n0 n1 (1)
+open-new-stack n1 n2 (1)
+open-new-stack n2 n3 (1)
+start-order o8 n3 n2 (0)
+open-new-stack n2 n3 (1)
+start-order o22 n3 n2 (0)
+start-order o20 n2 n1 (0)
+start-order o3 n1 n0 (0)
+make-product-p22  (0)
+make-product-p4  (0)
+make-product-p19  (0)
+make-product-p13  (0)
+make-product-p14  (0)
+ship-order-o20 n0 n1 (0)
+start-order o14 n1 n0 (0)
+make-product-p29  (0)
+make-product-p30  (0)
+ship-order-o14 n0 n1 (0)
+start-order o23 n1 n0 (0)
+ship-order-o8 n0 n1 (0)
+start-order o24 n1 n0 (0)
+make-product-p21  (0)
+ship-order-o23 n0 n1 (0)
+start-order o4 n1 n0 (0)
+make-product-p15  (0)
+ship-order-o4 n0 n1 (0)
+start-order o26 n1 n0 (0)
+make-product-p1  (0)
+make-product-p16  (0)
+ship-order-o26 n0 n1 (0)
+start-order o11 n1 n0 (0)
+ship-order-o3 n0 n1 (0)
+make-product-p7  (0)
+make-product-p9  (0)
+start-order o10 n1 n0 (0)
+make-product-p20  (0)
+make-product-p27  (0)
+ship-order-o10 n0 n1 (0)
+start-order o17 n1 n0 (0)
+make-product-p25  (0)
+ship-order-o11 n0 n1 (0)
+ship-order-o17 n1 n2 (0)
+start-order o13 n2 n1 (0)
+start-order o2 n1 n0 (0)
+make-product-p10  (0)
+ship-order-o24 n0 n1 (0)
+ship-order-o2 n1 n2 (0)
+start-order o27 n2 n1 (0)
+start-order o30 n1 n0 (0)
+ship-order-o13 n0 n1 (0)
+make-product-p24  (0)
+start-order o6 n1 n0 (0)
+make-product-p26  (0)
+ship-order-o6 n0 n1 (0)
+start-order o16 n1 n0 (0)
+ship-order-o30 n0 n1 (0)
+make-product-p17  (0)
+start-order o7 n1 n0 (0)
+ship-order-o22 n0 n1 (0)
+start-order o29 n1 n0 (0)
+make-product-p12  (0)
+ship-order-o16 n0 n1 (0)
+start-order o5 n1 n0 (0)
+ship-order-o29 n0 n1 (0)
+start-order o21 n1 n0 (0)
+ship-order-o7 n0 n1 (0)
+make-product-p23  (0)
+start-order o18 n1 n0 (0)
+make-product-p18  (0)
+ship-order-o21 n0 n1 (0)
+start-order o19 n1 n0 (0)
+ship-order-o5 n0 n1 (0)
+start-order o28 n1 n0 (0)
+make-product-p28  (0)
+ship-order-o19 n0 n1 (0)
+start-order o1 n1 n0 (0)
+make-product-p11  (0)
+ship-order-o27 n0 n1 (0)
+start-order o15 n1 n0 (0)
+ship-order-o18 n0 n1 (0)
+make-product-p6  (0)
+start-order o12 n1 n0 (0)
+make-product-p3  (0)
+ship-order-o1 n0 n1 (0)
+make-product-p5  (0)
+start-order o9 n1 n0 (0)
+make-product-p8  (0)
+ship-order-o15 n0 n1 (0)
+start-order o25 n1 n0 (0)
+make-product-p2  (0)
+ship-order-o28 n0 n1 (0)
+ship-order-o12 n1 n2 (0)
+ship-order-o9 n2 n3 (0)
+ship-order-o25 n3 n4 (0)
+Plan length: 94 step(s).
+Plan cost: 4
+Pi^C: 181 facts, 0 conjunctions, 3661 (3661) counters, 1 counter ratio
+Number of Learned Clauses: 0
+Number of uC Evaluations: 5101
+Number of hC Computations: 5101
+Number of hC recognized dead ends: 0
+Number of clause extractions: 0
+Time spent on clause matching: 0.00000s
+Time spent on clause extraction: 0.00000s
+Time spent on hC computations: 2.25523s
+Number of uC Refinements: 0 (0)
+Summed up size of RN components: 0 (0)
+Total time spent on uC Refinement: 0.000000s (0.000000s)
+Open states in open list: 21695 state(s).
+Initial state h value: 1.
+Expanded 4339 state(s).
+Reopened 0 state(s).
+Evaluated 30561 state(s).
+Evaluations: 30561
+Generated 42499 state(s).
+Dead ends: 4527 state(s).
+u-recognized dead ends: 363 state(s).
+Search restarts: 0
+States per second: 6883.11
+Registered: 30561 state(s).
+Search time: 4.44s
+Total time: 4.44s
+Solution found.
+Peak memory: 10716 KB

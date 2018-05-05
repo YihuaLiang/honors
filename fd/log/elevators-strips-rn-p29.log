@@ -1,0 +1,139 @@
+INFO     Running translator.
+INFO     translator input: ['ipc2008/elevators-strips/p29-domain.pddl', 'ipc2008/elevators-strips/p29.pddl']
+INFO     translator arguments: []
+INFO     translator time limit: 1799.99s
+INFO     translator memory limit: 3906 MB
+INFO     callstring: /usr/bin/python /home/admin-u6487831/honors/fd/builds/release32/bin/translate/translate.py ipc2008/elevators-strips/p29-domain.pddl ipc2008/elevators-strips/p29.pddl
+time limit 1799.99 -> (1800, 1800)
+Parsing...
+Parsing: [0.000s CPU, 0.005s wall-clock]
+Normalizing task... [0.000s CPU, 0.000s wall-clock]
+Instantiating...
+Generating Datalog program... [0.010s CPU, 0.001s wall-clock]
+Normalizing Datalog program...
+Normalizing Datalog program: [0.000s CPU, 0.002s wall-clock]
+Preparing model... [0.000s CPU, 0.004s wall-clock]
+Generated 46 rules.
+Computing model... [0.160s CPU, 0.155s wall-clock]
+15867 relevant atoms
+7332 auxiliary atoms
+23199 final queue length
+50043 total queue pushes
+Completing instantiation... [0.580s CPU, 0.590s wall-clock]
+Instantiating: [0.750s CPU, 0.756s wall-clock]
+Computing fact groups...
+Finding invariants...
+12 initial candidates
+Finding invariants: [0.010s CPU, 0.007s wall-clock]
+Checking invariant weight... [0.000s CPU, 0.000s wall-clock]
+Instantiating groups... [0.010s CPU, 0.005s wall-clock]
+Collecting mutex groups... [0.000s CPU, 0.001s wall-clock]
+Choosing groups...
+0 uncovered facts
+Choosing groups: [0.000s CPU, 0.002s wall-clock]
+Building translation key... [0.010s CPU, 0.001s wall-clock]
+Computing fact groups: [0.030s CPU, 0.022s wall-clock]
+Building STRIPS to SAS dictionary... [0.000s CPU, 0.001s wall-clock]
+Building dictionary for full mutex groups... [0.000s CPU, 0.001s wall-clock]
+Building mutex information...
+Building mutex information: [0.000s CPU, 0.001s wall-clock]
+Translating task...
+Processing axioms...
+Simplifying axioms... [0.000s CPU, 0.000s wall-clock]
+Processing axioms: [0.020s CPU, 0.026s wall-clock]
+Translating task: [0.460s CPU, 0.456s wall-clock]
+0 effect conditions simplified
+0 implied preconditions added
+Detecting unreachable propositions...
+0 operators removed
+0 axioms removed
+46 propositions removed
+Detecting unreachable propositions: [0.240s CPU, 0.243s wall-clock]
+Translator variables: 46
+Translator derived variables: 0
+Translator facts: 1150
+Translator goal facts: 36
+Translator mutex groups: 46
+Translator total mutex groups size: 1150
+Translator operators: 14124
+Translator axioms: 0
+Translator task size: 86226
+Translator peak memory: 126192 KB
+Writing output... [0.070s CPU, 0.074s wall-clock]
+Done! [1.580s CPU, 1.583s wall-clock]
+INFO     Running preprocessor (release32).
+INFO     preprocessor input: output.sas
+INFO     preprocessor arguments: []
+INFO     preprocessor time limit: 1798.39s
+INFO     preprocessor memory limit: 3906 MB
+INFO     callstring: /home/admin-u6487831/honors/fd/builds/release32/bin/preprocess < output.sas
+time limit 1798.39 -> (1799, 1800)
+Building causal graph...
+The causal graph is not acyclic.
+46 variables of 46 necessary
+0 of 46 mutex groups necessary.
+14124 of 14124 operators necessary.
+0 of 0 axiom rules necessary.
+Building domain transition graphs...
+solveable in poly time 0
+Building successor generator...
+Preprocessor facts: 1150
+Preprocessor derived variables: 0
+Preprocessor task size: 85076
+Writing output...
+done
+INFO     Running search (release32).
+INFO     search input: output
+INFO     search arguments: ['--heuristic', 'hff=ff(cost_type=NORMAL)', '--heuristic', 'u=uc(x=-1,clauses=statemin,bound=1332)', '--search', 'dfs(hff,refiner=ucrn2_1(uc=u),reopen=true,bound=1332)']
+INFO     search time limit: 1797.89s
+INFO     search memory limit: 3906 MB
+INFO     search executable: /home/admin-u6487831/honors/fd/builds/release32/bin/downward
+INFO     callstring: /home/admin-u6487831/honors/fd/builds/release32/bin/downward --heuristic 'hff=ff(cost_type=NORMAL)' --heuristic 'u=uc(x=-1,clauses=statemin,bound=1332)' --search 'dfs(hff,refiner=ucrn2_1(uc=u),reopen=true,bound=1332)' --internal-plan-file sas_plan < output
+time limit 1797.89 -> (1798, 1799)
+reading input... [t=0s]
+Simplifying transitions... done!
+done reading input! [t=0.12s]
+building causal graph...done! [t=0.12s]
+packing state variables...Variables: 46
+Bytes per state: 32
+done! [t=0.12s]
+done initalizing global data [t=0.12s]
+... has axioms: 0
+... has conditional effects: 0
+pruning method: none
+Initializing h^max(Pi^C) heuristic ...
+Constructing Pi^C for h^max computation ...
+Parsed Pi into 1150 facts, 14124 actions, and 27949 counters.
+Initializing FF heuristic...
+Initializing additive heuristic...
+Simplifying 27948 unary operators... done! [27948 unary operators]
+Completely explored state space!
+Actual search time: 0.02s [t=0.62s]
+Pi^C: 1150 facts, 0 conjunctions, 27949 (27949) counters, 1 counter ratio
+Number of Learned Clauses: 0
+Number of uC Evaluations: 2
+Number of hC Computations: 2
+Number of hC recognized dead ends: 0
+Number of clause extractions: 0
+Time spent on clause matching: 0.00000s
+Time spent on clause extraction: 0.00000s
+Time spent on hC computations: 0.01038s
+Number of uC Refinements: 0 (0)
+Summed up size of RN components: 0 (0)
+Total time spent on uC Refinement: 0.000000s (0.000000s)
+Open states in open list: 0 state(s).
+Initial state h value: 202.
+Expanded 0 state(s).
+Reopened 0 state(s).
+Evaluated 1 state(s).
+Evaluations: 1
+Generated 0 state(s).
+Dead ends: 1 state(s).
+u-recognized dead ends: 1 state(s).
+Search restarts: 0
+States per second: 1.6129
+Registered: 1 state(s).
+Search time: 0.5s
+Total time: 0.62s
+Search stopped without finding a solution.
+Peak memory: 27740 KB

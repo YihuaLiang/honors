@@ -1375,7 +1375,7 @@ int HCHeuristic::simple_traversal_wrapper(
     //cout<<"exploration size "<<exploration.size()<<" i "<<i;
     unsigned conj_id = exploration[i++]; 
     //debug
-    // cout<<"fetched conj id "<<conj_id<<endl;
+    //cout<<"fetched conj id "<<conj_id<<endl;
     // for (Fluent::iterator f = _fluents[conj_id].begin(); f != _fluents[conj_id].end(); f++) {
     //     cout<<g_fact_names[f->first][f->second]<<endl;
     // }
@@ -1398,7 +1398,7 @@ int HCHeuristic::simple_traversal_wrapper(
       counter->cost = max_pre.cost;
       counter->pre_cost = max_pre.conj;
       
-      if ( conjunctions[conj_id].shrinked == false ){
+      if ( conjunctions[conj_id].shrinked == false ){       
         --(counter->unsatisfied_preconditions);
       }
       if ( (counter->unsatisfied_preconditions) > 0 ) { //there must be one satisfied so 1 should be minused        
@@ -1411,13 +1411,22 @@ int HCHeuristic::simple_traversal_wrapper(
 
       if (counter->effect->is_achieved() && (counter->effect->cost > counter->cost + counter->base_cost)){
           counter->effect->check_and_update(counter->cost + counter->base_cost, NULL);
+          bool in_exploration = false;
+          for(int j=i;j<exploration.size();j++){
+            if(exploration[j]==counter->effect->id){
+              in_exploration=true;
+              break;
+            }
+          }
           // debug
           // for (Fluent::iterator f = _fluents[counter->effect->id].begin(); f != _fluents[counter->effect->id].end(); f++) {
           //   cout<<"conj shrinked "<<g_fact_names[f->first][f->second]<<" with "<<counter->cost + counter->base_cost;
           //   cout<<"g_Value "<<g_value<<endl;
           // }
-          counter->effect->shrinked=true;
-          exploration.insert(exploration.begin() + i, counter->effect->id);//want to update the counters next
+          if(!in_exploration){
+            counter->effect->shrinked=true;
+            exploration.push_back(counter->effect->id);
+          }
           if (m_goal_id == counter->effect->id) {//the early termination should not be operated here
             if(goal_level == 0 || counter->cost + counter->base_cost > goal_level ){
               goal_level = counter->cost + counter->base_cost;  
