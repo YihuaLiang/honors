@@ -177,7 +177,7 @@ struct Conjunction {
 
   // for ff
   //std::vector<int> supporters;
-
+  bool shrinked;
   Conjunction &operator=(Conjunction &cop)
   {
     id = cop.id;
@@ -192,6 +192,7 @@ Conjunction(unsigned id, int fluent_size)
 : id(id), fluent_size(fluent_size) {
   //is_goal = false; // default: is not contained in goal
   cost = -1; // set to infinity
+  shrinked=false;
 }
 
   inline bool is_achieved() const {
@@ -215,6 +216,7 @@ Conjunction(unsigned id, int fluent_size)
 
   inline void clear() {
     cost = -1;
+    shrinked=false;
     //supporters.clear();
   }
 

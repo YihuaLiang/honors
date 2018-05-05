@@ -1398,7 +1398,10 @@ int HCHeuristic::simple_traversal_wrapper(
       counter->cost = max_pre.cost;
       counter->pre_cost = max_pre.conj;
       
-      if (--(counter->unsatisfied_preconditions) > 0 && (!conjunctions[conj_id].is_achieved())) { //there must be one satisfied so 1 should be minused        
+      if ( conjunctions[conj_id].shrinked == false ){
+        --(counter->unsatisfied_preconditions);
+      }
+      if ( (counter->unsatisfied_preconditions) > 0 ) { //there must be one satisfied so 1 should be minused        
         continue; //can't be used -- jump
       }
       //line 2:  
@@ -1413,7 +1416,7 @@ int HCHeuristic::simple_traversal_wrapper(
           //   cout<<"conj shrinked "<<g_fact_names[f->first][f->second]<<" with "<<counter->cost + counter->base_cost;
           //   cout<<"g_Value "<<g_value<<endl;
           // }
-
+          counter->effect->shrinked=true;
           exploration.insert(exploration.begin() + i, counter->effect->id);//want to update the counters next
           if (m_goal_id == counter->effect->id) {//the early termination should not be operated here
             if(goal_level == 0 || counter->cost + counter->base_cost > goal_level ){

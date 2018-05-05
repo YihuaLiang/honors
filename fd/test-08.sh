@@ -1,4 +1,4 @@
-ulimit -t 1800 -m 3000000 -v 3000000
+ulimit -t 1800 -m 4000000 -v 4000000
 
 ./fast-downward.py ipc2008/elevators-strips/p01-domain.pddl ipc2008/elevators-strips/p01.pddl --heuristic "hff=ff(cost_type=NORMAL)" --heuristic "u=uc(x=-1,clauses=statemin,bound=55)" --search "dfs(hff,refiner=uccp(uc=u),reopen=true,bound=55)" > log/elevators-strips-cp-p01.log 2>&1
 ./fast-downward.py ipc2008/elevators-strips/p01-domain.pddl ipc2008/elevators-strips/p01.pddl --heuristic "hff=ff(cost_type=NORMAL)" --heuristic "u=uc(x=-1,clauses=statemin,bound=55)" --search "dfs(hff,refiner=ucrn2_1(uc=u),reopen=true,bound=55)" > log/elevators-strips-rn-p01.log 2>&1
